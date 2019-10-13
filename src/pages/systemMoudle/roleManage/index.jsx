@@ -1,38 +1,41 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Table } from 'antd';
+import { Breadcrumb, Table, Tag, Divider } from 'antd';
 import './style.css';
 
 const dataSource = [
     {
         key: '1',
-        name: '胡彦斌',
-        age: 32,
-        address: '西湖区湖底公园1号',
+        name: '管理员',
     },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
-  },
+    {
+      key: '2',
+      name: '普通用户',
+    },
 ];
 
 const columns = [
     {
-      title: '姓名',
+      title: 'ID',
+      dataIndex: 'key',
+      key: 'id',
+    },
+    {
+      title: '角色名',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: '住址',
-      dataIndex: 'address',
-      key: 'address',
-    },
+      title: '操作',
+      key: 'action',
+      render:()=>{
+        return (
+          <span>
+            <Tag color="blue" onClick={console.log('xxx')}>修改</Tag>
+            <Tag color="magenta" onClick={(text)=>{console.log('delete role ')}}>删除</Tag>
+          </span>
+        )
+      }
+    }
   ];
   
 class RoleManage extends Component {
@@ -46,7 +49,8 @@ class RoleManage extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <Table columns={columns} dataSource={dataSource} />
+                  <Divider orientation="right">Right Text</Divider>
+                    <Table bordered columns={columns} dataSource={dataSource} />
                 </div>
             </div>
         )

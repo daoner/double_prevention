@@ -16,6 +16,8 @@ import RiskManage from '../riskMoudle/riskManage';
 import DangerManage from '../riskMoudle/dangerManage';
 import RiskStatistic from '../riskMoudle/statistic';
 
+import AddRisk from '../riskMoudle/riskManage/addrisk';
+
 /* 事故管理统计模块 */
 import AccidentManage from '../accidentMoudle/accidentManage';
 import WoundeManage from '../accidentMoudle/woundeManage';
@@ -79,9 +81,11 @@ class Main extends Component {
               <Route path="/main/accident/statistic" component={AccidentStatistic} />
 
               {/* 风险管理与评估 */}
-              <Route path="/main/risk/manage" component={RiskManage} />
+              <Route exact path="/main/risk/manage" component={RiskManage} />
               <Route path="/main/risk/danger" component={DangerManage} />
               <Route path="/main/risk/statistic" component={RiskStatistic} />
+
+              <Route  exact path="/main/risk/manage/add" component={AddRisk} />
 
               {/* 安全检查与隐患管理  */}
               <Route path="/main/checktable/manage" component={ CheckTableManage } />

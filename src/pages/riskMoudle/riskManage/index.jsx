@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Breadcrumb, Table } from 'antd';
+import { Link } from 'react-router-dom';
+
 import './style.css';
 const dataSource = [
     {
@@ -54,6 +56,11 @@ const columns = [
   ];
   
 class RiskManage extends Component {
+
+    toAddRisk() {
+
+    }
+
     render() {
         return (
             <div className="page">
@@ -64,7 +71,8 @@ class RiskManage extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <Table dataSource={dataSource} columns={columns} />
+                    <Link to="/main/risk/manage/add"> 添加一个试一下</Link>
+                    <Table dataSource={dataSource} columns={columns} bordered />
                 </div>
             </div>
         )

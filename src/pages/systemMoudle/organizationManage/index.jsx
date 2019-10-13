@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {  Table, Divider, Breadcrumb ,Button, Icon,Tag, Modal } from 'antd';
+import {  Table, Divider, Breadcrumb ,Button, Icon,Tag, Modal,
+    Form,  Input,  Checkbox 
+} from 'antd';
 import './style.css';
 
 import { ActionCreator } from './store';
+
+import AddFrom from './addOrganization';
 
 const columns = [
     { 
@@ -38,13 +42,37 @@ const columns = [
         render: (text, record) => { 
         return (
         <span>
-            <Tag color="pink">Invite {record.depId}</Tag>
-            <Divider type="vertical" />
-            <Tag color="magenta">Delete</Tag>
+            <Tag color="blue" onClick={console.log('xxx')}>修改</Tag>
+            <Tag color="magenta" onClick={()=>{deleteItem(text)}}>删除</Tag>
         </span>
         )},
     },
 ];
+//删除这里相应
+function deleteItem(text){
+    Modal.confirm({
+        title: 'Are you sure delete this task?',
+        content: 'Some descriptions',
+        okText: 'Yes',
+        okType: 'danger',
+        okButtonProps: {
+          disabled: false,
+        },
+        cancelText: 'No',
+        onOk() {
+          console.log('OK,发送异步请求');
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
+    console.log(text);
+    //这里删除item
+}
+
+function updateItem(text) {
+
+}
 
 const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -64,6 +92,7 @@ class OrganizationManage extends Component {
     }
    
     render() {
+
         const {list, pagenationProps, modal_visible } = this.props;  //获取到 数据列表和分页设置属性 （immtable对象）
         const { handleShowModal, handleHideModal } = this.props;
 
@@ -82,7 +111,7 @@ class OrganizationManage extends Component {
                 {/* 内容区域 */}
                 <div className="contentWrap">
                     <Button type="primary" className="button"  onClick={handleShowModal}><Icon type="plus"/>添加</Button>
-                    <Table rowSelection={rowSelection} pagination={JSpagenationProps} dataSource={jsList} columns={columns} loading={false}/>
+                    <Table bordered rowSelection={rowSelection} pagination={JSpagenationProps} dataSource={jsList} columns={columns} loading={false}/>
                 </div>
                 <Modal 
                     title='标题'
@@ -95,6 +124,8 @@ class OrganizationManage extends Component {
                     width="800px"
                     >
                     
+                    <AddFrom />
+
                 </Modal>
             </div>
         )

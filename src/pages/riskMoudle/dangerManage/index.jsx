@@ -92,7 +92,7 @@ class DangerManage extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <Table dataSource={dataSource} columns={columns} />
+                    <Table dataSource={dataSource} columns={columns} border />
                 </div>
             </div>
         )
