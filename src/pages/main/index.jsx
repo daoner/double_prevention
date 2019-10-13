@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { HashRouter, Route, Link, Switch } from 'react-router-dom';
-import { Layout, Menu,  Icon } from 'antd';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Layout   } from 'antd';
 import LeftNav from '../../commen/leftNav';
 
 import Home from '../home';
@@ -26,7 +26,20 @@ import UserManage from '../systemMoudle/userManage';
 import OrganizationManage from '../systemMoudle/organizationManage';
 import RoleManage from '../systemMoudle/roleManage';
 
+
+/* 安全检查与隐患 */
+import CheckTableManage from '../securityMoudle/checkTableManage';
+import FirstIndicatorManage from '../securityMoudle/firstIndicatorManage';
+import SecondIndicatorManage from '../securityMoudle/secondIndicatorManage';
+import CheckTableInput from '../securityMoudle/checkTableInput';
+
+import CheckResultManage from '../securityMoudle/checkResultManage';
+import HiddenTroubleManage from '../securityMoudle/hiddenTroubleManage';
+import HiddenTroubleStatic from '../securityMoudle/hiddentTroubleStatic';
+
+
 const { Header, Content, Footer, Sider } = Layout;
+
 
 class Main extends Component {
   state = {
@@ -60,7 +73,7 @@ class Main extends Component {
               <Route path="/main/assign/hadApprove" component={HadApprove} />
 
             
-
+              {/*   事故管理与统计  */}
               <Route path="/main/accident/manage" component={AccidentManage}/>
               <Route path="/main/accident/wounde" component={WoundeManage}/>
               <Route path="/main/accident/statistic" component={AccidentStatistic} />
@@ -70,13 +83,29 @@ class Main extends Component {
               <Route path="/main/risk/danger" component={DangerManage} />
               <Route path="/main/risk/statistic" component={RiskStatistic} />
 
+              {/* 安全检查与隐患管理  */}
+              <Route path="/main/checktable/manage" component={ CheckTableManage } />
+              <Route path="/main/firstIndicator/manage" component={ FirstIndicatorManage } />
+              <Route path="/main/secondIndicator/manage" component={ SecondIndicatorManage } />
+
+              <Route path="/main/checktable/Input" component={ CheckTableInput } />
+              <Route path="/main/checktable/result" component={ CheckResultManage } />
+              <Route path="/main/hiddentTrouble/manage" component={ HiddenTroubleManage } />
+
+              <Route path="/main/hiddentTrouble/statistic" component={ HiddenTroubleStatic } />
+
               {/* 系统管理 */}
               <Route path="/main/manage/user" component={UserManage} />
               <Route path="/main/manage/role" component={RoleManage} />
               <Route paht="/main/manage/organization" component={OrganizationManage} />
+
+              
+
             </Switch>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+          <Footer style={{ textAlign: 'center' }}>
+            双重预防机制管理系统 ©2019.10.10 by 黎杏、蔡杰、罗迪、韩翔羽、崔佳豪
+          </Footer>
         </Layout>
         </HashRouter>
       </Layout>

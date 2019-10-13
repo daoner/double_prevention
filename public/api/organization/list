@@ -1,0 +1,74 @@
+[
+    {
+         "key": "0001",
+         "depId": "0001",
+         "depName": "技术部",
+         "depPhone": "027-456789",
+         "depAddress": "科技楼302",
+         "depDesc": "提供公司技术支撑，提技术支撑，供公司技术支撑提支撑提供公司技术支撑核心部门"
+    },
+    {
+         "key": "0010",
+         "depId": "0010",
+         "depName": "人力资源",
+         "depPhone": "027-123456",
+         "depAddress": "办公楼302",
+         "depDesc": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+         "key": "0020",
+         "depId": "0020",
+         "depName": "销售部",
+         "depPhone": "027-777886",
+         "depAddress": "办公楼113",
+         "depDesc": "提供公司技术支撑，核心部门"
+    },
+     {
+         "key": "1000",
+         "depId": "0001",
+         "depName": "技术部",
+         "depPhone": "027-456789",
+         "depAddress": "科技楼302",
+         "depDesc": "提供公司技术支撑，核心部门"
+    },
+    {
+         "key": "1001",
+         "depId": "0010",
+         "depName": "人力资源",
+         "depPhone": "027-123456",
+         "depAddress": "办公楼302",
+         "depDesc": "提供公司技术支撑，核心部门"
+    },
+    {
+         "key": "1002",
+         "depId": "0020",
+         "depName": "销售部",
+         "depPhone": "027-777886",
+         "depAddress": "办公楼113",
+         "depDesc": "提供公司技术支撑，核心部门"
+    },
+     {
+         "key": "1003",
+         "depId": "0001",
+         "depName": "技术部",
+         "depPhone": "027-456789",
+         "depAddress": "科技楼302",
+         "depDesc": "提供公司技术支撑，核心部门"
+    },
+    {
+         "key": "1004",
+         "depId": "0010",
+         "depName": "人力资源",
+         "depPhone": "027-123456",
+         "depAddress": "办公楼302",
+         "depDesc": "提供公司技术支撑，核心部门"
+    },
+    {
+         "key": "1005",
+         "depId": "0020",
+         "depName": "销售部",
+         "depPhone": "027-777886",
+         "depAddress": "办公楼113",
+         "depDesc": "提供公司技术支撑，核心部门"
+    }
+]

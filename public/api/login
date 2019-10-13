@@ -1,0 +1,9 @@
+{
+    "result":"succes",                
+    "data": {               
+        "id":"admin",               
+        "name":"admin",                
+        "password":"123",            
+        "role":"ADMIN" 
+    }
+}
