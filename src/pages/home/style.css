@@ -1,0 +1,22 @@
+.home {
+    height: 100%;
+    background: red;
+    margin: 0 -16px;
+}
+.ant-carousel {
+    height: 100%;
+}
+.ant-carousel div {
+    height: 100%;
+}
+.ant-carousel .slick-slide {
+    text-align: center;
+    height: 100%;
+    line-height: 160px;
+    background: #364d79;
+    overflow: hidden;
+  }
+  
+  .ant-carousel .slick-slide h3 {
+    color: #fff;
+  }

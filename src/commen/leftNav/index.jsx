@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {  Menu,  Icon } from 'antd';
 import {Link} from 'react-router-dom';
-/*<span><Link to="/main"><Icon type="home"/>主页</Link></span>*/
+
+import './style.css';
 
 const { SubMenu } = Menu;
 class LeftNav extends Component {
@@ -9,10 +10,10 @@ class LeftNav extends Component {
         return (
            <div>
           {/* logo 部分 */}
-          <div className="logo"><span><Icon type="home"></Icon><span>Dual prevention management</span></span></div>
+          <div className="logo"><span>&nbsp;DPM</span></div>
 
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1"><Link to="/main"><span><Icon type="home"/>主页</span></Link></Menu.Item>
+            <Menu.Item key="1"><Link to="/main"><span><Icon type="home"/><span>主页</span></span></Link></Menu.Item>
 
             <SubMenu key="sub1" title={<span><Icon type="book"/><span>授权许可</span></span>}>
               <Menu.Item key="sub1-1"><Link to="/main/assign/apply">作业申请</Link></Menu.Item>

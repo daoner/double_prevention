@@ -103,9 +103,9 @@ class Main extends Component {
 
             </Switch>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>
+          {/* <Footer style={{ textAlign: 'center', height: "60px", lineHeight: '60px', margin: '0px',padding: '0px' }}>
             双重预防机制管理系统 ©2019.10.10 by 黎杏、蔡杰、罗迪、韩翔羽、崔佳豪
-          </Footer>
+          </Footer> */}
         </Layout>
         </HashRouter>
       </Layout>
