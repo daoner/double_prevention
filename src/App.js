@@ -11,7 +11,6 @@ import store from './store';
 class App extends Component {
   render() {
     return (
-      <div>
         <Provider store={store}>
           <HashRouter>
             <Route path="/login" component={Login}/>
@@ -19,7 +18,6 @@ class App extends Component {
             <Redirect exact from='/' to='/main' />
           </HashRouter>
         </Provider>
-      </div>
     )
   }
 }
