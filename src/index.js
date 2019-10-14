@@ -6,6 +6,8 @@ import 'antd/dist/antd.css';
 import App from './App';
 import './index.css';
 
+import memeryUtil from './utils/memeryUtil';
+import storageUtil from './utils/storageUtil';
 
 /***
  * 使用技术：
@@ -21,6 +23,7 @@ import './index.css';
  * （styled-components，emmm算了不用吧）
  */
 
+memeryUtil.user = storageUtil.getUser();
  
 ReactDOM.render(<App />, document.getElementById('root'));
 

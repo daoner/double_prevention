@@ -13,9 +13,9 @@ class App extends Component {
     return (
         <Provider store={store}>
           <HashRouter>
-            <Route path="/login" component={Login}/>
-            <Route path="/main" component={Main}/>
-            <Redirect exact from='/' to='/main' />
+            <Route exact path="/login" component={Login}/>
+            <Route  path="/main" component={Main}/>
+            <Redirect exact from='/' to='/login' />
           </HashRouter>
         </Provider>
     )

@@ -6,6 +6,7 @@ import './style.css';
 //引入axios进行ajax请求
 import axios from 'axios';
 import  memeryUtil from '../../utils/memeryUtil';
+import storage from '../../utils/storageUtil';
 
 //表单引入
 import { Form, Icon, Input, Button, Checkbox ,message } from 'antd';
@@ -26,23 +27,30 @@ class NormalLoginForm extends React.Component {
    */
   handleSubmit = e => {
     e.preventDefault(); //阻止默认事件
-    if(this.state.submitable === false ) {
-      message.error('不要重复提交表单',2);
-      return false;
-    }
-    this.changeSubmitable(false);
+   
 
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        if(this.state.submitable === false ) {
+          message.error('不要重复提交表单',2);
+          return false;
+        }
+        this.changeSubmitable(false);
+
         //发送post请求，提交表单信息
         // axios.post('/api/login', {
         //   username: values.username,
         //   password: values.password
         // })
         axios.get('/api/login').then( res=> {
-          console.log(res);
-          message.success('登陆成功',this.changeSubmitabl);
-          memeryUtil.user['id'] = 'text';
+          const data = res.data;
+          if(data.status === 1) {
+            message.success('登陆成功',this.changeSubmitabl);
+            memeryUtil.user['id'] = data.data.id;
+          }else {
+            message.error(data.message,this.changeSubmitable);
+          }
+         
         }).catch(err => {
           message.error(err.message,this.changeSubmitable);
         });
@@ -154,12 +162,17 @@ class Login extends Component {
         //   password: values.password
         // })
         axios.get('/api/login').then( res=> {
-          console.log(res);
-          message.success('登陆成功',this.changeSubmitabl);
-          memeryUtil.user['id'] = 'text';
-          this.setState({
-            logined: true
-          })
+          const data = res.data;
+          if(data.status === 1 ) {
+            message.success('登陆成功',this.changeSubmitabl);
+            memeryUtil.user['id'] = data.data.id;
+            this.setState({
+              logined: true
+            });
+          }else {
+            message.error(data.message,this.changeSubmitable);
+          }
+          
         }).catch(err => {
           message.error(err.message,this.changeSubmitable);
         });

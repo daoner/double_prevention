@@ -1,5 +1,5 @@
 {
-    "result":"succes",                
+    "status": 1,                
     "data": {               
         "id":"admin",               
         "name":"admin",                
