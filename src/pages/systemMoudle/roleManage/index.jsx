@@ -1,53 +1,80 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { actionCreate, actionCreator } from './store';
-import { Breadcrumb, Table, Tag, Divider } from 'antd';
+import {  actionCreator } from './store';
+import { Breadcrumb, Table, Tag,  Modal, message } from 'antd';
+
+import axios from 'axios';
 import './style.css';
 
-const dataSource = [
-    {
-        key: '1',
-        name: '管理员',
-    },
-    {
-      key: '2',
-      name: '普通用户',
-    },
-];
-
-const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: '角色名',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '操作',
-      key: 'action',
-      render:()=>{
-        return (
-          <span>
-            <Tag color="blue" onClick={console.log('xxx')}>修改</Tag>
-            <Tag color="magenta" onClick={(text)=>{console.log('delete role ')}}>删除</Tag>
-          </span>
-        )
-      }
-    }
-  ];
   
 class RoleManage extends Component { 
+    constructor(props) {
+      super(props);
+      this.deleteItem = this.deleteItem.bind(this);
+    }
 
     componentDidMount() {
-        this.props.changeRoleList();
+      //组件挂在的时候 发送请求显示数据
+      this.props.changeRoleList();
+        
+    }
+    /**
+     * 删除列表某项记录
+     * @param {删除项} text 
+     */
+    deleteItem(text) {
+      Modal.confirm({
+          title: '确定删除该项吗?',
+          okText: 'Yes',
+          okType: 'danger',
+          okButtonProps: {
+            disabled: false,
+          },
+          cancelText: 'No',
+          onOk() {
+            axios.post('/api/role/delete',{
+              id: text.id
+            }).then(res=>{
+              console.log(res);
+              message.success('删除成功！',2);
+            }).catch(error=> {
+              message.error(error.message);
+            });
+            console.log('OK,发送异步请求');
+             //这里删除item
+          }
+        });
     }
 
 
     render() {
+        //表格的列属性
+        const columns = [
+          {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+          },
+          {
+            title: '角色名',
+            dataIndex: 'name',
+            key: 'name',
+          },
+          {
+            title: '操作',
+            key: 'action',
+            render:()=>{
+              return (
+                <span>
+                  <Tag color="blue" onClick={()=> {console.log('xxx')}}>修改</Tag>
+                  <Tag color="magenta" onClick={(text)=>{this.deleteItem(text)}}>删除</Tag>
+                </span>
+              )
+            }
+          }
+        ];
+      
+      
         //获取到列表数据
         const {roleList, pagenationProps } = this.props; 
         const data = roleList.toJS();                 // immutable 转成js对象
@@ -62,8 +89,7 @@ class RoleManage extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                  <Divider orientation="right">Right Text</Divider>
-                    <Table bordered pagenation={pagenationProps} columns={columns} dataSource={data} />
+                    <Table bordered pagenation={JSpagenationProps} columns={columns} dataSource={data} />
                 </div>
             </div>
         )
