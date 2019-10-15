@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Table } from 'antd';
+import { Breadcrumb, Table, Button, Input, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 
 import './style.css';
+
+const Search = Input.Search;
+
 const dataSource = [
     {
         key:"1",
@@ -71,8 +74,24 @@ class RiskManage extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <Link to="/main/risk/manage/add"> 添加一个试一下</Link>
-                    <Table dataSource={dataSource} columns={columns} bordered />
+                    
+                    <div style={{width:'90%',margin:'20px auto',height:'80px'}}>
+                        <Search
+                        className="searchClass"
+                        placeholder="input search text"
+                        enterButton="Search"
+                        size="large"
+                        onSearch={value => console.log(value)}
+                        />
+                        <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}>
+                            <Link to="/main/risk/manage/add"><span><Icon type="plus" /><span>&nbsp;添加</span></span></Link>
+                        </Button>
+                    </div>
+                    <Table
+                        className="tableClass"
+                        bordered
+                        columns={columns} 
+                        dataSource={dataSource} />
                 </div>
             </div>
         )

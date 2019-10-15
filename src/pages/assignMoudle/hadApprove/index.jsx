@@ -98,7 +98,6 @@ class HadApprove extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <br></br>
                     <div style={{width:'90%',margin:'20px auto',height:'80px'}}>
                     <Search
                     className="searchClass"
