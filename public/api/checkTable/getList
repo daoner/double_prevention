@@ -1,0 +1,30 @@
+{
+	"status": 1,
+	"data": {
+		"total": 53,
+		"pageNum": 1,
+		"pageSize": 10,
+		"list": [
+			{
+				"id": 1,
+                "name": "井下采区变配电室安全检查表",
+                "identifier": "xxx",
+                "type": "项目安全",
+                "depId": "112",
+                "addDate": "2010-9-10 13:32:20",
+                "isDelete": true,
+                "deleteDate": "2010-10-15 09:10:32"
+			},
+			{
+				"id": 2,
+                "name": "luodi身体检查表",
+                "identifier": "xxx",
+                "type": "项目安全",
+                "depId": "112",
+                "addDate": "2010-9-10 13:32:20",
+                "isDelete": true,
+                "deleteDate": "2010-10-15 09:10:32"
+			}
+		]
+	}
+}
