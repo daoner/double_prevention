@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Link }from 'react-router-dom';
 
+import { connect } from 'react-redux';
+import { actionCreator } from './store';
+
 import { Table, Button, Icon, Tag, Divider, Input } from 'antd';
 const Search = Input.Search;
 
@@ -51,5 +54,22 @@ class FirstIndicatorManage extends Component {
         )
     }
 }
+
+
+//将 store 数据传给组件props
+const mapState = (state)=> {
+    return {
+      checkTableList: state.getIn(['fistIndicator','fistIndicatorList']),
+      pagenationProps: state.getIn(['fistIndicator','pagenationProps'])
+    }
+  };
+
+//将操作store的方法传给组件props
+const mapDispatch = (dispatch)=> {
+    return {
+        getFistIndicatorList() {
+        }
+    }
+};
 
 export default FirstIndicatorManage;
