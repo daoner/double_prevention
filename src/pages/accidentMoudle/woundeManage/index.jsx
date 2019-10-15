@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Breadcrumb } from 'antd';
+import { Link } from 'react-router-dom';
+
 import './style.css';
 
 //table引入
@@ -118,7 +120,10 @@ class WoundeManage extends Component {
                     size="large"
                     onSearch={value => console.log(value)}
                     />
-                    <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
+                    <Link to="/main/accident/wounde/add">
+                      <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}>
+                      <Icon type="plus" />添加</Button>
+                    </Link>
                     </div>
                     <Table
                     className="tableClass"

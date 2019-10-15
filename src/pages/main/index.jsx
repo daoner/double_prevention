@@ -24,7 +24,7 @@ import WoundeManage from '../accidentMoudle/woundeManage';
 import AccidentStatistic from '../accidentMoudle/statistic';
 
 import AccidentAdd from '../accidentMoudle/accidentManage/accidentAdd';
-
+import WoundeAdd from '../accidentMoudle/woundeManage/woundeAdd';
 
 /* 系统维护管理模块 */
 import UserManage from '../systemMoudle/userManage';
@@ -80,10 +80,11 @@ class Main extends Component {
             
               {/*   事故管理与统计  */}
               <Route exact path="/main/accident/manage" component={AccidentManage}/>
-              <Route path="/main/accident/wounde" component={WoundeManage}/>
+              <Route exact path="/main/accident/wounde" component={WoundeManage}/>
               <Route path="/main/accident/statistic" component={AccidentStatistic} />
 
               <Route exact path="/main/accident/manage/add" component={AccidentAdd} />
+              <Route exact path="/main/accident/wounde/add" component={WoundeAdd} />
 
 
               {/* 风险管理与评估 */}
