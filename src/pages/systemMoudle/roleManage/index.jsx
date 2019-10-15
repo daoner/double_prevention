@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { Breadcrumb, Table, Tag, Divider } from 'antd';
 import './style.css';
 
@@ -40,6 +42,9 @@ const columns = [
   
 class RoleManage extends Component {
     render() {
+        console.log(this.props);
+
+
         return (
             <div className="page">
                 {/* 导航路径 */}
@@ -57,4 +62,18 @@ class RoleManage extends Component {
     }
 }
 
-export default RoleManage;
+const mapState = (state)=> {
+  return {
+    roleList: state.getIn(['role','roleList']),
+    pageSize: state.getIn(['role','pageSize']),
+    pageNum: state.getIn(['role','pageNum']),
+    total: state.getIn(['role','total'])
+  }
+};
+
+const mapDispatch = (dispatch)=> {
+  return {
+  }
+};
+
+export default connect(mapState,null)(RoleManage);
