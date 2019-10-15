@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { actionCreate, actionCreator } from './store';
 import { Breadcrumb, Table, Tag, Divider } from 'antd';
 import './style.css';
 
@@ -18,7 +18,7 @@ const dataSource = [
 const columns = [
     {
       title: 'ID',
-      dataIndex: 'key',
+      dataIndex: 'id',
       key: 'id',
     },
     {
@@ -40,10 +40,18 @@ const columns = [
     }
   ];
   
-class RoleManage extends Component {
-    render() {
-        console.log(this.props);
+class RoleManage extends Component { 
 
+    componentDidMount() {
+        this.props.changeRoleList();
+    }
+
+
+    render() {
+        //获取到列表数据
+        const {roleList, pagenationProps } = this.props; 
+        const data = roleList.toJS();                 // immutable 转成js对象
+        const JSpagenationProps = pagenationProps.toJS();   //immutable 转成 js对象
 
         return (
             <div className="page">
@@ -55,25 +63,28 @@ class RoleManage extends Component {
                 {/* 内容区域 */}
                 <div className="contentWrap">
                   <Divider orientation="right">Right Text</Divider>
-                    <Table bordered columns={columns} dataSource={dataSource} />
+                    <Table bordered pagenation={pagenationProps} columns={columns} dataSource={data} />
                 </div>
             </div>
         )
     }
 }
 
+
+//将 store 数据传给组件props
 const mapState = (state)=> {
   return {
     roleList: state.getIn(['role','roleList']),
-    pageSize: state.getIn(['role','pageSize']),
-    pageNum: state.getIn(['role','pageNum']),
-    total: state.getIn(['role','total'])
+    pagenationProps: state.getIn(['role','pagenationProps'])
   }
 };
 
 const mapDispatch = (dispatch)=> {
   return {
+    changeRoleList() {
+      dispatch(actionCreator.getRoleList());
+    }
   }
 };
 
-export default connect(mapState,null)(RoleManage);
+export default connect(mapState,mapDispatch)(RoleManage);

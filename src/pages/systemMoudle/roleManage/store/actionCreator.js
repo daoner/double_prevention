@@ -2,11 +2,20 @@ import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
 //获取列表的
-export const geRoleList = ()=> {
+export const getRoleList = ()=> {
     return (dispatch)=> {
         axios.get('/api/role/getList').then(res=>{
-            console.log('getList--->');
-            console.log(res)
+            const data = res.data;
+            if(data.status === 1) {
+                dispatch(changeRoleList(
+                    data.data.list,
+                    data.data.pageNum,
+                    data.data.pageSize,
+                    data.data.total
+                    ));
+            }else {
+                console.log(data.message);
+            }
         }).catch(error=>{
             console.log('getList--->');
             console.log(error)
