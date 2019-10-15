@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import './style.css';
 
@@ -128,7 +129,9 @@ class DangerManage extends Component {
                     size="large"
                     onSearch={value => console.log(value)}
                     />
-                    <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
+                    <Link to="/main/risk/danger/add">
+                      <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
+                    </Link>
                     </div>
                     <Table
                     className="tableClass"
