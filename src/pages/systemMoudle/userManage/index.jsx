@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { actionCreator } from './store';
 import { Breadcrumb, Table, Tag, Divider } from 'antd';
 import './style.css';
 
@@ -69,7 +71,9 @@ const columns = [
 
 class UserManage extends Component {
     componentDidMount() {
-        console.log('DidMount UserManange');
+        //发送请求，获取数据列表
+        this.props.getUserList();
+
     }
     render() {
         return (
@@ -88,4 +92,21 @@ class UserManage extends Component {
     }
 }
 
-export default UserManage;
+
+
+const mapState = (state)=> {
+  return {
+
+  }
+};
+
+const mapDispatch = (dispatch)=> {
+  return {
+    getUserList() {
+      dispatch(actionCreator.getUserList());
+    }
+  }
+}
+
+
+export default connect(mapState,mapDispatch)(UserManage);
