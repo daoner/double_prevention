@@ -9,6 +9,8 @@ const Search = Input.Search;
 
 class FirstIndicatorManage extends Component {
     render() {
+
+        console.log(this.props, 'fist indicator');
         //table数据
         const dataSource = [
             { id: 1, project: '作业行为', addDate: '2012-5-23' }
@@ -59,8 +61,8 @@ class FirstIndicatorManage extends Component {
 //将 store 数据传给组件props
 const mapState = (state)=> {
     return {
-      checkTableList: state.getIn(['fistIndicator','fistIndicatorList']),
-      pagenationProps: state.getIn(['fistIndicator','pagenationProps'])
+      firstIndicatorList: state.getIn(['firstIndicator','firstIndicatorList']),
+      pagenationProps: state.getIn(['firstIndicator','pagenationProps'])
     }
   };
 
@@ -72,4 +74,4 @@ const mapDispatch = (dispatch)=> {
     }
 };
 
-export default FirstIndicatorManage;
+export default connect(mapState,mapDispatch)(FirstIndicatorManage);

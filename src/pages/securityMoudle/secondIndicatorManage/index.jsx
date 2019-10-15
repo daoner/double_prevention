@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+//引入store
+import { connect } from 'react-redux';
+import { actionCreator } from './store';
+
 import { Table, Button, Icon, Tag, Divider, Input } from 'antd';
 const Search = Input.Search;
 
 class SecondIndicatorManage extends Component {
-
     
 
     render() {
+        console.log(this.props,'second indicator')
         //table数据
         const dataSource = [
             { id: 1, content: '作业人员身体精神状况良好,无饮酒现象', addDate: '2012-5-23' },
@@ -58,4 +62,19 @@ class SecondIndicatorManage extends Component {
     }
 }
 
-export default SecondIndicatorManage;
+
+//将 store 数据传给组件props
+const mapState = (state)=> {
+    return {
+        secondIndicatorList: state.getIn(['secondIndicator','secondIndicatorList']),
+        pagenationProps: state.getIn(['secondIndicator','pagenationProps'])
+    }
+  };
+
+//将操作store的方法传给组件props
+const mapDispatch = (dispatch)=> {
+    return {
+      
+    }
+};
+export default connect(mapState, mapDispatch)(SecondIndicatorManage);

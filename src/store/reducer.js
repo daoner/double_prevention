@@ -9,12 +9,14 @@ import { reducer as userReducer } from '../pages/systemMoudle/userManage/store';
 import { reducer as checkTableReducer } from  '../pages/securityMoudle/checkTableManage/store';
 //检查表一级标题的reducer
 import { reducer as firstIndicatorReducer } from '../pages/securityMoudle/firstIndicatorManage/store';
-
+//检查表二级标题的reducer
+import { reducer as secondIndicatorReducer } from '../pages/securityMoudle/secondIndicatorManage/store';
 
 export default combineReducers({
     organization: organizationReducer,
     role: roleReducer,
     user: userReducer,
     checkTable: checkTableReducer,
-    firstIndicator: firstIndicatorReducer
+    firstIndicator: firstIndicatorReducer,
+    secondIndicator: secondIndicatorReducer
 });

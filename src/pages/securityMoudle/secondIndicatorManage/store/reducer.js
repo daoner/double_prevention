@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 import * as actionTypes from './actionTypes';
 
 const defaultState = fromJS({
-    firstIndicatorList:[],  //列表要显示的列表信息
+    secondIndicatorList:[],  //列表要显示的列表信息
     pagenationProps: {
         pageSize: 5,  //每页条数
         current: 1,  //当前页数
