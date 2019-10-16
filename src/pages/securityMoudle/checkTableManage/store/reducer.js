@@ -10,6 +10,12 @@ const defaultState = fromJS({
         showSizeChanger: true,  //是否可以改变pageSize
         showQuickJumper: true, //是否可以快速跳转到某页
     },
+
+
+    //表单部分属性
+    formDisabled: false,    //是否禁用
+    submitSuccess: false,   //是否提交成功
+
 });
 
 
@@ -20,6 +26,8 @@ const reducer = (state=defaultState,action) => {
             .setIn(['pagenationProps','pageSize'],action.pageSize)
             .setIn(['pagenationProps','current'], action.pageNum)
             .setIn(['pagenationProps','total'], action.total);
+        case actionTypes.CHANGE_SUBMIT_SUCCESS:
+            return state.set('submitSuccess',action.submitSuccess);
         default: 
             return state;
     }

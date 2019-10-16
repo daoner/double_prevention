@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actionCreator } from './store';
 
-import { Table, Button, Icon, Tag, Divider, Input } from 'antd';
+import { Table, Button, Icon, Tag, Divider, Input, Breadcrumb } from 'antd';
 const Search = Input.Search;
 
 class SecondIndicatorManage extends Component {
@@ -38,7 +38,13 @@ class SecondIndicatorManage extends Component {
 
 
         return (
-            <div>
+            <div className="page">
+                {/* 导航路径 */}
+                <Breadcrumb className="path">
+                    <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>检查表管理</Breadcrumb.Item>
+                </Breadcrumb>
+                {/* 内容区域 */}
                 <div className="contentWrap">
                     <div style={{width:'90%',margin:'20px auto',height:'80px'}}>
                         <Search

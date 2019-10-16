@@ -29,6 +29,16 @@ export const getCheckTableList = () => {
     }
 }
 
+
+/**
+ * 改变提交结果状态
+ * @param {是否提交成功}} submitSuccess 
+ */
+export const changeSubmitSuccess = (submitSuccess)=> ({
+    type: actionTypes.CHANGE_SUBMIT_SUCCESS,
+    submitSuccess
+});
+
 /**
  * 
  * @param {table的数据列表} list 

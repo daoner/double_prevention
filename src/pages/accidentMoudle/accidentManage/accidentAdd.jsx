@@ -72,7 +72,7 @@ class Demo extends React.Component {
 
           }).then(res=>{
             message.success('添加成功');
-            this.props.changeSubmitSuccess();   //成功了就修改 submitSuccess为true ，这样就返回列表页
+            this.props.changeSubmitSuccess(true);   //成功了就修改 submitSuccess为true ，这样就返回列表页
           }).catch(error=>{
             message.error(error.message || '添加失败');
           })
@@ -80,13 +80,17 @@ class Demo extends React.Component {
           console.log('Received values of form: ', values);
         }else {
           // console.log(err,values)
-          message.info('请填写必要信息!')
+          message.info('请正确填写必要信息!')
         }
       });
-
-      
-
     };
+
+    /**
+     * 组件 取消挂载
+     */
+    componentWillUnmount() { //跳出这个界面的时候再将值初始化 
+      this.props.changeSubmitSuccess(false);   
+    }
       
   
     // normFile = e => {
@@ -341,8 +345,8 @@ const mapStateToForm = (state)=> {
  */
 const mapDispatchToForm = (dispatch)=> {
   return {
-    changeSubmitSuccess() {
-      dispatch(actionCreator.changeSubmitSuccess(true));
+    changeSubmitSuccess(value) {
+      dispatch(actionCreator.changeSubmitSuccess(value));
     }
   }
 };

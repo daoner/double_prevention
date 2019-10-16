@@ -43,6 +43,8 @@ import CheckResultManage from '../securityMoudle/checkResultManage';
 import HiddenTroubleManage from '../securityMoudle/hiddenTroubleManage';
 import HiddenTroubleStatic from '../securityMoudle/hiddentTroubleStatic';
 
+import AddCheckTable from '../securityMoudle/checkTableManage/addCheckTable';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -97,7 +99,7 @@ class Main extends Component {
               <Route exact path="/main/risk/danger/add" component={AddDanger}/>
 
               {/* 安全检查与隐患管理  */}
-              <Route path="/main/checktable/manage" component={ CheckTableManage } />
+              <Route exact path="/main/checktable/manage" component={ CheckTableManage } />
               <Route path="/main/firstIndicator/manage" component={ FirstIndicatorManage } />
               <Route path="/main/secondIndicator/manage" component={ SecondIndicatorManage } />
 
@@ -105,7 +107,10 @@ class Main extends Component {
               <Route path="/main/checktable/result" component={ CheckResultManage } />
               <Route path="/main/hiddentTrouble/manage" component={ HiddenTroubleManage } />
 
-              <Route path="/main/hiddentTrouble/statistic" component={ HiddenTroubleStatic } />
+              <Route exact path="/main/hiddentTrouble/statistic" component={ HiddenTroubleStatic } />
+
+
+              <Route path="/main/checktable/manage/add" component={AddCheckTable} /> {/* 添加检查表  */}
 
               {/* 系统管理 */}
               <Route path="/main/manage/user" component={UserManage} />

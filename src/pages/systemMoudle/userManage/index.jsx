@@ -41,7 +41,7 @@ const columns = [
           <span>{text}</span>
           <Divider type="vertical" />
           {
-            text == '普通用户'?  <Tag color="green" onClick={(item)=>{console.log('授权')}}>授权</Tag> 
+            text === '普通用户'?  <Tag color="green" onClick={(item)=>{console.log('授权')}}>授权</Tag> 
                     :  <Tag onClick={(item)=>{console.log('取消授权')}}>取消授权</Tag>
           }
         </span>

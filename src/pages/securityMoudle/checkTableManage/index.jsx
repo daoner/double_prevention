@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import { actionCreator } from './store';
 
 //引入antd
-import { Table, Button, Input, Divider, Tag, Icon } from 'antd';
+import { Table, Button, Input, Divider, Tag, Icon, Breadcrumb } from 'antd';
 const Search = Input.Search;
 
 
@@ -43,18 +43,24 @@ class CheckTableManage extends Component {
         
 
         return (
-            <div>
+            <div className="page">
+                {/* 导航路径 */}
+                <Breadcrumb className="path">
+                    <Breadcrumb.Item>安全检查标准管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>检查表管理</Breadcrumb.Item>
+                </Breadcrumb>
+                {/* 内容区域 */}
                  <div className="contentWrap">
                     <div style={{width:'90%',margin:'20px auto',height:'80px'}}>
                         <Search
                             className="searchClass"
                             placeholder="input search text"
                             enterButton="Search"
-                            size="large"
+                             size="large"
                             onSearch={value => console.log(value)}
                         />
-                        <Link>
-                        <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
+                        <Link to="/main/checktable/manage/add" >
+                            <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
                         </Link>
                     </div>
                     <Table
