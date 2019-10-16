@@ -46,7 +46,7 @@ class CheckTableManage extends Component {
             <div className="page">
                 {/* 导航路径 */}
                 <Breadcrumb className="path">
-                    <Breadcrumb.Item>安全检查标准管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
                     <Breadcrumb.Item>检查表管理</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* 内容区域 */}

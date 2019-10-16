@@ -4,12 +4,12 @@ import { Link }from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actionCreator } from './store';
 
-import { Table, Button, Icon, Tag, Divider, Input, Breadcrumb } from 'antd';
+import { Table, Button, Icon, Tag, Divider, Input, Breadcrumb, Select } from 'antd';
 const Search = Input.Search;
 
 class FirstIndicatorManage extends Component {
-    render() {
 
+    render() {
         console.log(this.props, 'fist indicator');
         //table数据
         const dataSource = [
@@ -42,15 +42,24 @@ class FirstIndicatorManage extends Component {
                 {/* 内容区域 */}
                 <div className="contentWrap">
                     <div style={{width:'90%',margin:'20px auto',height:'80px'}}>
-                        <Search
+                        <Select
+                            size="large"
+                            style={{ width: 200, display:"inline-block",margin: "20px 0" }}
+                            placeholder="Select a checktable"
+                            onChange={(e,v)=>{console.log(e,v,'selet change ')}}
+                        >
+                            <Select.Option value="1">检查表1</Select.Option>
+                            <Select.Option value="2">检查表2</Select.Option>
+                            <Select.Option value="3">检查表3</Select.Option>
+                        </Select>   
+                        {/* <Search
                             className="searchClass"
                             placeholder="input search text"
                             enterButton="Search"
-                            size="large"
                             onSearch={value => console.log(value)}
-                        />
+                        /> */}
                         <Link>
-                        <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
+                            <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
                         </Link>
                     </div>
                     <Table
