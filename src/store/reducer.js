@@ -12,11 +12,16 @@ import { reducer as firstIndicatorReducer } from '../pages/securityMoudle/firstI
 //检查表二级标题的reducer
 import { reducer as secondIndicatorReducer } from '../pages/securityMoudle/secondIndicatorManage/store';
 
+
+//事故管理的 reducer
+import { reducer as accidentReducerManage } from '../pages/accidentMoudle/accidentManage/store';
+
 export default combineReducers({
     organization: organizationReducer,
     role: roleReducer,
     user: userReducer,
     checkTable: checkTableReducer,
     firstIndicator: firstIndicatorReducer,
-    secondIndicator: secondIndicatorReducer
+    secondIndicator: secondIndicatorReducer,
+    accident: accidentReducerManage
 });

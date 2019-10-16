@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { Breadcrumb } from 'antd';
-import './style.css';
+import { Redirect } from 'react-router-dom';
 
+import { connect } from 'react-redux';
+import { actionCreator } from './store';
+
+import './style.css';
+import { formateDate } from '../../../utils/dateUtil';
 import {
     Form,
     Select,
@@ -15,173 +20,38 @@ import {
     Input,
     DatePicker
   } from 'antd';
+const { Option } = Select;
+const { TextArea } = Input;
 
 
-  const { Option } = Select;
-  //经济输入框开始
-  class PriceInput extends React.Component {
-    static getDerivedStateFromProps(nextProps) {
-      // Should be a controlled component.
-      if ('value' in nextProps) {
-        return {
-          ...(nextProps.value || {}),
-        };
-      }
-      return null;
-    }
   
-    constructor(props) {
-      super(props);
-  
-      const value = props.value || {};
-      this.state = {
-        number: value.number || 0,
-        currency: value.currency || 'rmb',
-      };
-    }
-  
-    handleNumberChange = e => {
-      const number = parseInt(e.target.value || 0, 10);
-      if (isNaN(number)) {
-        return;
-      }
-      if (!('value' in this.props)) {
-        this.setState({ number });
-      }
-      this.triggerChange({ number });
-    };
-  
-    handleCurrencyChange = currency => {
-      if (!('value' in this.props)) {
-        this.setState({ currency });
-      }
-      this.triggerChange({ currency });
-    };
-  
-    triggerChange = changedValue => {
-      // Should provide an event to pass value to Form.
-      const { onChange } = this.props;
-      if (onChange) {
-        onChange({
-          ...this.state,
-          ...changedValue,
-        });
-      }
-    };
-  
-    render() {
-      const { size } = this.props;
-      const { currency, number } = this.state;
-      return (
-        <span>
-          <Input
-            type="text"
-            size={size}
-            value={number}
-            onChange={this.handleNumberChange}
-            style={{ width: '65%', marginRight: '3%' }}
-          />
-          <Select
-            value={currency}
-            size={size}
-            style={{ width: '32%' }}
-            onChange={this.handleCurrencyChange}
-          >
-            <Option value="rmb">RMB</Option>
-            <Option value="dollar">Dollar</Option>
-          </Select>
-        </span>
-      );
-    }
-  }
-  
-  class Eco_Demo extends React.Component {
+class Demo extends React.Component {
+    /**
+     * 提交事件
+     */
     handleSubmit = e => {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
+        }else {
+          console.log(err,values)
+          console.log(formateDate(new Date(values.date._d),'yyyy-MM-dd hh:mm:ss'))
         }
       });
+
+      this.props.changeSubmitSuccess();   //成功了就修改 submitSuccess为true ，这样就返回列表页
+
     };
+      
   
-    checkPrice = (rule, value, callback) => {
-      if (value.number > 0) {
-        callback();
-        return;
-      }
-      callback('Price must greater than zero!');
-    };
-  
-    render() {
-      const { getFieldDecorator } = this.props.form;
-      return (
-        // <Form layout="inline" onSubmit={this.handleSubmit}>
-          <Form.Item>
-            {getFieldDecorator('price', {
-              initialValue: { number: 0, currency: 'rmb' },
-              rules: [{ validator: this.checkPrice }],
-            })(<PriceInput />)}
-          </Form.Item>
-        //   <Form.Item>
-        //     <Button type="primary" htmlType="submit">
-        //       Submit
-        //     </Button>
-        //   </Form.Item>
-        // </Form>
-      );
-    }
-  }
-  
-  const Eco_Input = Form.create({ name: 'customized_form_controls' })(Eco_Demo);
-//经济输入框结束
-
-
-
-//select开始
-function onChange_0(value) {
-  console.log(`selected ${value}`);
-}
-
-function onBlur() {
-  console.log('blur');
-}
-
-function onFocus() {
-  console.log('focus');
-}
-
-function onSearch(val) {
-  console.log('search:', val);
-}
-//select结束
-
-
-  const { TextArea } = Input;
-
-  const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
-  
-  function onChange(date, dateString) {
-    console.log(date, dateString);
-  }
-  
-  class Demo extends React.Component {
-    handleSubmit = e => {
-      e.preventDefault();
-      this.props.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-        }
-      });
-    };
-  
-    normFile = e => {
-      console.log('Upload event:', e);
-      if (Array.isArray(e)) {
-        return e;
-      }
-      return e && e.fileList;
-    };
+    // normFile = e => {
+    //   console.log('Upload event:', e);
+    //   if (Array.isArray(e)) {
+    //     return e;
+    //   }
+    //   return e && e.fileList;
+    // };
   
     render() {
       const { getFieldDecorator } = this.props.form;
@@ -189,77 +59,110 @@ function onSearch(val) {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 },
       };
+
+
+      
+
+
+
       return (
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="事故类型ID">
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Select a ID"
-            optionFilterProp="id"
-            onChange={onChange_0}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onSearch={onSearch}
-            filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            >
-            <Option value="jack">123456</Option>
-            <Option value="lucy">456123</Option>
-            <Option value="tom">486532</Option>
-            </Select>
-
+          {getFieldDecorator('id', {
+              rules: [{ required: true, message: '请选择事故类型!' }],
+            })(
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Select a ID"
+                optionFilterProp="id"
+                // onChange={onChange_0}
+                // onFocus={onFocus}
+                // onBlur={onBlur}
+                // onSearch={onSearch}
+                filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                >
+                <Option value="1">类型一</Option>
+                <Option value="2">类型一</Option>
+                <Option value="3">类型一</Option>
+              </Select>,
+            )}
+            
           </Form.Item>
+          
           <Form.Item label="事故名称">
-            <Input placeholder="" />
-          </Form.Item>
-          <Form.Item label="事故发生地点">
-            <Input placeholder="" />
-          </Form.Item>
-          <Form.Item label="事故发生时间">
-            <DatePicker onChange={onChange} />
-          </Form.Item>
-          <Form.Item label="事故处理状态">
-            {getFieldDecorator('radio-group')(
-              <Radio.Group>
-                <Radio value="a">item 1</Radio>
-                <Radio value="b">item 2</Radio>
-                <Radio value="c">item 3</Radio>
-              </Radio.Group>,
+            {getFieldDecorator('name', {
+              rules: [{ required: true, message: '请输入事故名称!' }],
+            })(
+              <Input placeholder="" />,
             )}
           </Form.Item>
-          <Form.Item label="事故性质">
-            {getFieldDecorator('checkbox-group', {
-              initialValue: ['A', 'B'],
+          <Form.Item label="事故发生地点">
+            {getFieldDecorator('place', {
+              rules: [{ required: true, message: '请输入事故地点!' }],
             })(
-              <Checkbox.Group style={{ width: '100%' }}>
-                <Row>
-                  <Col span={8}>
-                    <Checkbox value="A">A</Checkbox>
-                  </Col>
-                  <Col span={8}>
-                    <Checkbox disabled value="B">
-                      B
-                    </Checkbox>
-                  </Col>
-                  <Col span={8}>
-                    <Checkbox value="C">C</Checkbox>
-                  </Col>
-                  <Col span={8}>
-                    <Checkbox value="D">D</Checkbox>
-                  </Col>
-                  <Col span={8}>
-                    <Checkbox value="E">E</Checkbox>
-                  </Col>
-                </Row>
-              </Checkbox.Group>,
+              <Input placeholder="" />,
+            )}
+          </Form.Item>
+          <Form.Item label="事故发生时间">
+            {getFieldDecorator('date', {
+              rules: [{ required: true, message: '请确定事故发生时间!' }],
+            })(
+              <DatePicker />,
+            )}
+          </Form.Item>
+          <Form.Item label="事故处理状态">
+            {getFieldDecorator('status', {
+                rules: [{ required: true, message: '请选择事故处理状态!' }],
+              })(
+                <Radio.Group>
+                <Radio value="a">待处理</Radio>
+                <Radio value="b">处理中</Radio>
+                <Radio value="c">已处理</Radio>
+              </Radio.Group>,
+              )}
+          </Form.Item>
+          <Form.Item label="事故性质">
+            {getFieldDecorator('nature', {
+               rules: [{ required: true, message: '请选择事故性质!' }],
+            })(
+              <Radio.Group>
+                <Radio value="自然事故">自然事故</Radio>
+                <Radio value="技术事故">技术事故</Radio>
+                <Radio value="责任事故">责任事故</Radio>
+              </Radio.Group>,
+              // <Checkbox.Group style={{ width: '100%' }}>
+              //   <Row>
+              //     <Col span={8}>
+              //       <Checkbox value="A">A</Checkbox>
+              //     </Col>
+              //     <Col span={8}>
+              //       <Checkbox disabled value="B">
+              //         B
+              //       </Checkbox>
+              //     </Col>
+              //     <Col span={8}>
+              //       <Checkbox value="C">C</Checkbox>
+              //     </Col>
+              //     <Col span={8}>
+              //       <Checkbox value="D">D</Checkbox>
+              //     </Col>
+              //     <Col span={8}>
+              //       <Checkbox value="E">E</Checkbox>
+              //     </Col>
+              //   </Row>
+              // </Checkbox.Group>,
             )}
           </Form.Item>
 
           <Form.Item label="严重级别">
-            {getFieldDecorator('slider')(
+            {getFieldDecorator('level', {
+               rules: [{ required: true, message: '请选择事故严重级别!' }],
+            })(
               <Slider
+                step={null}
                 marks={{
                   0: 'A',
                   20: 'B',
@@ -272,41 +175,72 @@ function onSearch(val) {
             )}
           </Form.Item>
           <Form.Item label="事故原因">
-            <TextArea rows={4} placeholder="发生事故的原因是。。。" />
+            {getFieldDecorator('reason', {
+               rules: [{ required: true, message: '请输入事故原因!' }],
+            })(
+              <TextArea maxLength={20} rows={4} placeholder="发生事故的原因是。。。" />,
+            )}
           </Form.Item>
 
           {/* 下边这两个经济需要进行区分 */}
           <Form.Item label="直接经济损失">
-            <Eco_Input />
+            {getFieldDecorator('directLoss',{
+              rules:[{ pattern: /^[0-9]+$/ ,message:'只能输入数字' },
+                  { whitespace: true,  message: '不能输入空格',}
+              ]
+            })(
+              <Input
+                type="text"
+                style={{ width: '65%', marginRight: '3%' }}
+              />,
+            )}
+            <span>RMB</span>
           </Form.Item>
           <Form.Item label="间接经济损失">
-            <Eco_Input />
+            {getFieldDecorator('indirectLoss',{
+              rules:[{ pattern: /^[0-9]+$/ ,message:'只能输入数字' },
+                  { whitespace: true,  message: '不能输入空格',}
+              ]
+            })(
+              <Input
+                type="text"
+                style={{ width: '65%', marginRight: '3%' }}
+              />,
+            )}
+            <span>RMB</span>
           </Form.Item>
 
           <Form.Item label="损失工作日">
-            {getFieldDecorator('input-number', { initialValue: 3 })(<InputNumber min={1} max={10} />)}
+            {getFieldDecorator('lossWorkDay', { initialValue: 0 })(<InputNumber min={0} max={999} />)}
             <span className="ant-form-text"> 天</span>
           </Form.Item>
           <Form.Item label="停产小时数">
-            {getFieldDecorator('input-number', { initialValue: 3 })(<InputNumber min={1} max={10} />)}
+            {getFieldDecorator('outageTime', { initialValue: 0 })(<InputNumber min={0} max={999} />)}
             <span className="ant-form-text"> 时</span>
           </Form.Item>
 
           <Form.Item label="事故概况">
-            <Input placeholder="" />
+            {getFieldDecorator('survey')(
+              <Input maxLength={20} placeholder="" />  
+            )}
           </Form.Item>
 
           <Form.Item label="事故原因分析">
-          <TextArea rows={4} placeholder="上边有一个事故原因，这里还有一个分析。。。反正数据库里的字段是有这条的。" />
+            {getFieldDecorator('causeAnalysis')(
+              <TextArea maxLength={20} rows={4} placeholder="事故原因分析...." />
+            )}
           </Form.Item>
 
           <Form.Item label="事故伤害情况">
-            <TextArea rows={4} placeholder="没有情况。。。" />
+            {getFieldDecorator('injure')(
+              <TextArea maxLength={20}  rows={4} placeholder="没有情况。。。" />
+            )}
           </Form.Item>
 
           <Form.Item label="事故损失程度">
-            {getFieldDecorator('slider2')(
+            {getFieldDecorator('lossDegree')(
               <Slider
+                step={null}
                 marks={{
                   0: 'A',
                   20: 'B',
@@ -320,19 +254,27 @@ function onSearch(val) {
           </Form.Item>
 
           <Form.Item label="处理意见">
-            <TextArea rows={4} placeholder="我没有意见。。。" />
+            {getFieldDecorator('resolution')(
+             <TextArea maxLength={20} rows={4} placeholder="我没有意见。。。" />,
+            )}
           </Form.Item>
 
           <Form.Item label="事故教训">
-            <TextArea rows={4} placeholder="教训是。。。" />
+            {getFieldDecorator('lesson')(
+             <TextArea maxLength={20} rows={4} placeholder="教训是。。。" />,
+            )}
           </Form.Item>
 
           <Form.Item label="处理措施">
-            <TextArea rows={4} placeholder="对不起没有处理措施。。。" />
+            {getFieldDecorator('measure')(
+              <TextArea maxLength={20} rows={4} placeholder="对不起没有处理措施。。。" />,
+            )}
           </Form.Item>
 
           <Form.Item label="备注">
-            <TextArea rows={4} placeholder="对不起没有备注。。。" />
+            {getFieldDecorator('remark')(
+              <TextArea maxLength={20} rows={4} placeholder="对不起没有备注。。。" />,
+            )}
           </Form.Item>
   
           <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
@@ -345,7 +287,28 @@ function onSearch(val) {
     }
   }
   
-  const WrappedDemo = Form.create({ name: 'validate_other' })(Demo);
+/**
+ * 将 redux 管理的 state 传给 组件的props
+ */
+const mapStateToForm = (state)=> {
+  return {
+    submitSuccess: state.getIn(['accident','submitSuccess'])
+  }
+};
+
+/**
+ * 将 操作 state的 函数传给组件的props 
+ */
+const mapDispatchToForm = (dispatch)=> {
+  return {
+    changeSubmitSuccess() {
+      dispatch(actionCreator.changeSubmitSuccess(true));
+    }
+  }
+};
+
+const WrappedDemo = connect(mapStateToForm,mapDispatchToForm)(Form.create({ name: 'validate_other' })(Demo));
+
   
 
 
@@ -353,12 +316,20 @@ function onSearch(val) {
 
 class AccidentAdd extends Component {
     render() {
+        const { submitSuccess } = this.props;
+        
+        if(submitSuccess === true) {
+          return <Redirect to="/main/accident/manage" />
+        }else {
+          console.log(submitSuccess,'form xxxxxxx');
+        }
+
         return (
             <div className="page">
                 {/* 导航路径 */}
                 <Breadcrumb className="path">
                     <Breadcrumb.Item>事故管理与统计</Breadcrumb.Item>
-                    <Breadcrumb.Item>添加事故</Breadcrumb.Item>
+                    <Breadcrumb.Item>事故信息管理</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap" >
@@ -369,4 +340,22 @@ class AccidentAdd extends Component {
     }
 }
 
-export default AccidentAdd;
+/**
+ * 将 redux 管理的 state 传给 组件的props
+ */
+const mapState = (state)=> {
+  return {
+    submitSuccess: state.getIn(['accident','submitSuccess'])
+  }
+};
+
+/**
+ * 将 操作 state的 函数传给组件的props 
+ */
+const mapDispatch = (dispatch)=> {
+  return {
+
+  }
+};
+
+export default connect(mapState,mapDispatch)(AccidentAdd);

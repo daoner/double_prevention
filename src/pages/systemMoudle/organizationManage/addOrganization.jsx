@@ -14,7 +14,7 @@ class NormalLoginForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
+      <Form onSubmit={this.handleSubmit} className="login-form" disabled={false}>
         <Form.Item>
           {getFieldDecorator('depName', {
             rules: [{ required: true, message: '请输入部门名字!' }],
@@ -47,7 +47,7 @@ class NormalLoginForm extends React.Component {
         <Form.Item>
           {
             getFieldDecorator('depDesc', {
-                rules:[ { required: true, message: '请输入部门地址'} ],
+                rules:[ { required: true, message: '请输入部门简介'} ],
             })(<Input placeholder="depDesc" />)
           }
         </Form.Item>
@@ -56,6 +56,6 @@ class NormalLoginForm extends React.Component {
   }
 }
 
-const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(NormalLoginForm);
+const WrappedNormalLoginForm = Form.create({ name: 'organization_add' })(NormalLoginForm);
 
 export default WrappedNormalLoginForm;

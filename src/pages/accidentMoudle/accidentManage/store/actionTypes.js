@@ -1,0 +1,1 @@
+export const CHANGE_SUBMIT_SUCCESS = 'accident/change_submit_success';

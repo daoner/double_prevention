@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { actionCreator } from './store';
+
 import { Breadcrumb } from 'antd';
 import './style.css';
 
@@ -91,9 +94,12 @@ class AccidentManage extends Component {
                     size="large"
                     onSearch={value => console.log(value)}
                     />
-                    <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}>
-                     <Link to="/main/accident/manage/add"><Icon type="plus" />添加</Link> 
-                    </Button>
+                    
+                     <Link to="/main/accident/manage/add" onClick={()=>{console.log('link to add page')}}>
+                        <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}>
+                          <Icon type="plus" />添加
+                        </Button>
+                    </Link> 
                     </div>
 
                     <Table
