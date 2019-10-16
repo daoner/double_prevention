@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Breadcrumb } from 'antd';
 import { Redirect } from 'react-router-dom';
 
 import { connect } from 'react-redux';
@@ -8,6 +7,8 @@ import { actionCreator } from './store';
 import './style.css';
 import { formateDate } from '../../../utils/dateUtil';
 import {
+    Breadcrumb,
+    message,
     Form,
     Select,
     InputNumber,
@@ -20,10 +21,22 @@ import {
     Input,
     DatePicker
   } from 'antd';
+import Axios from 'axios';
 const { Option } = Select;
 const { TextArea } = Input;
 
 
+const getLevel = (number)=>{
+    switch(number) {
+      case 0: return 'A';
+      case 20: return 'B';
+      case 40: return 'C';
+      case 60: return 'D';
+      case 80: return 'E';
+      case 100: return 'F';
+      default : return 'A';
+    }
+}
   
 class Demo extends React.Component {
     /**
@@ -33,14 +46,45 @@ class Demo extends React.Component {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
         if (!err) {
+          const id = 'id';  //事故id
+          const accidentType = values.accidentType; //事故类型
+          const name = values.name; //事故名
+          const place = values.place; //事故地点
+          const date = formateDate(new Date(values.date._d),'yyyy-MM-dd hh:mm:ss'); //事故时间
+          const status = values.status;   //事故状态
+          const nature = values.nature;   //事故性质
+          const level = getLevel(values.level); //严重级别
+          const reason = values.reason || '';
+          const directLoss = values.directLoss || 0;
+          const indirectLoss = values.indirectLoss || 0;
+          const lossWorkDay = values.lossWorkDay || 0;
+          const outageTime = values.outageTime || 0;
+          const survey = values.survey || '';
+          const causeAnalysis = values.causeAnalysis || '';
+          const injure = values.injure || '';
+          const lossDegree = getLevel(values.lossDegree) || '';
+          const resolution = values.resolution || '';
+          const lesson = values.lesson || '';
+          const measure = values.measure || '';
+          const remark = values.remark || '';
+
+          Axios.post('/api/accident/insert', {
+
+          }).then(res=>{
+            message.success('添加成功');
+            this.props.changeSubmitSuccess();   //成功了就修改 submitSuccess为true ，这样就返回列表页
+          }).catch(error=>{
+            message.error(error.message || '添加失败');
+          })
+
           console.log('Received values of form: ', values);
         }else {
-          console.log(err,values)
-          console.log(formateDate(new Date(values.date._d),'yyyy-MM-dd hh:mm:ss'))
+          // console.log(err,values)
+          message.info('请填写必要信息!')
         }
       });
 
-      this.props.changeSubmitSuccess();   //成功了就修改 submitSuccess为true ，这样就返回列表页
+      
 
     };
       
@@ -68,7 +112,7 @@ class Demo extends React.Component {
       return (
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="事故类型ID">
-          {getFieldDecorator('id', {
+          {getFieldDecorator('accidentType', {
               rules: [{ required: true, message: '请选择事故类型!' }],
             })(
               <Select
@@ -185,9 +229,7 @@ class Demo extends React.Component {
           {/* 下边这两个经济需要进行区分 */}
           <Form.Item label="直接经济损失">
             {getFieldDecorator('directLoss',{
-              rules:[{ pattern: /^[0-9]+$/ ,message:'只能输入数字' },
-                  { whitespace: true,  message: '不能输入空格',}
-              ]
+              rules:[{ pattern: /^[0-9]+$/,  whitespace: true, message:'只能输入数字' }  ]
             })(
               <Input
                 type="text"
@@ -198,9 +240,7 @@ class Demo extends React.Component {
           </Form.Item>
           <Form.Item label="间接经济损失">
             {getFieldDecorator('indirectLoss',{
-              rules:[{ pattern: /^[0-9]+$/ ,message:'只能输入数字' },
-                  { whitespace: true,  message: '不能输入空格',}
-              ]
+              rules:[{ pattern: /^[0-9]+$/,  whitespace: true, message:'只能输入数字' }  ]
             })(
               <Input
                 type="text"
