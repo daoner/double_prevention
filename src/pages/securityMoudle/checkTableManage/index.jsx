@@ -32,8 +32,8 @@ class CheckTableManage extends Component {
             { 
                 title: '操作', 
                 key: 'action', 
-                render:()=>(<span>
-                    <Tag color="blue">详情</Tag>
+                render:(text,value)=>(<span>
+                    <Tag color="blue" onClick={()=>{console.log(text,value)}}>详情</Tag>
                     <Divider type="vertical" />
                     <Tag colur="yellow">修改</Tag>
                 </span>)

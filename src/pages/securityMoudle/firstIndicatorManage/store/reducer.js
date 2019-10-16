@@ -10,10 +10,23 @@ const defaultState = fromJS({
         showSizeChanger: true,  //是否可以改变pageSize
         showQuickJumper: true, //是否可以快速跳转到某页
     },
+
+    //检查表的id和name ，用于select选择框
+    selectList: [],
+
+    //所属检查表id
+    checkTableId: undefined,
+    //弹出框内容
+    modal_visible: false,   //modal消息框是否显示
+    modal_project: ''       //弹出框的project 项目内容
 });
 
 const reducer = (state=defaultState, action) => {
     switch(action.type) {
+        case actionTypes.CHANGE_MODAL_VISIBLE:
+            return state.set('modal_visible',action.modal_visible); 
+        case actionTypes.CHANGE_SELECT_LIST:
+            return state.set('selectList',fromJS(action.list)); //根据id 更新select的list
         default:
             return state;
     }

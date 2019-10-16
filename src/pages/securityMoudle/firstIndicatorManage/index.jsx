@@ -1,15 +1,24 @@
 import React, { Component } from 'react';
-import { Link }from 'react-router-dom';
-
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { actionCreator } from './store';
 
-import { Table, Button, Icon, Tag, Divider, Input, Breadcrumb, Select } from 'antd';
+import { Table, Button, Icon, Tag, Divider, Input, Breadcrumb, Select, Modal, Form,message } from 'antd';
+import { getSelectList } from './store/actionCreator';
 const Search = Input.Search;
 
 class FirstIndicatorManage extends Component {
 
+    componentDidMount() {
+        this.props.getSelectList();
+    }
+
+
     render() {
+        const { changeModalVisible, modal_visible, modal_project }  = this.props;
+        const { checkTableId } = this.props;
+
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         console.log(this.props, 'fist indicator');
         //table数据
         const dataSource = [
@@ -58,9 +67,57 @@ class FirstIndicatorManage extends Component {
                             enterButton="Search"
                             onSearch={value => console.log(value)}
                         /> */}
-                        <Link>
-                            <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button>
-                        </Link>
+                        <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}} onClick={()=>{changeModalVisible(true)}} >
+                            <Icon type="plus" />添加
+                        </Button>
+                        <Modal 
+                            title='添加一级标准'
+                            confirmLoading={false}
+                            visible={modal_visible}
+                            maskClosable = {false}
+                            onOk={()=>{
+                                this.props.form.validateFields((err, values) => {
+                                    if (!err) {
+                                      console.log('Received values of form: ', values);
+                                      changeModalVisible(false)
+                                      /**
+                                       * 添加一级指标，发送post请求
+                                       */
+                                        axios.post('/api/firstLevelIndicator/insert',{
+                                            checkTableId: checkTableId,
+                                            project: values.project
+                                        }).then(res=>{
+                                            const data = res.data;
+                                            if(data.status === 1) {
+                                                message.success('success');
+                                                changeModalVisible(false)
+                                                this.props.form.resetFields(); //重置表单数据
+                                            }else {
+                                                message.error('添加失败');
+                                            }
+                                        }).catch(error=>{
+                                            message.error(error.message);
+                                        })
+                                    }
+                                });
+                            }}
+                            onCancel={()=>{ //取消按钮响应， 重置表单数据
+                                changeModalVisible(false)
+                                this.props.form.resetFields(); //重置表单数据
+                            }}
+                            afterClose={()=>{console.log('agterClose')}}
+                            width="800px"
+                            >
+                                <Form.Item label="项目">
+                                    {getFieldDecorator('project', {
+                                        rules: [{ required: true,  message: '请输入检查项目!' }],
+                                        initialValue: modal_project
+                                    })(
+                                        <Input placeholder="一级指标项目" />,
+                                    )}
+                                </Form.Item>
+                                
+                        </Modal>
                     </div>
                     <Table
                         className="tableClass"
@@ -76,17 +133,28 @@ class FirstIndicatorManage extends Component {
 //将 store 数据传给组件props
 const mapState = (state)=> {
     return {
-      firstIndicatorList: state.getIn(['firstIndicator','firstIndicatorList']),
-      pagenationProps: state.getIn(['firstIndicator','pagenationProps'])
+        
+
+        firstIndicatorList: state.getIn(['firstIndicator','firstIndicatorList']),
+        pagenationProps: state.getIn(['firstIndicator','pagenationProps']),
+        checkTableId: state.getIn(['firstIndicator','checkTableId']),     //所属检查表的id
+        modal_visible: state.getIn(['firstIndicator','modal_visible']),   
+        modal_project: state.getIn(['firstIndicator','modal_project'])
     }
   };
 
 //将操作store的方法传给组件props
 const mapDispatch = (dispatch)=> {
     return {
-        getFistIndicatorList() {
+        //改变模态框显示与否
+        changeModalVisible(visible) {
+            dispatch(actionCreator.changeModalVisible(visible));
+        },
+        //获取select列表值
+        getSelectList() {
+            dispatch(actionCreator.getSelectList());
         }
     }
 };
 
-export default connect(mapState,mapDispatch)(FirstIndicatorManage);
+export default connect(mapState,mapDispatch)(Form.create({ name: 'firstIndicator' })(FirstIndicatorManage));
