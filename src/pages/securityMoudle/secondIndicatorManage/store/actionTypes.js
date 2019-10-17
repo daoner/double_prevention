@@ -1,0 +1,1 @@
+export const CHANGE_SELECT_FIRSTINDICATOR_LIST = "secondIndicator/change_select_firstIndicator_list";   

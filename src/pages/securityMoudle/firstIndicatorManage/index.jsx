@@ -137,7 +137,9 @@ const mapState = (state)=> {
 
         firstIndicatorList: state.getIn(['firstIndicator','firstIndicatorList']),
         pagenationProps: state.getIn(['firstIndicator','pagenationProps']),
-        checkTableId: state.getIn(['firstIndicator','checkTableId']),     //所属检查表的id
+
+        selectList: state.getIn(['firstIndicator','selectList']),  //选择框的list
+        checkTableId: state.getIn(['firstIndicator','checkTableId']),     //所  属检查表的id
         modal_visible: state.getIn(['firstIndicator','modal_visible']),   
         modal_project: state.getIn(['firstIndicator','modal_project'])
     }

@@ -17,7 +17,10 @@ export const changeModalVisible = (modal_visible)=>({
 export const getSelectList = () => {
     return (dispatch) => {
         axios.get('/api/checkTable/getIdAndNameList').then(res=>{
-            dispatch()
+            const data = res.data;
+            if(data.status === 1) {
+                dispatch(changeSelectList(data.data));
+            }
         }).catch(error=>{
             console.log(`getSelectList error: ${ error.message}`)
         })

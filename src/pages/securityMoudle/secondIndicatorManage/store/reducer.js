@@ -10,10 +10,16 @@ const defaultState = fromJS({
         showSizeChanger: true,  //是否可以改变pageSize
         showQuickJumper: true, //是否可以快速跳转到某页
     },
+
+
+    // 一级标题选择框的列表
+    SelectFirstIndicatorList:[],
 });
 
 const reducer = (state=defaultState, action) => {
     switch(action.type) {
+        case actionTypes.CHANGE_SELECT_FIRSTINDICATOR_LIST: 
+            return state.set('SelectFirstIndicatorList',fromJS(action.list));
         default:
             return state;
     }
