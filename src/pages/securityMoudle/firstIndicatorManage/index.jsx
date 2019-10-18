@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { actionCreator } from './store';
@@ -34,7 +35,9 @@ class FirstIndicatorManage extends Component {
                 title: '操作',
                 key: 'action',
                 render: ()=>(<span>
-                    <Tag color="blue">详情</Tag>
+                    <Link to="/main/firstIndicator/manage/detail">
+                        <Tag color="blue" onClick={()=>{ console.log('跳转到详情') }}>详情</Tag>
+                    </Link>    
                     <Divider type="vertical"/>
                     <Tag color="red">删除</Tag>
                 </span>)
