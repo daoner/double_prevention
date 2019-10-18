@@ -49,7 +49,7 @@ class FirstIndicatorManage extends Component {
                 {/* 导航路径 */}
                 <Breadcrumb className="path">
                     <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>检查标准管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>一级指标管理</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">

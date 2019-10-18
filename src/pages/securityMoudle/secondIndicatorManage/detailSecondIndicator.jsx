@@ -5,9 +5,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Breadcrumb, Form, Input, Button, Radio } from 'antd';
-import './style.css';
 
-class DetailFirstIndicator extends Component {
+class DetailSecondIndicator extends Component {
 
     render() {
         return (
@@ -15,20 +14,20 @@ class DetailFirstIndicator extends Component {
                 {/* 导航路径 */}
                 <Breadcrumb className="path">
                     <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>一级指标管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>指标详情</Breadcrumb.Item>
+                    <Breadcrumb.Item>二级指标管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>标准详情</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
                     <div style={{width:"80%", margin:"0 auto"}}>
                         <Form  labelCol={ {span: 6 }} wrapperCol={{ span: 14 }} disabled>
-                            <Form.Item label="项目id">
+                            <Form.Item label="指标id">
                                 <Input type="number" disabled  value="0001"/>
                             </Form.Item>
-                            <Form.Item label="所属检查表">
+                            <Form.Item label="所属一级指标">
                                 <Input type="text" disabled  value="checktableid 456"/>
                             </Form.Item>
-                            <Form.Item label="项目名">
+                            <Form.Item label="指标内容">
                                 <Input type="text" disabled  value="单位常规制度检查"/>
                             </Form.Item>
                             <Form.Item label="添加时间">
@@ -44,7 +43,7 @@ class DetailFirstIndicator extends Component {
                                 <Input type="text" disabled  value="2019-10-18"/>
                             </Form.Item>
                             <Form.Item wrapperCol={{span: 4, offset:6}}>
-                                <Link to="/main/firstIndicator/manage">
+                                <Link to="/main/secondIndicator/manage">
                                     <Button>返回</Button>
                                 </Link>
                             </Form.Item>
@@ -56,4 +55,4 @@ class DetailFirstIndicator extends Component {
     }
 }
 
-export default DetailFirstIndicator;
+export default DetailSecondIndicator;

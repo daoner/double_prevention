@@ -27,7 +27,9 @@ class SecondIndicatorManage extends Component {
                 title: '操作',
                 key: 'action',
                 render: ()=>(<span>
-                    <Tag color="blue">详情</Tag>
+                    <Link to="/main/secondIndicator/manage/detail">
+                        <Tag color="blue">详情</Tag>
+                    </Link>
                     <Divider type="vertical"/>
                     <Tag color="red">删除</Tag>
                 </span>)
@@ -42,7 +44,7 @@ class SecondIndicatorManage extends Component {
                 {/* 导航路径 */}
                 <Breadcrumb className="path">
                     <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>检查表管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>二级指标管理</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
