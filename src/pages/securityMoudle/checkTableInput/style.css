@@ -1,0 +1,11 @@
+.card-list {
+    list-style: none;
+    width: 80%;
+    margin: 0 auto;   
+}
+.card-list > li {
+    padding: 0;
+    float: left;
+    margin: 20px 30px;
+    width: 300px;
+}

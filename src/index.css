@@ -10,6 +10,10 @@
     margin: 16px 0;
     font-size: 14px;
 }
+*{
+    margin: 0;
+    padding: 0;
+}
 .contentWrap {
     padding: 20px;
     background: #fff;
