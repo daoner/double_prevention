@@ -52,4 +52,26 @@ const changeCheckTalbeList = (list, pageSize, pageNum, total)=> ({
     pageSize,
     pageNum,
     total
-})
+});
+
+/**
+ * 通过检查表id 得到检查表详情简单内容，用于修改
+ * @param {检查表id} id 
+ */
+export const getCheckTableById = (id)=> {
+    return (dispatch) => {
+        axios.get('/api/checkTable/getContent').then(res=>{
+
+        }).catch(error=>{
+
+        });
+    }
+}
+
+/**
+ * 
+ * @param {checktable 详情} checktable 
+ */
+const changeCheckTalbeDetail = (checktable)=>{
+
+}

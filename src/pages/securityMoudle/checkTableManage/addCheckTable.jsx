@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { actionCreator } from './store';
 
 import { Redirect } from 'react-router-dom';
-import { Form, Icon, Input, Button, Checkbox, Breadcrumb, message } from 'antd';
+import { Form, Icon, Input, Button, Radio, Breadcrumb, message } from 'antd';
 import axios from 'axios';
 
 class NormalLoginForm extends Component {
@@ -51,76 +51,80 @@ class NormalLoginForm extends Component {
     }
 
 
-  render() {
-    const { getFieldDecorator } = this.props.form;
-    const formItemLayout = {
-        labelCol: { span: 6 },
-        wrapperCol: { span: 14 },
-    };
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        const formItemLayout = {
+            labelCol: { span: 6 },
+            wrapperCol: { span: 14 },
+        };
 
 
-    // 是否禁用表单
-    const formDisabled = false;
-    // 提交成功的话，重定向到列表界面
-    const { submitSuccess } = this.props;
-    if(submitSuccess) {
-        return <Redirect to="/main/checktable/manage" />
+        // 是否禁用表单
+        const formDisabled = false;
+        // 提交成功的话，重定向到列表界面
+        const { submitSuccess } = this.props;
+        if(submitSuccess) {
+            return <Redirect to="/main/checktable/manage" />
+        }
+
+
+        return (
+            <div className="page">
+                {/* 导航路径 */}
+                <Breadcrumb className="path">
+                    <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>检查表管理</Breadcrumb.Item>
+                </Breadcrumb>
+                {/* 内容区域 */}
+                <div className="contentWrap" style={{paddingTop: "50px"}}>
+                    <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                        <Form.Item label="检查表名">
+                        {getFieldDecorator('name', {
+                            rules: [{ required: true, message: '请输入检查表名!' }],
+                        })(
+                            <Input placeholder="检查表名" disabled={formDisabled}/>,
+                        )}
+                        </Form.Item>
+                        <Form.Item label="检查表编号">
+                        {getFieldDecorator('identifier', {
+                            rules: [{ required: true, message: '请输入检查表编号!' }],
+                        })(
+                            <Input placeholder="编号"  disabled={formDisabled} />,
+                        )}
+                        </Form.Item>
+
+                        <Form.Item label="检查表类型">
+                        {getFieldDecorator('type', {
+                            rules: [{ required: true,  message: '请输入检查表类型!' }]
+                        })(
+                            <Radio.Group>
+                                <Radio value="设计审查检用安全检查表">设计审查检用安全检查表</Radio>
+                                <Radio value="厂级安全检查表">厂级安全检查表</Radio>
+                                <Radio value="车间安全检查表">车间安全检查表</Radio>
+                                <Radio value="工段及岗位安全检查表">工段及岗位安全检查表</Radio>
+                                <Radio value="专业性安全检查表">专业性安全检查表</Radio>
+                            </Radio.Group>,
+                        )}
+                        </Form.Item>
+
+                        <Form.Item label="所属部门">
+                        {getFieldDecorator('depId', {
+                            rules: [{ required: true,  message: '请选择部门!' }],
+                        })(
+                            <Input placeholder="所属部门"  disabled={formDisabled} />,
+                        )}
+                        </Form.Item>
+
+                        <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+                            <Button type="primary" htmlType="submit" disabled={formDisabled}>
+                            提交
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </div> 
+        );
     }
-
-
-    return (
-        <div className="page">
-            {/* 导航路径 */}
-            <Breadcrumb className="path">
-                <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
-                <Breadcrumb.Item>检查表管理</Breadcrumb.Item>
-            </Breadcrumb>
-            {/* 内容区域 */}
-            <div className="contentWrap" style={{paddingTop: "50px"}}>
-                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-                    <Form.Item label="检查表名">
-                    {getFieldDecorator('name', {
-                        rules: [{ required: true, message: '请输入检查表名!' }],
-                    })(
-                        <Input placeholder="检查表名" disabled={formDisabled}/>,
-                    )}
-                    </Form.Item>
-                    <Form.Item label="检查表编号">
-                    {getFieldDecorator('identifier', {
-                        rules: [{ required: true, message: '请输入检查表编号!' }],
-                    })(
-                        <Input placeholder="编号"  disabled={formDisabled} />,
-                    )}
-                    </Form.Item>
-
-                    <Form.Item label="检查表类型">
-                    {getFieldDecorator('type', {
-                        rules: [{ required: true,  message: '请输入检查表类型!' }]
-                    })(
-                        <Input placeholder="检查表类型"  disabled={formDisabled} />,
-                    )}
-                    </Form.Item>
-
-                    <Form.Item label="所属部门">
-                    {getFieldDecorator('depId', {
-                        rules: [{ required: true,  message: '请选择部门!' }],
-                    })(
-                        <Input placeholder="所属部门"  disabled={formDisabled} />,
-                    )}
-                    </Form.Item>
-
-                    <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-                        <Button type="primary" htmlType="submit" disabled={formDisabled}>
-                        提交
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-        </div> 
-         
-      
-    );
-  }
 }
 
 

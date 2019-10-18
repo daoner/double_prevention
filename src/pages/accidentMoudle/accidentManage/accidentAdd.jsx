@@ -166,9 +166,9 @@ class Demo extends React.Component {
                 rules: [{ required: true, message: '请选择事故处理状态!' }],
               })(
                 <Radio.Group>
-                <Radio value="a">待处理</Radio>
-                <Radio value="b">处理中</Radio>
-                <Radio value="c">已处理</Radio>
+                <Radio value="待处理">待处理</Radio>
+                <Radio value="处理中">处理中</Radio>
+                <Radio value="已处理">已处理</Radio>
               </Radio.Group>,
               )}
           </Form.Item>
