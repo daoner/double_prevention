@@ -46,7 +46,7 @@ import HiddenTroubleStatic from '../securityMoudle/hiddentTroubleStatic';
 import AddCheckTable from '../securityMoudle/checkTableManage/addCheckTable';
 import DetailFirstIndicator from '../securityMoudle/firstIndicatorManage/detailFirstIndicator'; //引入一级检查表细节
 import DetailSecondIndicator from '../securityMoudle/secondIndicatorManage/detailSecondIndicator'; //引入二级检查指标细节
-
+import AddCheckTableResult from '../securityMoudle/checkTableInput/addCheckResult'; //引入添加检查结果的表单
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -105,7 +105,7 @@ class Main extends Component {
               <Route exact path="/main/firstIndicator/manage" component={ FirstIndicatorManage } />
               <Route exact path="/main/secondIndicator/manage" component={ SecondIndicatorManage } />
 
-              <Route path="/main/checktable/Input" component={ CheckTableInput } />
+              <Route exact path="/main/checktable/Input" component={ CheckTableInput } />
               <Route path="/main/checktable/result" component={ CheckResultManage } />
               <Route path="/main/hiddentTrouble/manage" component={ HiddenTroubleManage } />
 
@@ -116,6 +116,7 @@ class Main extends Component {
               
               <Route exact path="/main/firstIndicator/manage/detail" component={DetailFirstIndicator} />   {/* 一级指标细节 */}
               <Route exact path="/main/secondIndicator/manage/detail" component={DetailSecondIndicator} /> {/* 二级指标细节 */} 
+              <Route exact path="/main/checktable/Input/add" component={AddCheckTableResult} />
 
               {/* 系统管理 */}
               <Route path="/main/manage/user" component={UserManage} />

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Breadcrumb, Card, Icon } from 'antd';
 
 import './style.css';
@@ -20,7 +21,7 @@ class CheckTableInput extends Component {
                                 cover={ <img alt="name" src={imgURL} /> }
                                 actions={[
                                     <span key='detail'><Icon type="info-circle" />详情</span>,
-                                    <span key='edit'><Icon type="edit"/>录入</span>,
+                                    <Link to="/main/checktable/Input/add"><span key='edit'><Icon type="edit"/>录入</span></Link>,
                                 ]}
                             >
                                 <Card.Meta
