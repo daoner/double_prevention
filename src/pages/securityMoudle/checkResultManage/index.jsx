@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Breadcrumb, Table, Divider, Tag, Input} from 'antd';
-
+import { Breadcrumb, Table, Divider, Tag, Input, Modal, message} from 'antd';
+import axios from 'axios';
 
  /**
  * 安全检查结果管理  查询 、详细、修改、删除、批量导出
@@ -43,6 +43,48 @@ const dataSource = [
 ];
 
 class CheckResultManage extends Component {
+    constructor(props){
+        super(props);
+
+        this.deleteItem = this.deleteItem.bind(this);
+    }
+
+
+    /**
+     * 删除列表某项记录
+     * @param {删除项} text 
+     */
+    deleteItem(text) {
+        // const { pagenationProps, getUserList } = this.props;
+
+        Modal.confirm({
+            title: '确定删除该项吗?',
+            okText: 'Yes',
+            okType: 'danger',
+            okButtonProps: {
+              disabled: false,
+            },
+            cancelText: 'No',
+            onOk() {
+              axios.post('url',{ // 发送请求删除项目
+                // userId: text.userId
+              }).then(res=>{
+                if(res.data.status === 1) {
+                    message.success('删除成功！',2);
+                    //更新显示列表
+                    //发送请求，获取数据列表
+                }
+              }).catch(error=> {
+                message.error(error.message);
+              });
+              console.log('OK,发送异步请求');
+            }
+        });
+    }
+
+
+
+
     render() {
         const ccc = [
             {
@@ -73,7 +115,7 @@ class CheckResultManage extends Component {
                         <Tag color="blue" onClick={()=>{ console.log('跳转到详情') }}>详情</Tag>
                     </Link>    
                     <Divider type="vertical"/>
-                    <Tag color="red">删除</Tag>
+                    <Tag color="red" onClick={()=>{this.deleteItem(text)}}>删除</Tag>
                     <Divider type="vertical"/>
                     <Tag color="red">修改</Tag>
                 </span>)
