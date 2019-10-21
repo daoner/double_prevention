@@ -5,14 +5,48 @@ import { connect } from 'react-redux';
 import { actionCreator } from './store';
 
 import { Table, Button, Icon, Tag, Divider, Input, Breadcrumb, Select, Modal, Form,message } from 'antd';
-import { getSelectList } from './store/actionCreator';
-const Search = Input.Search;
 
 class FirstIndicatorManage extends Component {
+
+    constructor(props) {
+        super(props); 
+
+        this.deleteItem = this.deleteItem.bind(this);
+    }
 
     componentDidMount() {
         this.props.getSelectList();
     }
+
+     /**
+     * 删除列表某项记录
+     * @param {删除项} text 
+     */
+    deleteItem(text) {
+        Modal.confirm({
+            title: '确定删除该项吗?',
+            okText: 'Yes',
+            okType: 'danger',
+            okButtonProps: {
+              disabled: false,
+            },
+            cancelText: 'No',
+            onOk() {
+              axios.post('/url',{
+                id: text.id
+              }).then(res=>{
+                console.log(res);
+                message.success('删除成功！',2);
+              }).catch(error=> {
+                message.error(error.message);
+              });
+              console.log('OK,发送异步请求');
+               //这里删除item
+            }
+          });
+      }
+
+
 
 
     render() {
@@ -34,12 +68,12 @@ class FirstIndicatorManage extends Component {
             {
                 title: '操作',
                 key: 'action',
-                render: ()=>(<span>
+                render: (value)=>(<span>
                     <Link to="/main/firstIndicator/manage/detail">
                         <Tag color="blue" onClick={()=>{ console.log('跳转到详情') }}>详情</Tag>
                     </Link>    
                     <Divider type="vertical"/>
-                    <Tag color="red">删除</Tag>
+                    <Tag color="red"onClick={(value)=>{this.deleteItem(value)}} >删除</Tag>
                 </span>)
             }
         ];

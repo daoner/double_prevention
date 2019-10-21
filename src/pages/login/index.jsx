@@ -12,23 +12,6 @@ import storage from '../../utils/storageUtil';
 import { Form, Icon, Input, Button, Checkbox ,message } from 'antd';
 
 
-/**
- * 将 redux 管理的 state 传给 组件的props
- */
-const mapState = (state)=> {
-  return {
-
-  }
-};
-
-/**
- * 将 操作 state的 函数传给组件的props 
- */
-const mapDispatch = (dispatch)=> {
-  return {
-
-  }
-};
 
 class Login extends Component {
   constructor(props) {
@@ -63,11 +46,14 @@ class Login extends Component {
         axios.get('/api/login').then( res=> {
           const data = res.data;
           if(data.status === 1 ) {
-            message.success('登陆成功',this.changeSubmitabl);
+            message.success('登陆成功',this.changeSubmitable);
             memeryUtil.user['id'] = data.data.id;
             this.setState({
               logined: true
             });
+
+            storage.saveUser(memeryUtil.user);  //将user存在storage中
+
           }else {
             message.error(data.message,this.changeSubmitable);
           }

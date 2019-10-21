@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+
 import { connect } from 'react-redux';
-import {  Table, Divider, Breadcrumb ,Button, Icon,Tag, Modal,
-    Form,  Input,  Checkbox 
+import {  Table,  Breadcrumb ,Button, Icon,Tag, Modal,
+         message 
 } from 'antd';
 import './style.css';
 
@@ -51,8 +53,7 @@ const columns = [
 //删除这里相应
 function deleteItem(text){
     Modal.confirm({
-        title: 'Are you sure delete this task?',
-        content: 'Some descriptions',
+        title: '确定删除该部门吗?',
         okText: 'Yes',
         okType: 'danger',
         okButtonProps: {
@@ -61,6 +62,14 @@ function deleteItem(text){
         cancelText: 'No',
         onOk() {
           console.log('OK,发送异步请求');
+          axios.post('/api/deportment/delete',{deptId: text.deptId}).then(res=>{
+              if(res.data.status === 1) {
+                message.success('删除成功',2);
+
+              }
+          }).catch(error=>{
+              message.error(error.message,2);
+          })
         },
         onCancel() {
           console.log('Cancel');

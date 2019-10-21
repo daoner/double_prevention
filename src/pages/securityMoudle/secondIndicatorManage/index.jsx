@@ -1,14 +1,49 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 //引入store
 import { connect } from 'react-redux';
 import { actionCreator as firstIndicatorActions } from '../firstIndicatorManage/store';   //引入一下一级检查表中的方法，用于获取checktable的select信息
 import { actionCreator } from './store';
 
-import { Table, Button, Icon, Tag, Divider,  Breadcrumb, Select } from 'antd';
+import { Table, Button, Icon, Tag, Divider,  Breadcrumb, Select, Modal, message } from 'antd';
 
 class SecondIndicatorManage extends Component {
+    constructor(props) {
+        super(props)
+
+        this.deleteItem = this.deleteItem.bind(this);
+    }
     
+     /**
+     * 删除列表某项记录
+     * @param {删除项} text 
+     */
+    deleteItem(text) {
+        Modal.confirm({
+            title: '确定删除该项吗?',
+            okText: 'Yes',
+            okType: 'danger',
+            okButtonProps: {
+              disabled: false,
+            },
+            cancelText: 'No',
+            onOk() {
+              axios.post('/url',{
+                id: text.id
+              }).then(res=>{
+                console.log(res);
+                message.success('删除成功！',2);
+              }).catch(error=> {
+                message.error(error.message);
+              });
+              console.log('OK,发送异步请求');
+               //这里删除item
+            }
+          });
+      }
+
+      
 
     render() {
         console.log(this.props,'second indicator')
@@ -26,12 +61,12 @@ class SecondIndicatorManage extends Component {
             {
                 title: '操作',
                 key: 'action',
-                render: ()=>(<span>
+                render: (value)=>(<span>
                     <Link to="/main/secondIndicator/manage/detail">
                         <Tag color="blue">详情</Tag>
                     </Link>
                     <Divider type="vertical"/>
-                    <Tag color="red">删除</Tag>
+                    <Tag color="red" onClick={(value)=>{this.deleteItem(value)}}>删除</Tag>
                 </span>)
             }
         ];

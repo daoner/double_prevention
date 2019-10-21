@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Table, Breadcrumb, Select, Divider, Tag } from 'antd';
-
+import axios from 'axios';
+import { Table, Breadcrumb, Select, Divider, Tag, message, Modal } from 'antd';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actionCreator } from './store';
 
@@ -47,11 +48,37 @@ class HiddenTroubleManage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-          type: 1,  //隐患类型
-          dataList: []  //隐患列表
-        }
+
+        this.withDraw = this.withDraw.bind(this);
     }
+
+     /**
+     * 撤回整改信息
+     * @param {撤回} text 
+     */
+    withDraw(text) {
+      Modal.confirm({
+          title: '确定撤回该整改通知？',
+          okText: 'Yes',
+          okType: 'danger',
+          okButtonProps: {
+            disabled: false,
+          },
+          cancelText: 'No',
+          onOk() {
+            axios.post('/url',{
+              id: text.id
+            }).then(res=>{
+              console.log(res);
+              message.success('撤回成功！',2);
+            }).catch(error=> {
+              message.error(error.message,2);
+            });
+             //这里删除item
+          }
+        });
+    }
+
 
 
     render() { 
@@ -89,7 +116,9 @@ class HiddenTroubleManage extends Component {
                 <Tag color="blue" onClick={()=>{console.log(text,value)}}>详情</Tag>
                 
                 { value.status === '未整改' ? (
-                    <span><Divider type="vertical" /><Tag colur="yellow">下发整改</Tag></span>) : (null) 
+                    <span><Divider type="vertical" />
+                        <Link to="/main/hiddentTrouble/manage/toRectify/10"><Tag colur="yellow">下发整改</Tag></Link>
+                    </span>) : (null) 
                 }
                 {
                   value.status === '整改中' ? (
@@ -98,7 +127,14 @@ class HiddenTroubleManage extends Component {
                 
                 {
                   value.status === '整改中' || value.status === '已逾期' ? (
-                    <span><Divider type="vertical" /><Tag colur="yellow">撤回</Tag></span>) : (null) 
+                    <span><Divider type="vertical" />
+                        <Tag colur="yellow" 
+                          onClick={(value)=>{
+                             this.withDraw(value);
+                          }}>
+                          撤回
+                        </Tag>
+                    </span>) : (null) 
                 }
             </span>)
           }
@@ -132,7 +168,7 @@ class HiddenTroubleManage extends Component {
                             onSearch={value => console.log(value)}
                         /> */}
                     </div>
-                    <Table className="tableClass" bordered={true} columns={columns} dataSource={JStableList} pagenationProps={JSpagenationProps} />
+                    <Table className="tableClass" bordered={true} columns={columns} dataSource={data} pagenationProps={JSpagenationProps} />
                 </div>
             </div>
         )
