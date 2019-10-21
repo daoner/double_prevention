@@ -13,7 +13,10 @@ const Search = Input.Search;
 class CheckTableManage extends Component {
 
     componentDidMount() {
-        this.props.getCheckTableList();
+        const { pagenationProps , getCheckTableList }  = this.props;
+        const pageSize = pagenationProps.get('pageSize');
+        const current = pagenationProps.get('current');
+        getCheckTableList();
     }
 
     render() {
@@ -21,6 +24,10 @@ class CheckTableManage extends Component {
         const { checkTableList, pagenationProps}  = this.props;  //immutable对象
         const data = checkTableList.toJS();
         const JSpagenationProps = pagenationProps.toJS();
+
+        //设置换页的回调
+        JSpagenationProps.onChange = this.props.handleChangePage;  
+        JSpagenationProps.onShowSizeChange =  this.props.handleChangePage;
 
 
         //table列属性
@@ -33,7 +40,7 @@ class CheckTableManage extends Component {
                 title: '操作', 
                 key: 'action', 
                 render:(text,value)=>(<span>
-                    <Tag color="blue" onClick={()=>{console.log(text,value)}}>详情</Tag>
+                    <Link to="/main/checktable/manage/detail"><Tag color="blue">详情</Tag></Link>
                     <Divider type="vertical" />
                     <Tag colur="yellow">修改</Tag>
                 </span>)
@@ -86,9 +93,14 @@ const mapState = (state)=> {
 //将操作store的方法传给组件props
 const mapDispatch = (dispatch)=> {
     return {
-        getCheckTableList() {
-            dispatch(actionCreator.getCheckTableList());
-        }
+        getCheckTableList(pageSize,pageNum) {
+            dispatch(actionCreator.getCheckTableList(pageSize,pageNum));
+        },
+
+
+        handleChangePage(current,pageSize) {
+            dispatch(actionCreator.getCheckTableList(pageSize,current));
+        },
     }
 };
 

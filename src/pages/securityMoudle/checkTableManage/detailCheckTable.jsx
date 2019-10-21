@@ -5,9 +5,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Breadcrumb, Form, Input, Button, Radio } from 'antd';
-import './style.css';
 
-class DetailFirstIndicator extends Component {
+class DetailCheckTable extends Component {
 
     render() {
         return (
@@ -15,21 +14,27 @@ class DetailFirstIndicator extends Component {
                 {/* 导航路径 */}
                 <Breadcrumb className="path">
                     <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>一级指标管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>指标详情</Breadcrumb.Item>
+                    <Breadcrumb.Item>检查表管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>检查表详情</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
                     <div style={{width:"80%", margin:"50px auto"}}>
                         <Form  labelCol={ {span: 6 }} wrapperCol={{ span: 14 }} disabled>
-                            <Form.Item label="项目id">
+                            <Form.Item label="检查表id">
                                 <Input type="number" disabled  value="0001"/>
                             </Form.Item>
-                            <Form.Item label="所属检查表">
-                                <Input type="text" disabled  value="checktableid 456"/>
+                            <Form.Item label="检查表名">
+                                <Input type="text" disabled  value="一个简单的检查表"/>
                             </Form.Item>
-                            <Form.Item label="项目名">
-                                <Input type="text" disabled  value="单位常规制度检查"/>
+                            <Form.Item label="检查表编号">
+                                <Input type="text" disabled  value="007"/>
+                            </Form.Item>
+                            <Form.Item label="检查表类别">
+                                <Input type="text" disabled  value="定期检查表"/>
+                            </Form.Item>
+                            <Form.Item label="所属部门">
+                                <Input type="text" disabled  value="编辑部"/>
                             </Form.Item>
                             <Form.Item label="添加时间">
                                 <Input type="text" disabled  value="2019-10-18"/>
@@ -44,7 +49,7 @@ class DetailFirstIndicator extends Component {
                                 <Input type="text" disabled  value="2019-10-18"/>
                             </Form.Item>
                             <Form.Item wrapperCol={{span: 4, offset:6}}>
-                                <Link to="/main/firstIndicator/manage">
+                                <Link to="/main/checktable/manage">
                                     <Button>返回</Button>
                                 </Link>
                             </Form.Item>
@@ -56,4 +61,4 @@ class DetailFirstIndicator extends Component {
     }
 }
 
-export default DetailFirstIndicator;
+export default DetailCheckTable;

@@ -44,6 +44,7 @@ import HiddenTroubleManage from '../securityMoudle/hiddenTroubleManage';
 import HiddenTroubleStatic from '../securityMoudle/hiddentTroubleStatic';
 
 import AddCheckTable from '../securityMoudle/checkTableManage/addCheckTable';
+import DetailCheckTable from '../securityMoudle/checkTableManage/detailCheckTable'; //引入检查表详情
 import DetailFirstIndicator from '../securityMoudle/firstIndicatorManage/detailFirstIndicator'; //引入一级检查表细节
 import DetailSecondIndicator from '../securityMoudle/secondIndicatorManage/detailSecondIndicator'; //引入二级检查指标细节
 import AddCheckTableResult from '../securityMoudle/checkTableInput/addCheckResult'; //引入添加检查结果的表单
@@ -112,8 +113,9 @@ class Main extends Component {
               <Route exact path="/main/hiddentTrouble/statistic" component={ HiddenTroubleStatic } />
 
 
-              <Route path="/main/checktable/manage/add" component={AddCheckTable} /> {/* 添加检查表  */}
+              <Route exact path="/main/checktable/manage/add" component={AddCheckTable} /> {/* 添加检查表  */}
               
+              <Route exact path="/main/checktable/manage/detail" component={DetailCheckTable} /> {/* 检查表细节  */}
               <Route exact path="/main/firstIndicator/manage/detail" component={DetailFirstIndicator} />   {/* 一级指标细节 */}
               <Route exact path="/main/secondIndicator/manage/detail" component={DetailSecondIndicator} /> {/* 二级指标细节 */} 
               <Route exact path="/main/checktable/Input/add" component={AddCheckTableResult} />

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {  actionCreator } from './store';
-import { Breadcrumb, Table, Tag,  Modal, message } from 'antd';
+import { Breadcrumb, Table, Tag,  Modal, message,Button, Icon } from 'antd';
 
 import axios from 'axios';
 import './style.css';
@@ -89,7 +89,10 @@ class RoleManage extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <Table bordered pagenation={JSpagenationProps} columns={columns} dataSource={data} />
+                    <div style={{width: "90%", margin: "0 auto"}}>
+                        <Button type="primary" className="button" ><Icon type="plus"/>添加</Button>
+                    </div>
+                    <Table className="tableClass" bordered pagenation={JSpagenationProps} columns={columns} dataSource={data} />
                 </div>
             </div>
         )

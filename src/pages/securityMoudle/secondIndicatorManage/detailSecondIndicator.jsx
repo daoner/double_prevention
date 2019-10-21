@@ -19,7 +19,7 @@ class DetailSecondIndicator extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <div style={{width:"80%", margin:"0 auto"}}>
+                    <div style={{width:"80%", margin:"50px auto"}}>
                         <Form  labelCol={ {span: 6 }} wrapperCol={{ span: 14 }} disabled>
                             <Form.Item label="指标id">
                                 <Input type="number" disabled  value="0001"/>

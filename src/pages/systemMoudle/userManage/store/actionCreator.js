@@ -5,11 +5,21 @@ import axios from 'axios';
 /**
  * 对外接口，发送ajax请求 然后改变列表
  */
-export const getUserList = ()=>{
+export const getUserList = (pageSize, current)=>{
     return (dispatch)=> {
-        console.log("???")
-        axios.get('/api/user/getList').then(res=>{
-            console.log(res);
+        axios.get(`/api/user/getList?pageNum=${current}&pageSize=${pageSize}`).then(res=>{
+            const data =res.data;
+            //成功之后
+            if(data.status === 1) {
+                dispatch(changeUserList(
+                    data.data.list,
+                    data.data.pageSize,
+                    data.data.pageNum,
+                    data.data.total))
+            }else {
+                console.log(data.message);
+            }
+            
         }).catch(error => {
             console.log(error);
         })

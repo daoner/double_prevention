@@ -4,11 +4,13 @@ import axios from 'axios';
 
 
 /**
- * 对外接口，发送请求获取checkTable列表信息
+ * 更新显示列表
+ * @param {每页条数} pageSize 
+ * @param {当前页号} pageNum 
  */
-export const getCheckTableList = () => {
+export const getCheckTableList = (pageSize,pageNum) => {
     return (dispatch) => {
-        axios.get('api/checkTable/getList').then(res=>{
+        axios.get(`api/checkTable/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
             console.log(res)
             const data = res.data;
             if(data.status === 1) {  //返回成功
