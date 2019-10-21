@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Breadcrumb, Table, Divider, Tag, Input} from 'antd';
 
-/**
+ /**
  * 安全检查结果管理  查询 、详细、修改、删除、批量导出
  */
 
@@ -67,8 +67,8 @@ class CheckResultManage extends Component {
             {
                 title: '操作',
                 key: 'action',
-                render: ()=>(<span>
-                    <Link to="/main/firstIndicator/manage/detail">
+                render: (text,value)=>(<span>
+                    <Link>
                         <Tag color="blue" onClick={()=>{ console.log('跳转到详情') }}>详情</Tag>
                     </Link>    
                     <Divider type="vertical"/>
