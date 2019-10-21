@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Breadcrumb, Table, Divider, Tag, Input} from 'antd';
 
+
  /**
  * 安全检查结果管理  查询 、详细、修改、删除、批量导出
  */
@@ -103,5 +104,7 @@ class CheckResultManage extends Component {
         )
     }
 }
+
+
 
 export default CheckResultManage;

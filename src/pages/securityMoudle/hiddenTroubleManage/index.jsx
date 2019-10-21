@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { Table, Breadcrumb, Select, Divider, Tag } from 'antd';
 
+import { connect } from 'react-redux';
+import { actionCreator } from './store';
 
-const dataSource = [
+const data = [
     {
         key: '1',
         id: '0001',
         checkPeople: '胡彦斌',
         checkedDep: '1号矿井',
         checkTime: '西湖区湖底公园1号',
-        status: '未整改'
+        status: '未整改',
+        isFile:true
     },
     {
       key: '2',
@@ -51,7 +54,11 @@ class HiddenTroubleManage extends Component {
     }
 
 
-    render() {
+    render() { 
+        const { getTableList } = this.props;    //方法
+        const { tableList, pagenationProps } = this.props;  //属性
+        const JStableList = tableList.toJS();
+        const JSpagenationProps = pagenationProps.toJS();
 
       const columns = [
           {
@@ -60,19 +67,20 @@ class HiddenTroubleManage extends Component {
             key: 'id',
           },
           {
-            title: '检查人',
-            dataIndex: 'checkPeople',
-            key: 'checkPeople',
+            title: '隐患分类',
+            dataIndex: 'type',
+            key: 'type',
           },
           {
-            title: '被检单位',
-            dataIndex: 'checkedDep',
-            key: 'checkedDep',
+            title: '内容',
+            dataIndex: 'content',
+            key: 'content',
           },
           {
-            title: '检查时间',
-            dataIndex: 'checkTime',
-            key: 'checkTime',
+            title: '是否归档',
+            dataIndex: 'isFile',
+            key: 'isFile',
+            render:(text)=>{return text?<span>是</span>:<span>否</span>}
           },
           {
             title: '操作',
@@ -110,7 +118,7 @@ class HiddenTroubleManage extends Component {
                             size="large"
                             style={{ width: 200, display:"inline-block",margin: "20px 0" }}
                             placeholder="Select a checktable"
-                            onChange={(e,v)=>{console.log('selet change ',e)}}
+                            onChange={(value,e)=>{getTableList(value,JSpagenationProps.current,JSpagenationProps.pageSize)}}
                         >
                             <Select.Option value="未整改">未整改</Select.Option>
                             <Select.Option value="整改中">整改中</Select.Option>
@@ -124,11 +132,33 @@ class HiddenTroubleManage extends Component {
                             onSearch={value => console.log(value)}
                         /> */}
                     </div>
-                    <Table className="tableClass" bordered={true} columns={columns} dataSource={dataSource} />
+                    <Table className="tableClass" bordered={true} columns={columns} dataSource={JStableList} pagenationProps={JSpagenationProps} />
                 </div>
             </div>
         )
     }
 }
 
-export default HiddenTroubleManage;
+
+
+
+//将 store 数据传给组件props
+const mapState = (state)=> {
+  return {
+    tableList: state.getIn(['hiddenTrouble','tableList']),
+    pagenationProps: state.getIn(['hiddenTrouble','pagenationProps']),
+    test: state.getIn(['hiddenTrouble','test'])
+  }
+};
+
+//将操作store的方法传给组件props
+const mapDispatch = (dispatch)=> {
+  return {
+    
+      getTableList(status,current,pageSize){
+          dispatch(actionCreator.getTableList(status,pageSize,current));
+      }
+  }
+};
+
+export default connect(mapState,mapDispatch)(HiddenTroubleManage);

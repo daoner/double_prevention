@@ -11,7 +11,8 @@ import { reducer as checkTableReducer } from  '../pages/securityMoudle/checkTabl
 import { reducer as firstIndicatorReducer } from '../pages/securityMoudle/firstIndicatorManage/store';
 //检查表二级标题的reducer
 import { reducer as secondIndicatorReducer } from '../pages/securityMoudle/secondIndicatorManage/store';
-
+//隐患的reducer
+import { reducer as hiddenTroubleReducer } from '../pages/securityMoudle/hiddenTroubleManage/store';
 
 //事故管理的 reducer
 import { reducer as accidentReducerManage } from '../pages/accidentMoudle/accidentManage/store';
@@ -23,5 +24,6 @@ export default combineReducers({
     checkTable: checkTableReducer,
     firstIndicator: firstIndicatorReducer,
     secondIndicator: secondIndicatorReducer,
-    accident: accidentReducerManage
+    accident: accidentReducerManage,
+    hiddenTrouble: hiddenTroubleReducer
 });
