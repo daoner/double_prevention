@@ -9,3 +9,23 @@
     margin: 20px 30px;
     width: 300px;
 }
+
+
+.first-indicator {
+   width: 50px;
+   height: 100%; 
+   line-height: 25px;
+   float: left;
+   border: 1px solid #000;
+   box-sizing: border-box;
+}
+
+.second-indicator {
+    margin: 0;
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}

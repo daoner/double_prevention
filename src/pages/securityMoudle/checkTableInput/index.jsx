@@ -20,7 +20,7 @@ class CheckTableInput extends Component {
                             <Card 
                                 cover={ <img alt="name" src={imgURL} /> }
                                 actions={[
-                                    <span key='detail'><Icon type="info-circle" />详情</span>,
+                                    <Link to="/main/checktable/Input/detail/1"><span key='detail'><Icon type="info-circle" />详情</span></Link>,
                                     <Link to="/main/checktable/Input/add"><span key='edit'><Icon type="edit"/>录入</span></Link>,
                                 ]}
                             >
