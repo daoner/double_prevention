@@ -113,11 +113,10 @@ class HiddenTroubleManage extends Component {
             title: '操作',
             key: 'action',
             render: (text,value)=>(<span>
-                <Tag color="blue" onClick={()=>{console.log(text,value)}}>详情</Tag>
-                
+                <Link to={`/main/hiddentTrouble/manage/detail/${text.id}`}><Tag color="blue">详情</Tag></Link>
                 { value.status === '未整改' ? (
                     <span><Divider type="vertical" />
-                        <Link to="/main/hiddentTrouble/manage/toRectify/10"><Tag colur="yellow">下发整改</Tag></Link>
+                        <Link to={`/main/hiddentTrouble/manage/toRectify/${text.id}`}><Tag colur="yellow">下发整改</Tag></Link>
                     </span>) : (null) 
                 }
                 {

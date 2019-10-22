@@ -50,6 +50,7 @@ import DetailSecondIndicator from '../securityMoudle/secondIndicatorManage/detai
 import AddCheckTableResult from '../securityMoudle/checkTableInput/addCheckResult'; //引入添加检查结果的表单
 
 import ToRectify from '../securityMoudle/hiddenTroubleManage/toRectify';  //下发整改
+import DetailHiddenTrouble from '../securityMoudle/hiddenTroubleManage/detailHiddenTrouble';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -122,7 +123,8 @@ class Main extends Component {
               <Route exact path="/main/secondIndicator/manage/detail" component={DetailSecondIndicator} /> {/* 二级指标细节 */} 
               <Route exact path="/main/checktable/Input/add" component={AddCheckTableResult} />
 
-              <Route  path="/main/hiddentTrouble/manage/toRectify/:id" component={ToRectify} />{/* 下发整改  */}
+              <Route path="/main/hiddentTrouble/manage/toRectify/:id" component={ToRectify} /> {/* 下发整改  */}
+              <Route path="/main/hiddentTrouble/manage/detail/:id" component={DetailHiddenTrouble} /> {/* 隐患详情 */}
 
               {/* 系统管理 */}
               <Route path="/main/manage/user" component={UserManage} />
