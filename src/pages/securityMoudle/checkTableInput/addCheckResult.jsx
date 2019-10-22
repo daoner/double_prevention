@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Breadcrumb,  Divider, Button, message} from 'antd';
-import { Form, Input, Radio, DatePicker, Switch } from 'antd';
+import { Form, Input, Radio, DatePicker, Switch, Select } from 'antd';
 
 import UpLoad from './upload';
 import { generateUUID } from '../../../utils/UUID';       //生成uuid
@@ -17,34 +17,79 @@ class AddCheckTableResult extends Component {
 
         this.state = {
             ishide: true,
-            mylist: [
-                { 
-                    id: 1, 
-                    project: '日常饮食检查',
-                    list: [
-                        { secondLevelId: 11, content: '西红柿' },
-                        { secondLevelId: 12, content: '吃西红柿' },
-                        { secondLevelId: 13, content: '绝对不吃西红柿' },
-                        { secondLevelId: 14, content: '打死不吃西红柿' }
-                    ]
-                },
-                { 
-                    id: 5, 
-                    project: '环境卫生检查' ,
-                    list: [
-                        { secondLevelId: 21, content: '西红柿' },
-                        { secondLevelId: 22, content: '吃西红柿' },
-                        { secondLevelId: 23, content: '绝对不吃西红柿' },
-                        { secondLevelId: 24, content: '打死不吃西红柿' }
-                    ]
-                }
-            ]
+            mylist: [],
+            allDept:[]
+            // mylist: [
+            //     { 
+            //         id: 1, 
+            //         project: '日常饮食检查',
+            //         list: [
+            //             { secondLevelId: 11, content: '西红柿' },
+            //             { secondLevelId: 12, content: '吃西红柿' },
+            //             { secondLevelId: 13, content: '绝对不吃西红柿' },
+            //             { secondLevelId: 14, content: '打死不吃西红柿' }
+            //         ]
+            //     },
+            //     { 
+            //         id: 5, 
+            //         project: '环境卫生检查' ,
+            //         list: [
+            //             { secondLevelId: 21, content: '西红柿' },
+            //             { secondLevelId: 22, content: '吃西红柿' },
+            //             { secondLevelId: 23, content: '绝对不吃西红柿' },
+            //             { secondLevelId: 24, content: '打死不吃西红柿' }
+            //         ]
+            //     }
+            // ]
         };
 
         this.handleSwitch = this.handleSwitch.bind(this);
         this.getHiddenArea = this.getHiddenArea.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
+    componentDidMount() {
+        /*
+        {
+            "checkTableName": "name",
+            "checkTableId": 1,
+            "firstList": [
+                    {
+                        "firstProject": "你好",
+                        "firstId": 1
+                        "secondList": [
+                        {
+                            "secondId": 2,
+                            "content": "哈哈哈"
+                        }
+                        ],
+                    },
+            ]
+        }
+        */
+        let firstlist;  //检查条目的list
+        let deptlist;   //所有部门的list
+        //获取所有一级和二级的检查条目
+        axios.post('/api/checkTable/getAllInfoById',{ checkTableId: this.props.match.params.id }).then(res=>{
+            firstlist = res.data.firstList
+        }).catch(error=>{
+            message.error(error.message,2);
+        })
+        // 获取所有部门的 id 和 name
+        axios.get('/api/department/getAllDept').then(res=>{
+            if(res.data.status === 1) {
+                deptlist = res.data.list;
+            }
+        }).catch(error=>{
+            message.error(error.message,2);
+        })
+        this.setState({
+            mylist: firstlist || [],
+            allDept: deptlist || []
+        })
+
+    }
+
 
     /**
      * switch响应函数，是否显示隐藏部分
@@ -159,9 +204,9 @@ var data = {
 
                     isHd: values.isHd === undefined ? false : true, //是否由隐患
                     Hd: {
-                        type: values.HDtype,
-                        hPhoto: values.HDphoto,
-                        content: values.HDcontent,
+                        type: values.HDtype || '',
+                        hPhoto: values.HDphoto || '',
+                        content: values.HDcontent || '',
                     },
                     list: [],   //每一项
 
@@ -171,13 +216,13 @@ var data = {
                     for(let j=0; j<mylist[i].list.length; j++, count++){
                         let iname = mylist[i].id + '-' + mylist[i].list[j].secondLevelId;
                         datainfo.list[count] = {
-                            secondLevelid : mylist[i].list[j].secondLevelId,
+                            secondLevelId : mylist[i].list[j].secondLevelId,
                             isqualified: values[iname],
                             desc: ''
                         }
                     }
                 }
-                console.log('???',JSON.stringify(datainfo));
+                // console.log('???',JSON.stringify(datainfo));
                 axios.post('url',{data: JSON.stringify(datainfo) }).then(res=>{
                     if(res.data.status === 1) {
                         message.success('录入成功',2);
@@ -199,7 +244,6 @@ var data = {
      * render
      */
     render() {
-        const mylist = this.state.mylist;
  
 
         const { getFieldDecorator } = this.props.form;
@@ -215,7 +259,7 @@ var data = {
                     
                     <Form labelCol={{span:6}} wrapperCol={{span: 14}} onSubmit={this.handleSubmit} >
                         {
-                            mylist.map((item1)=>(
+                            this.state.mylist.map((item1)=>(
                                 <div>
                                     <Form.Item labelCol={{span:6}} label={item1.project}></Form.Item>
                                     {
@@ -237,21 +281,24 @@ var data = {
                             ))
                         }
 
-
-
-                        <Form.Item label="录入表单id">
-                            {getFieldDecorator('name', {
-                                rules: [{ required: true, message: '请输入事故名称!' }],
+                        <Form.Item label="被检查单位">
+                            {getFieldDecorator('deptedId', {
+                                rules: [{ required: true, message: '请选择被检单位!' }],
                             })(
-                                <Input placeholder="这个使用js生成" />,
+                                <Select
+                                    placeholder="select a deportment"
+                                    // onChange={(e,v)=>{console.log(e,v,'selet change ')}}
+                                >
+                                    {
+                                        this.state.allDept.map(item=>(
+                                            <Select.Option value={item.id}>{item.name}</Select.Option>
+                                        ))
+                                    }
+                                </Select>  
                             )}
                         </Form.Item>
+                         
 
-                        {/* 把表项列出来 */}
-                        {
-                        }
-
-                        
                         {/* 检查类型  */}
                         <Form.Item label="检查类型">
                             {getFieldDecorator('type', {
@@ -265,6 +312,7 @@ var data = {
                                 </Radio.Group>
                             )}
                         </Form.Item>
+                        
                         {/* 最终检查结果 */}
                         <Form.Item label="检查结果">
                             {getFieldDecorator('isqualified', {

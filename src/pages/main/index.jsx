@@ -125,7 +125,7 @@ class Main extends Component {
               <Route exact path="/main/firstIndicator/manage/detail" component={DetailFirstIndicator} />   {/* 一级指标细节 */}
               <Route exact path="/main/secondIndicator/manage/detail" component={DetailSecondIndicator} /> {/* 二级指标细节 */} 
 
-              <Route exact path="/main/checktable/Input/add" component={AddCheckTableResult} /> 
+              <Route path="/main/checktable/Input/add/:id" component={AddCheckTableResult} /> 
               <Route path="/main/checktable/Input/detail/:id" component={DetailCheckInput} /> {/* 检查表模板详情 */} 
 
               <Route path="/main/hiddentTrouble/manage/toRectify/:id" component={ToRectify} /> {/* 下发整改  */}
