@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Carousel  } from 'antd';
 import './style.css';
 
 class Home extends Component {
     render() {
         return (
             <div className="home">
-                <Carousel autoplay>
+                {/* <Carousel autoplay>
                     <div>
                         <h3>1</h3>
                     </div>
@@ -19,7 +18,7 @@ class Home extends Component {
                     <div>
                         <h3>4</h3>
                     </div>
-                </Carousel>
+                </Carousel> */}
             </div>
         )
     }

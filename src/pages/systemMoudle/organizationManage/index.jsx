@@ -168,7 +168,7 @@ class OrganizationManage extends Component {
                     onOk={()=>{
                         this.props.form.validateFields((err, values) => {
                             if (!err) {
-                                console.log('Received values of form: ', values);
+                                // console.log('Received values of form: ', values);
                                 if(this.state.isUpdate) {   //更新
                                     const data = {
                                         deptId:this.state.deptId,
@@ -213,15 +213,17 @@ class OrganizationManage extends Component {
                        
                     }}
                     onCancel={()=>{
-                        // this.setState({  
-                        //     deptId: undefined,
-                        //     deptName: '',
-                        //     deptPhone: '',
-                        //     deptAddress: '',
-                        //     deptDesc: ''
-                        // });
-                        handleHideModal()}}
-                    afterClose={()=>{console.log('agterClose')}}
+                        handleHideModal()
+                    }}
+                    afterClose={()=>{
+                        this.setState({  
+                            deptId: undefined,
+                            deptName: '',
+                            deptPhone: '',
+                            deptAddress: '',
+                            deptDesc: ''
+                        });
+                    }}
                     width="800px"
                     >
                     

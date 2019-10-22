@@ -81,11 +81,11 @@ class Login extends Component {
         const { getFieldDecorator } = this.props.form;
         return (
             <div>
-                {/* <Breadcrumb style={{ margin: '16px 0' }}>
+               {/* <Breadcrumb style={{ margin: '16px 0' }}>
                    <Breadcrumb.Item>login</Breadcrumb.Item>
                    <Breadcrumb.Item>user</Breadcrumb.Item>
                    <Breadcrumb.Item>tom</Breadcrumb.Item>
-                </Breadcrumb> */}
+                </Breadcrumb> */} 
                 <div className="login-page">
                     <div className="meng">
                         <div className="inner">
