@@ -119,7 +119,7 @@ class OrganizationManage extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <div style={{width: "90%", margin: "0 auto"}}>
+                    <div style={{width: "90%", margin: "50px auto 0"}}>
                         <Button type="primary" className="button"  onClick={handleShowModal}><Icon type="plus"/>添加</Button>
                     </div>
                     <Table className="tableClass" bordered rowSelection={rowSelection} pagination={JSpagenationProps} dataSource={jsList} columns={columns} loading={false}/>

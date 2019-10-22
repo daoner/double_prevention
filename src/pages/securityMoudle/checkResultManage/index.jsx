@@ -111,8 +111,8 @@ class CheckResultManage extends Component {
                 title: '操作',
                 key: 'action',
                 render: (text,value)=>(<span>
-                    <Link>
-                        <Tag color="blue" onClick={()=>{ console.log('跳转到详情') }}>详情</Tag>
+                    <Link to={`/main/checktable/result/detail/${text.id}`}>
+                        <Tag color="blue">详情</Tag>
                     </Link>    
                     <Divider type="vertical"/>
                     <Tag color="red" onClick={()=>{this.deleteItem(text)}}>删除</Tag>

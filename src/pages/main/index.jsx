@@ -52,6 +52,7 @@ import AddCheckTableResult from '../securityMoudle/checkTableInput/addCheckResul
 import ToRectify from '../securityMoudle/hiddenTroubleManage/toRectify';  //下发整改
 import DetailHiddenTrouble from '../securityMoudle/hiddenTroubleManage/detailHiddenTrouble';  //隐患详情
 import DetailCheckInput from '../securityMoudle/checkTableInput/detailCheckInput';  //检查表模板详情
+import DetailCheckResult from '../securityMoudle/checkResultManage/detailCheckResult'; //检查结果详情
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -111,7 +112,7 @@ class Main extends Component {
               <Route exact path="/main/secondIndicator/manage" component={ SecondIndicatorManage } />
 
               <Route exact path="/main/checktable/Input" component={ CheckTableInput } />
-              <Route path="/main/checktable/result" component={ CheckResultManage } />
+              <Route exact path="/main/checktable/result" component={ CheckResultManage } />
               <Route exact path="/main/hiddentTrouble/manage" component={ HiddenTroubleManage } />
 
               <Route exact path="/main/hiddentTrouble/statistic" component={ HiddenTroubleStatic } />
@@ -129,6 +130,7 @@ class Main extends Component {
 
               <Route path="/main/hiddentTrouble/manage/toRectify/:id" component={ToRectify} /> {/* 下发整改  */}
               <Route path="/main/hiddentTrouble/manage/detail/:id" component={DetailHiddenTrouble} /> {/* 隐患详情 */}
+              <Route path="/main/checktable/result/detail/:id" component={DetailCheckResult} /> {/* 检查结果详情 */}
 
               {/* 系统管理 */}
               <Route path="/main/manage/user" component={UserManage} />
