@@ -2,17 +2,43 @@
  * 检查结果录入组件
  */
 import React, { Component } from 'react';
+import axios from 'axios';
 import { Breadcrumb,  Divider, Button, message} from 'antd';
 import { Form, Input, Radio, DatePicker, Switch } from 'antd';
 
 import UpLoad from './upload';
+import { generateUUID } from '../../../utils/UUID';       //生成uuid
+import { formateDate } from '../../../utils/dateUtil';
+import memery from '../../../utils/memeryUtil';
 
 class AddCheckTableResult extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            ishide: true
+            ishide: true,
+            mylist: [
+                { 
+                    id: 1, 
+                    project: '日常饮食检查',
+                    list: [
+                        { secondLevelId: 11, content: '西红柿' },
+                        { secondLevelId: 12, content: '吃西红柿' },
+                        { secondLevelId: 13, content: '绝对不吃西红柿' },
+                        { secondLevelId: 14, content: '打死不吃西红柿' }
+                    ]
+                },
+                { 
+                    id: 5, 
+                    project: '环境卫生检查' ,
+                    list: [
+                        { secondLevelId: 21, content: '西红柿' },
+                        { secondLevelId: 22, content: '吃西红柿' },
+                        { secondLevelId: 23, content: '绝对不吃西红柿' },
+                        { secondLevelId: 24, content: '打死不吃西红柿' }
+                    ]
+                }
+            ]
         };
 
         this.handleSwitch = this.handleSwitch.bind(this);
@@ -41,9 +67,13 @@ class AddCheckTableResult extends Component {
                 <div>
                     <Form.Item label="隐患类型">
                         {getFieldDecorator('HDtype', {
-                            rules: [{ required: true, message: '请输入隐患类型!' }],
+                            rules: [{ required: true, message: '请选择隐患类型!' }],
                         })(
-                            <Input maxLength="10" placeholder="隐患类型" />,
+                            <Radio.Group>
+                                <Radio value="普通隐患" >普通隐患</Radio>
+                                <Radio value="重大隐患">重大隐患</Radio>
+                                <Radio value="严重隐患">严重隐患</Radio>
+                            </Radio.Group>
                         )}
                     </Form.Item>
                     <Form.Item label="隐患描述">
@@ -66,15 +96,100 @@ class AddCheckTableResult extends Component {
             )
         }
     }
+/*
+var data = {
+			checktableId: 1,	//模板id
+			inputId：1111111,	//录入表的id
+			list: [
+				{ secondLevelid: 21, isqualified: 1, desc: 说明 },
+				{ secondLevelid: 21, isqualified: 1, desc: 说明 }
+			],
+		1	checkDate: 2019-4-5,
+		1	userName:
+			deptId:
+			deptedId:
+		1	isqualified: 1,
+		1	desc: shuom,
+		1	type:
+		1	otherPerple:
+
+			isHd: true,
+			Hd: {
+				type: 
+                hPhoto:""
+                content:
+                
+				status: "未整改",
+				startDate: 1970-01-01,
+				endDate: 1970-01-01,
+				finishDate: 1970-01-01,
+				rPhoto: "",
+				desc: "描述",
+				isFile: 0,
+				dispatchUserId: uid,
+				dispatchDeptId: 
+				deptId: 222， //负责整改部门
+			}
+		}
 
 
+*/
+
+    /**
+     * 提交表单
+     * @param {} e 
+     */
     handleSubmit(e) {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+                let datainfo = {
+                    checktableId: this.props.match.params.id,  //动态路由获取id
+                    inputId: generateUUID(),    //uuid
+
+                    checkDate: formateDate(new Date(values.checkDate._d),'yyyy-MM-dd'),     //
+                    userName: values.username,  //监察人
+                    deptId: memery.user.deptId, //检查的单位
+                    deptedId: values.deptedId || '',
+                    isqualified: values.isqualified,    //是否合格
+                    desc: values.desc,  //不合格说明
+                    type: values.type,  //检查类型
+                    otherPerson: values.otherPeople,    //参与检查的人
+
+                    isHd: values.isHd === undefined ? false : true, //是否由隐患
+                    Hd: {
+                        type: values.HDtype,
+                        hPhoto: values.HDphoto,
+                        content: values.HDcontent,
+                    },
+                    list: [],   //每一项
+
+                }
+                const mylist = this.state.mylist;
+                for(let i=0, count=0;i<mylist.length;i++){
+                    for(let j=0; j<mylist[i].list.length; j++, count++){
+                        let iname = mylist[i].id + '-' + mylist[i].list[j].secondLevelId;
+                        datainfo.list[count] = {
+                            secondLevelid : mylist[i].list[j].secondLevelId,
+                            isqualified: values[iname],
+                            desc: ''
+                        }
+                    }
+                }
+                console.log('???',JSON.stringify(datainfo));
+                axios.post('url',{data: JSON.stringify(datainfo) }).then(res=>{
+                    if(res.data.status === 1) {
+                        message.success('录入成功',2);
+                        // 跳转。。。
+                    }else {
+                        message.error(res.data.message || '录入失败' , 2);
+                    }
+                }).catch(error=>{
+                    message.error(error.message,2);
+                })
+                
             }else {
-                // console.log(err,values)
                 message.info('请正确填写必要信息!')
             }
         });
@@ -84,28 +199,7 @@ class AddCheckTableResult extends Component {
      * render
      */
     render() {
-        const mylist = [
-            { 
-                id: 1, 
-                project: '日常饮食检查',
-                list: [
-                    { secondLevelId: 11, content: '西红柿' },
-                    { secondLevelId: 12, content: '吃西红柿' },
-                    { secondLevelId: 13, content: '绝对不吃西红柿' },
-                    { secondLevelId: 14, content: '打死不吃西红柿' }
-                ]
-            },
-            { 
-                id: 5, 
-                project: '环境卫生检查' ,
-                list: [
-                    { secondLevelId: 11, content: '西红柿' },
-                    { secondLevelId: 12, content: '吃西红柿' },
-                    { secondLevelId: 13, content: '绝对不吃西红柿' },
-                    { secondLevelId: 14, content: '打死不吃西红柿' }
-                ]
-            }
-        ];
+        const mylist = this.state.mylist;
  
 
         const { getFieldDecorator } = this.props.form;
@@ -118,8 +212,33 @@ class AddCheckTableResult extends Component {
                     <Breadcrumb.Item>检查结果录入</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="contentWrap" >
-                    <Divider type="horizontal">检查结果录入</Divider>
+                    
                     <Form labelCol={{span:6}} wrapperCol={{span: 14}} onSubmit={this.handleSubmit} >
+                        {
+                            mylist.map((item1)=>(
+                                <div>
+                                    <Form.Item labelCol={{span:6}} label={item1.project}></Form.Item>
+                                    {
+                                        item1.list.map(item2 =>(
+                                            <Form.Item labelCol={{span:10}} label={`${item2.content}`}>
+                                                {getFieldDecorator(`${item1.id}-${item2.secondLevelId}`, {
+                                                    rules: [{ required: true, message: '确定是否合格!' }],
+                                                })(
+                                                    <Radio.Group>
+                                                        <Radio value="1">合格</Radio>
+                                                        <Radio value="0">不合格</Radio>
+                                                    </Radio.Group>
+                                                )}
+                                            </Form.Item>
+                                        ))
+                                    }
+                                </div>
+                                
+                            ))
+                        }
+
+
+
                         <Form.Item label="录入表单id">
                             {getFieldDecorator('name', {
                                 rules: [{ required: true, message: '请输入事故名称!' }],
@@ -190,7 +309,7 @@ class AddCheckTableResult extends Component {
 
                         {/* 开关  */}
                         <Form.Item label="是否有隐患">
-                            {getFieldDecorator('switch', { 
+                            {getFieldDecorator('isHd', { 
                                 valuePropName: 'checked' 
                             })(
                                 <Switch checkedChildren="是" unCheckedChildren="否" onChange={this.handleSwitch} />
@@ -217,7 +336,7 @@ export default Form.create({ name: 'checktable_result' })(AddCheckTableResult);
 var data = {
 			checktableId: 1,	//模板id
 			inputId：1111111,	//录入表的id
-			lise: [
+			list: [
 				{ secondLevelid: 21, isqualified: 1, desc: 说明 },
 				{ secondLevelid: 21, isqualified: 1, desc: 说明 }
 			],
