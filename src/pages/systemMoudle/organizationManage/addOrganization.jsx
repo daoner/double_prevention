@@ -14,41 +14,34 @@ class NormalLoginForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form" disabled={false}>
-        <Form.Item>
+      <Form onSubmit={this.handleSubmit} className="login-form" labelCol={{span:4}} wrapperCol={{span:16}}>
+        <Form.Item label="部门名称">
           {getFieldDecorator('depName', {
             rules: [{ required: true, message: '请输入部门名字!' }],
           })(
-            <Input
-              placeholder="depName"
-            />,
+            <Input maxLength="20"/>,
           )}
         </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('depAddress', {
+        <Form.Item label="部门地址">
+          {getFieldDecorator('deptAddress', {
             rules: [{ required: true, message: '请输入部门地址!' }],
           })(
-            <Input
-              placeholder="depAddress"
-            />,
+            <Input maxLength="20"/>,
           )}
         </Form.Item>
 
-        <Form.Item>
-          {getFieldDecorator('depPhone', {
+        <Form.Item label="部门电话">
+          {getFieldDecorator('deptPhone', {
             rules: [{ required: true, message: '请输入部门电话!' }],
           })(
-            <Input
-              placeholder="depPhone"
-            />,
+            <Input maxLength="15" />,
           )}
         </Form.Item>
-
-        <Form.Item>
+        <Form.Item label="部门简介">
           {
-            getFieldDecorator('depDesc', {
+            getFieldDecorator('deptDesc', {
                 rules:[ { required: true, message: '请输入部门简介'} ],
-            })(<Input placeholder="depDesc" />)
+            })(<Input maxLength="20" />)
           }
         </Form.Item>
        </Form>

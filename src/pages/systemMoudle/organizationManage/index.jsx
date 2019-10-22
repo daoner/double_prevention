@@ -3,53 +3,15 @@ import axios from 'axios';
 
 import { connect } from 'react-redux';
 import {  Table,  Breadcrumb ,Button, Icon,Tag, Modal,
-         message 
+         message , Input, Form
 } from 'antd';
 import './style.css';
 
 import { ActionCreator } from './store';
+import { showModal } from './store/actionCreator';
 
-import AddFrom from './addOrganization';
 
-const columns = [
-    { 
-        title: 'depId',
-        dataIndex: 'depId',
-        key: 'depId',
-        // render: text => <Tag color="magenta">{text}</Tag>,
-    },
-    {
-        title: 'depName',
-        dataIndex: 'depName',
-        key: 'depName',
-    },
-    {
-        title: 'depAddress',
-        dataIndex: 'depAddress',
-        key: 'depAddress',
-    },
-    {
-        title: 'depPhone',
-        dataIndex: 'depPhone',
-        key: 'depPhone',
-    },
-    {
-        title: 'depDesc',
-        dataIndex : 'depDesc',
-        key: 'depDesc'
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => { 
-        return (
-        <span>
-            <Tag color="blue" onClick={console.log('xxx')}>修改</Tag>
-            <Tag color="magenta" onClick={()=>{deleteItem(text)}}>删除</Tag>
-        </span>
-        )},
-    },
-];
+
 //删除这里相应
 function deleteItem(text){
     Modal.confirm({
@@ -96,6 +58,18 @@ const rowSelection = {
 
 
 class OrganizationManage extends Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            isUpdate: false,
+            deptId: undefined,
+            deptName: '',
+            deptAddress: '',
+            deptPhone: '',
+            deptDesc:''
+        }
+
+    }
     componentDidMount() {
         this.props.getList();
     }
@@ -110,6 +84,61 @@ class OrganizationManage extends Component {
         JSpagenationProps.onChange = this.props.handleChangePage;   //设置回调
         JSpagenationProps.onShowSizeChange =  this.props.handleChangePage;
 
+
+
+
+        const columns = [
+            { 
+                title: '部门Id',
+                dataIndex: 'deptId',
+                key: 'deptId',
+                // render: text => <Tag color="magenta">{text}</Tag>,
+            },
+            {
+                title: '部门名称',
+                dataIndex: 'deptName',
+                key: 'deptName',
+            },
+            {
+                title: '部门地址',
+                dataIndex: 'deptAddress',
+                key: 'deptAddress',
+            },
+            {
+                title: '部门电话',
+                dataIndex: 'deptPhone',
+                key: 'deptPhone',
+            },
+            {
+                title: '部门简介',
+                dataIndex : 'deptDesc',
+                key: 'deptDesc'
+            },
+            {
+                title: '操作',
+                key: 'action',
+                render: (text, record) => { 
+                return (
+                <span>
+                    <Tag color="blue" onClick={()=>{
+                        console.log(text)
+                        this.setState({
+                            isUpdate:true,
+                            deptId:text.deptId,
+                            deptName: text.deptName,
+                            deptPhone: text.deptPhone,
+                            deptAddress: text.deptAddress,
+                            deptDesc: text.deptDesc
+                        });
+                        handleShowModal()
+                    }}>修改</Tag>
+                    <Tag color="magenta" onClick={()=>{deleteItem(text)}}>删除</Tag>
+                </span>
+                )},
+            },
+        ];
+
+        const { getFieldDecorator } = this.props.form;
         return (
             <div className="page">
                 {/* 导航路径 */}
@@ -120,22 +149,117 @@ class OrganizationManage extends Component {
                 {/* 内容区域 */}
                 <div className="contentWrap">
                     <div style={{width: "90%", margin: "50px auto 0"}}>
-                        <Button type="primary" className="button"  onClick={handleShowModal}><Icon type="plus"/>添加</Button>
+                        <Button type="primary" className="button"  onClick={()=>{
+                             this.setState({
+                                 isUpdate: false,
+                               
+                            });
+                             handleShowModal()}
+                        }>
+                             <Icon type="plus"/>添加</Button>
                     </div>
                     <Table className="tableClass" bordered rowSelection={rowSelection} pagination={JSpagenationProps} dataSource={jsList} columns={columns} loading={false}/>
                 </div>
                 <Modal 
-                    title='标题'
+                    title={this.state.isUpdate?'修改部门':'添加部门'}
                     confirmLoading={false}
                     visible={modal_visible}
                     maskClosable = {false}
-                    onOk={()=>{console.log('ok');handleHideModal()}}
-                    onCancel={()=>{console.log('cancle');handleHideModal()}}
+                    onOk={()=>{
+                        this.props.form.validateFields((err, values) => {
+                            if (!err) {
+                                console.log('Received values of form: ', values);
+                                if(this.state.isUpdate) {   //更新
+                                    const data = {
+                                        deptId:this.state.deptId,
+                                        deptName: values.deptName,
+                                        deptAddress: values.deptAddress,
+                                        deptPhone: values.deptPhone,
+                                        deptDesc: values.deptDesc
+                                    }
+                                    axios.post('api/deportment/update',data).then(res=>{
+                                        if(res.data.status === 1) {
+                                            message.success('修改成功',2);
+                                            handleHideModal(); //成功之后隐藏
+                                        }else {
+                                            message.error(res.data.message,2);
+                                        }
+                                    }).catch(error=>{
+                                        message.error(error.message,2);
+                                    })
+                                }else { //添加
+                                    const data = {
+                                        deptName: values.deptName,
+                                        deptAddress: values.deptAddress,
+                                        deptPhone: values.deptPhone,
+                                        deptDesc: values.deptDesc
+                                    }
+                                    axios.post('api/deportment/insert',data).then(res=>{
+                                        if(res.data.status === 1) {
+                                            message.success('添加成功',2);
+                                            handleHideModal(); //成功之后隐藏
+                                        }else {
+                                            message.error(res.data.message,2);
+                                        }
+                                    }).catch(error=>{
+                                        message.error(error.message,2);
+                                    })
+                                }
+                                // handleHideModal(); //成功之后隐藏
+                            }else {
+                                message.info('请填写必要信息',2);
+                            }
+                        });
+                       
+                    }}
+                    onCancel={()=>{
+                        // this.setState({  
+                        //     deptId: undefined,
+                        //     deptName: '',
+                        //     deptPhone: '',
+                        //     deptAddress: '',
+                        //     deptDesc: ''
+                        // });
+                        handleHideModal()}}
                     afterClose={()=>{console.log('agterClose')}}
                     width="800px"
                     >
                     
-                    <AddFrom />
+                    <Form onSubmit={this.handleSubmit} className="login-form" labelCol={{span:4}} wrapperCol={{span:16}}>
+                        <Form.Item label="部门名称">
+                        {getFieldDecorator('deptName', {
+                            initialValue: this.state.deptName,
+                            rules: [{ required: true, message: '请输入部门名字!' }],
+                        })(
+                            <Input maxLength="20" />,
+                        )}
+                        </Form.Item>
+                        <Form.Item label="部门地址">
+                        {getFieldDecorator('deptAddress', {
+                            initialValue: this.state.deptAddress,
+                            rules: [{ required: true, message: '请输入部门地址!' }],
+                        })(
+                            <Input maxLength="20"/>,
+                        )}
+                        </Form.Item>
+
+                        <Form.Item label="部门电话">
+                        {getFieldDecorator('deptPhone', {
+                            initialValue: this.state.deptPhone,
+                            rules: [{ required: true, message: '请输入部门电话!' }],
+                        })(
+                            <Input maxLength="15" />,
+                        )}
+                        </Form.Item>
+                        <Form.Item label="部门简介">
+                        {
+                            getFieldDecorator('deptDesc', {
+                                initialValue: this.state.deptDesc,
+                                rules:[ { required: true, message: '请输入部门简介'} ],
+                            })(<Input maxLength="20" />)
+                        }
+                        </Form.Item>
+                    </Form>
 
                 </Modal>
             </div>
@@ -171,4 +295,4 @@ const mapDispatch = (dispatch)=> {
         }
     }
   }
-export default connect(mapState,mapDispatch)(OrganizationManage);
+export default connect(mapState,mapDispatch)(Form.create({ name: 'organization_form' })(OrganizationManage));
