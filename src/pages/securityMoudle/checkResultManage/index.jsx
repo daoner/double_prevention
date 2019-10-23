@@ -70,7 +70,7 @@ class CheckResultManage extends Component {
     getTableList(pageSize, pageNum) {
       axios.get(`/api/input/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
         const data =res.data;
-        if(res.status === 1) {
+        if(data.status === 1) {
             this.setState({
                 tableList: data.data.list,
                 pagenationProps: {
@@ -213,7 +213,7 @@ class CheckResultManage extends Component {
                             onSearch={value => console.log(value)}
                         />
                     </div>
-                    <Table className="tableClass" bordered columns={ccc} dataSource={dataSource} pagination={pagination} />
+                    <Table className="tableClass" bordered columns={ccc} dataSource={tableList} pagination={pagination} />
                 </div>
             </div>
         )

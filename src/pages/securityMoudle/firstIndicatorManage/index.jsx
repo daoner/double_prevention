@@ -14,11 +14,21 @@ class FirstIndicatorManage extends Component {
  
      
         this.deleteItem = this.deleteItem.bind(this);
+        this.handleUpdateTable = this.handleUpdateTable.bind(this); //添加 删除成功后更新列表显示
     }
 
     componentDidMount() {
 
         this.props.getSelectList();
+    }
+
+    /**
+     * 更新显示列表
+     */
+    handleUpdateTable() {
+        let { checkTableId, pagenationProps ,getFirstList } = this.props;
+        const JSpagenationProps = pagenationProps.toJS();   
+        getFirstList(checkTableId,JSpagenationProps.pageSize, JSpagenationProps.current);
     }
 
      /**
@@ -44,6 +54,7 @@ class FirstIndicatorManage extends Component {
               }).then(res=>{
                 // console.log(res);
                 message.success('删除成功！',2);
+                this.handleUpdateTable();
               }).catch(error=> {
                 message.error(error.message);
               });
@@ -153,6 +164,7 @@ class FirstIndicatorManage extends Component {
                                                 message.success('添加成功');
                                                 changeModalVisible(false)
                                                 this.props.form.resetFields(); //重置表单数据
+                                                this.handleUpdateTable();
                                             }else {
                                                 message.error('添加失败');
                                             }
@@ -166,7 +178,6 @@ class FirstIndicatorManage extends Component {
                                 changeModalVisible(false)
                                 this.props.form.resetFields(); //重置表单数据
                             }}
-                            afterClose={()=>{console.log('agterClose')}}
                             width="800px"
                             >
                                 <Form.Item label="项目">

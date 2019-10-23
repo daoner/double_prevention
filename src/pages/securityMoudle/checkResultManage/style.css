@@ -1,0 +1,25 @@
+.result-table {
+    margin: 0 auto 50px;
+    width: 80%;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 1px #ccc;
+   
+}
+
+.result-table td {
+    height: 50px;
+    text-align: center;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 1px #ccc;
+}
+
+.result-table caption {
+    color: #666;
+    font-size: 20px;
+    text-align: center;
+    caption-side: top;
+}
+/* .first-indicator {
+} */

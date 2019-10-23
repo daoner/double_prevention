@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, message } from 'antd';
+import axios from 'axios';
 
 // 引入 ECharts 主模块
 import echarts from 'echarts';
@@ -9,77 +10,133 @@ import echarts from 'echarts';
 
 
 
-const data = [
-    [
-        {value:335, name:'a类安全隐患'},
-        {value:310, name:'较大事故隐患'},
-        {value:234, name:'a类安全隐患'},
-        {value:135, name:'b类安全隐患'},
-        {value:1048, name:'百度'},
-        {value:102, name:'其他'}
-    ],
-    [
-        {value:1, name:'a类安全隐患'},
-        {value:2, name:'较大事故隐患'},
-        {value:2, name:'a类安全隐患'},
-        {value:3, name:'b类安全隐患'},
-        {value:4, name:'百度'},
-        {value:5, name:'其他'}
-    ],
-    [
-        {value:10, name:'a类安全隐患'},
-        {value:20, name:'较大事故隐患'},
-        {value:30, name:'a类安全隐患'},
-        {value:40, name:'b类安全隐患'},
-        {value:50, name:'百度'},
-        {value:60, name:'其他'}
-    ],
-    [
-        {value:7, name:'a类安全隐患'},
-        {value:7, name:'较大事故隐患'},
-        {value:7, name:'a类安全隐患'},
-        {value:7, name:'b类安全隐患'},
-        {value:7, name:'百度'},
-        {value:7, name:'其他'}
-    ]
-]
+// const data = [
+//     [
+//         {value:335, name:'一般隐患'},
+//         {value:310, name:'较大隐患'},
+//         {value:234, name:'严重隐患'},
+//     ],
+//     [
+//         {value:1, name:'一般隐患'},
+//         {value:2, name:'较大隐患'},
+//         {value:2, name:'严重隐患'},
+//         {value:3, name:'b类安全隐患'},
+//         {value:4, name:'百度'},
+//         {value:5, name:'其他'}
+//     ],
+//     [
+//         {value:10, name:'一般隐患'},
+//         {value:20, name:'较大隐患'},
+//         {value:30, name:'严重隐患'},
+//         {value:40, name:'b类安全隐患'},
+//         {value:50, name:'百度'},
+//         {value:60, name:'其他'}
+//     ],
+//     [
+//         {value:7, name:'a类安全隐患'},
+//         {value:7, name:'较大事故隐患'},
+//         {value:7, name:'a类安全隐患'},
+//         {value:7, name:'b类安全隐患'},
+//         {value:7, name:'百度'},
+//         {value:7, name:'其他'}
+//     ]
+// ]
 
 class HiddenTroubleStatic extends Component {
     constructor(props) {
         super(props);
         this.state = {
             myChart: null,
-            data1:[
-                {value:679, name:'未整改'},
-                {value:335, name:'已整改'},
-                {value:679, name:'整改中'},
-                {value:1548, name:'已逾期'}
-            ],
-            data2:[]
+            lastName: '',  //上一次点击的图标位置
+            isAll: true,
+            data1:[],
+            data2:[],
+            total:[],
+            data:[],
+
         }
-        this.chartClick = this.chartClick.bind(this);
+        //绑定this
+        this.chartClick = this.chartClick.bind(this);       //图标点击
     }
 
     componentDidMount() {
-     
         var myChart = echarts.init(document.getElementById('chart'));
         this.setState({
             myChart
         })
         
+        axios.get('/api/input/getNumberHiddenDanger').then(res=>{
+            if(res.data.status === 1) {
+                let data1 = [];
+                let data2 = [];
+                for(let i=0; i<res.data.data.length;i++) {
+                    data1.push({
+                        value: res.data.data[i].total,
+                        name: res.data.data[i].hdStatus
+                    });
+                    data2.push(res.data.data[i].list);
+                }
+                let total = [
+                    { value: res.data.totalYB, name: '一般隐患' },
+                    { value: res.data.totalJD, name: '较大隐患' },
+                    { value: res.data.totalYZ, name: '严重隐患' }
+                ];
+
+                // console.log(data1);
+                // console.log(data);
+                // console.log(total);
+                this.setState({
+                    data1: data1,
+                    total: total,
+                    data: data2
+                })
+               
+                // let totalYB = 0;
+                // let totalJD = 0;
+                // let totalYZ = 0;
+                // for(let i=0; i<data2.length;i++) {
+                //     for(let j=0; j<data2[i].length;j++) {
+
+                //     }
+                // }
+
+
+            }else {
+                message.error( res.data.message || '获取数据失败')
+            }
+        }).catch(error=>{
+            message.error(error.message);
+        })
 
       
         myChart.on('click',this.chartClick)
     }
 
     chartClick(parama) {
+        // console.log(parama)
         const data1 = this.state.data1;
         data1.forEach((item,index)=>{   
             if(item.name === parama.data.name){
-                console.log('update')
-                this.setState({
-                    data2: data[index]
-                })
+                if(parama.data.name == this.state.lastName) {   //点了同一个
+                    if(this.state.isAll){
+                        this.setState({
+                            isAll: !this.state.isAll,
+                            data2: this.state.data[index]
+                        })
+                    }else {
+                        this.setState({
+                            isAll: !this.state.isAll,
+                            data2: this.state.total
+                        })
+                    }
+                    
+                }else {
+                    this.setState({
+                        isAll: false,
+                        data2: this.state.data[index],
+                        lastName: parama.data.name
+                    })
+                }
             }
         })
       
@@ -102,7 +159,7 @@ class HiddenTroubleStatic extends Component {
             legend: {
                 orient: 'vertical',
                 x: 'left',
-                data:['未整改','已整改','整改中','已逾期','','a类安全隐患','较大事故隐患','a类安全隐患','b类安全隐患','百度','其他']
+                data:['未整改','已整改','整改中','已逾期','','一般隐患','较大隐患','严重隐患']
             },
             //系列列表。每个系列通过 type 决定自己的图表类型
             series: [   
@@ -122,12 +179,7 @@ class HiddenTroubleStatic extends Component {
                     //         show: false
                     //     }
                     // },
-                    data:[
-                        {value:679, name:'未整改'},
-                        {value:335, name:'已整改'},
-                        {value:679, name:'整改中'},
-                        {value:1548, name:'已逾期'}
-                    ]
+                    data:this.state.data1
                 },
                 {
                     name:'隐患类型',
@@ -145,7 +197,7 @@ class HiddenTroubleStatic extends Component {
                                 {@[n]}：数据中维度n的值，如{@[3]}` 表示维度 3 的值，从 0 开始计数。
                             */
                             // '{b:c} {d}'
-                            formatter:  '{a|{b}:{c} {d}}',
+                            formatter:  '{a|{b}:{c} {d}%}',
                             // '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
                             backgroundColor: '#eee',
                             borderColor: '#aaa',
@@ -160,7 +212,7 @@ class HiddenTroubleStatic extends Component {
                                 a: {
                                     color: '#999',
                                     lineHeight: 22,
-                                    align: 'center'
+                                    align: 'center',
                                 },
                                 // abg: {
                                 //     backgroundColor: '#333',

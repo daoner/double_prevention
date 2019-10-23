@@ -20,6 +20,13 @@ export const getTableList = (status,pageSize,pageNum) => {
                     data.data.pageSize,
                     data.data.pageNum
                 ))
+            }else {
+                dispatch(changeTableList(
+                    [],
+                    0,
+                    5,
+                    1
+                ))
             }
         }).catch(error=>{
             message.error(error.message);

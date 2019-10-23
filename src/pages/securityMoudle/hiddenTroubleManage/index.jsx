@@ -75,14 +75,14 @@ class HiddenTroubleManage extends Component {
           },
           cancelText: 'No',
           onOk() {
-            axios.post('/url',Qs.stringify({
-              id: text.id
-            }),{
-                headers: {
-                  'Content-Type':'application/x-www-form-urlencoded;'
+            axios.get(`/api/input/withdrawHD?hiddenDangerId=${text.id}`).then(res=>{
+                if(res.data.status === 1) {
+                  message.success(res.data.message || '撤回成功！',2);
+                  const {  pagenationProps } = this.props;  //属性
+                  this.handleChangePage(pagenationProps.get('current'),pagenationProps.get('pageSize'));
+                }else {
+                  message.error(res.data.message || '撤回失败！',2);
                 }
-            }).then(res=>{
-              message.success('撤回成功！',2);
             }).catch(error=> {
               message.error(error.message,2);
             });
@@ -152,7 +152,7 @@ class HiddenTroubleManage extends Component {
                   value.status === '整改中' || value.status === '已逾期' ? (
                     <span><Divider type="vertical" />
                         <Tag color="red" 
-                          onClick={(value)=>{
+                          onClick={()=>{
                              this.withDraw(value);
                           }}>
                           撤回
@@ -181,7 +181,7 @@ class HiddenTroubleManage extends Component {
                                 this.setState({
                                     type: value //将选中的类型存储起来
                                 })
-                                getTableList(value,JSpagenationProps.pageSize,JSpagenationProps.current)
+                                getTableList(value,5,1)
                             }}
                         >
                             <Select.Option value="未整改">未整改</Select.Option>

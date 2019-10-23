@@ -63,7 +63,7 @@ class DetailHiddenTrouble extends Component {
                                 <Input type="text" disabled  value={hdDetail.type}/>
                             </Form.Item>
                             <Form.Item label="隐患图片">
-                                <img src={hdDetail.hPhoto} styel={{maxWidth:"400px", maxHeight:"400px"}} alt="隐患图片" />
+                                <img src={hdDetail.hPhoto} style={{maxWidth:"400px", maxHeight:"400px"}} alt="隐患图片" />
                                 {/* <Input type="text" disabled  value="图片显示"/> */}
                             </Form.Item>
                             <Form.Item label="整改状态">
