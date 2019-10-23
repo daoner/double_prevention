@@ -19,30 +19,30 @@ class AddCheckTableResult extends Component {
 
         this.state = {
             ishide: true,
-            // mylist: [],
+            mylist: [],
             allDept:[],
-            mylist: [
-                { 
-                    id: 1, 
-                    project: '日常饮食检查',
-                    secondList: [
-                        { secondLevelId: 11, content: '西红柿' },
-                        { secondLevelId: 12, content: '吃西红柿' },
-                        { secondLevelId: 13, content: '绝对不吃西红柿' },
-                        { secondLevelId: 14, content: '打死不吃西红柿' }
-                    ]
-                },
-                { 
-                    id: 5, 
-                    project: '环境卫生检查' ,
-                    secondList: [
-                        { secondLevelId: 21, content: '西红柿' },
-                        { secondLevelId: 22, content: '吃西红柿' },
-                        { secondLevelId: 23, content: '绝对不吃西红柿' },
-                        { secondLevelId: 24, content: '打死不吃西红柿' }
-                    ]
-                }
-            ]
+            // mylist: [
+            //     { 
+            //         id: 1, 
+            //         project: '日常饮食检查',
+            //         secondList: [
+            //             { secondLevelId: 11, content: '西红柿' },
+            //             { secondLevelId: 12, content: '吃西红柿' },
+            //             { secondLevelId: 13, content: '绝对不吃西红柿' },
+            //             { secondLevelId: 14, content: '打死不吃西红柿' }
+            //         ]
+            //     },
+            //     { 
+            //         id: 5, 
+            //         project: '环境卫生检查' ,
+            //         secondList: [
+            //             { secondLevelId: 21, content: '西红柿' },
+            //             { secondLevelId: 22, content: '吃西红柿' },
+            //             { secondLevelId: 23, content: '绝对不吃西红柿' },
+            //             { secondLevelId: 24, content: '打死不吃西红柿' }
+            //         ]
+            //     }
+            // ]
         };
 
         this.handleSwitch = this.handleSwitch.bind(this);
@@ -108,8 +108,8 @@ class AddCheckTableResult extends Component {
                             rules: [{ required: true, message: '请选择隐患类型!' }],
                         })(
                             <Radio.Group>
-                                <Radio value="普通隐患" >普通隐患</Radio>
-                                <Radio value="重大隐患">重大隐患</Radio>
+                                <Radio value="一般隐患">一般隐患</Radio>
+                                <Radio value="较大隐患">较大隐患</Radio>
                                 <Radio value="严重隐患">严重隐患</Radio>
                             </Radio.Group>
                         )}

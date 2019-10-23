@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Qs from 'qs';
 import { Table, Breadcrumb, Select, Divider, Tag, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -58,6 +59,7 @@ class HiddenTroubleManage extends Component {
         this.withDraw = this.withDraw.bind(this);
         this.handleChangePage = this.handleChangePage.bind(this);   //换页
     }
+    
 
      /**
      * 撤回整改信息
@@ -73,8 +75,12 @@ class HiddenTroubleManage extends Component {
           },
           cancelText: 'No',
           onOk() {
-            axios.post('/url',{
+            axios.post('/url',Qs.stringify({
               id: text.id
+            }),{
+                headers: {
+                  'Content-Type':'application/x-www-form-urlencoded;'
+                }
             }).then(res=>{
               message.success('撤回成功！',2);
             }).catch(error=> {
@@ -91,7 +97,7 @@ class HiddenTroubleManage extends Component {
      * @param {*} pageSize 
      */
     handleChangePage(pageNum,pageSize) {
-
+        this.props.getTableList(this.state.type, pageSize, pageNum);
     }
 
 
@@ -100,6 +106,8 @@ class HiddenTroubleManage extends Component {
         const { tableList, pagenationProps } = this.props;  //属性
         const JStableList = tableList.toJS();
         const JSpagenationProps = pagenationProps.toJS();
+        JSpagenationProps.onChange = this.handleChangePage;
+        JSpagenationProps.onShowSizeChange = this.handleChangePage;
 
       const columns = [
           {
@@ -135,7 +143,9 @@ class HiddenTroubleManage extends Component {
                 }
                 {
                   value.status === '整改中' ? (
-                    <span><Divider type="vertical" /><Tag >整改完成</Tag></span>) : (null) 
+                    <span><Divider type="vertical" />
+                    <Link to={`/main/hiddentTrouble/manage/rectify/${text.id}`}><Tag>整改完成</Tag></Link>
+                    </span>) : (null) 
                 }
                 
                 {
@@ -186,7 +196,7 @@ class HiddenTroubleManage extends Component {
                             onSearch={value => console.log(value)}
                         /> */}
                     </div>
-                    <Table className="tableClass" bordered={true} columns={columns} dataSource={data} pagination={JSpagenationProps} />
+                    <Table className="tableClass" bordered={true} columns={columns} dataSource={JStableList} pagination={JSpagenationProps} />
                 </div>
             </div>
         )
@@ -208,7 +218,7 @@ const mapState = (state)=> {
 const mapDispatch = (dispatch)=> {
   return {
     
-      getTableList(status,current,pageSize){
+      getTableList(status,pageSize,current){
           dispatch(actionCreator.getTableList(status,pageSize,current));
       }
   }

@@ -17,6 +17,10 @@ import { reducer as hiddenTroubleReducer } from '../pages/securityMoudle/hiddenT
 //事故管理的 reducer
 import { reducer as accidentReducerManage } from '../pages/accidentMoudle/accidentManage/store';
 
+
+//风险管理的reducer
+import { reducer as riskManageReducer} from '../pages/riskMoudle/riskManage/store';
+
 export default combineReducers({
     organization: organizationReducer,
     role: roleReducer,
@@ -25,5 +29,6 @@ export default combineReducers({
     firstIndicator: firstIndicatorReducer,
     secondIndicator: secondIndicatorReducer,
     accident: accidentReducerManage,
-    hiddenTrouble: hiddenTroubleReducer
+    hiddenTrouble: hiddenTroubleReducer,
+    risk: riskManageReducer
 });

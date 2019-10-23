@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Breadcrumb, Table, Divider, Tag, Input, Modal, message} from 'antd';
 import axios from 'axios';
+import Qs from 'qs';
 
  /**
  * 安全检查结果管理  查询 、详细、修改、删除、批量导出
@@ -45,10 +46,52 @@ const dataSource = [
 class CheckResultManage extends Component {
     constructor(props){
         super(props);
+        this.state = {
+            tableList: [],
+            pagenationProps: {
+                pageSize: 5,
+                current: 1,
+                total: 0,
+                showSizeChanger: true,  //是否可以改变pageSize
+                showQuickJumper: true, //是否可以快速跳转到某页
+            }
+        }
 
+        //绑定this
         this.deleteItem = this.deleteItem.bind(this);
+        this.getTableList = this.getTableList.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
     }
 
+    componentDidMount() {
+        this.getTableList(5,1);
+    }
+
+    getTableList(pageSize, pageNum) {
+      axios.get(`/api/input/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
+        const data =res.data;
+        if(res.status === 1) {
+            this.setState({
+                tableList: data.data.list,
+                pagenationProps: {
+                    pageSize: data.data.pageSize,
+                    current: data.data.pageNum,
+                    total: data.data.total,
+                    showSizeChanger: true,  //是否可以改变pageSize
+                    showQuickJumper: true, //是否可以快速跳转到某页
+                }
+            })
+        }else {
+            message.info(data.message || '信息获取失败');
+        }
+    }).catch(error=>{
+        message.error(error.message);
+    })
+    }
+
+    handleChangePage(pageNum, pageSize) {
+       this.getTableList(pageSize,pageNum);
+    }
 
     /**
      * 删除列表某项记录
@@ -73,6 +116,7 @@ class CheckResultManage extends Component {
                     message.success('删除成功！',2);
                     //更新显示列表
                     //发送请求，获取数据列表
+                    this.getTableList(this.state.pagenationProps.pageSize, this.state.pagenationProps.pageNum);
                 }
               }).catch(error=> {
                 message.error(error.message);
@@ -86,6 +130,14 @@ class CheckResultManage extends Component {
 
 
     render() {
+
+        const tableList = this.state.tableList;
+
+        let pagination = this.state.pagenationProps;
+        pagination.onShowSizeChanger = this.handleChangePage;
+        pagination.onChange = this.handleChangePage;
+
+
         const ccc = [
             {
                 title: 'ID',
@@ -93,19 +145,40 @@ class CheckResultManage extends Component {
                 key: 'id',
               },
               {
-                title: '检查人',
-                dataIndex: 'checkPeople',
-                key: 'checkPeople',
+                title: '检查表明',
+                dataIndex: 'checkTableName',
+                key: 'checkTableName',
               },
               {
-                title: '被检单位',
-                dataIndex: 'checkedDep',
-                key: 'checkedDep',
+                title: '检查部门',
+                dataIndex: 'deptName',
+                key: 'deptName',
               },
               {
-                title: '检查时间',
-                dataIndex: 'checkTime',
-                key: 'checkTime',
+                title: '检查日期',
+                dataIndex: 'checkDate',
+                key: 'checkDate',
+              },
+              {
+                title: '检查类型',
+                dataIndex: 'type',
+                key: 'type',
+              },
+              {
+                title: '是否合格',
+                dataIndex: 'isQulified',
+                key: 'isQulified',
+                render: (text)=>{}
+              },
+              {
+                title: '不合格说明',
+                dataIndex: 'desc',
+                key: 'desc',
+              },
+              {
+                title:'参检人',
+                dataIndex: 'otherPerson',
+                key:'otherPerson'
               },
             {
                 title: '操作',
@@ -140,7 +213,7 @@ class CheckResultManage extends Component {
                             onSearch={value => console.log(value)}
                         />
                     </div>
-                    <Table className="tableClass" bordered={true} columns={ccc} dataSource={dataSource} />
+                    <Table className="tableClass" bordered columns={ccc} dataSource={dataSource} pagination={pagination} />
                 </div>
             </div>
         )

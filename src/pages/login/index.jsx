@@ -5,6 +5,7 @@ import './style.css';
 
 //引入axios进行ajax请求
 import axios from 'axios';
+import Qs from 'qs';
 import  memeryUtil from '../../utils/memeryUtil';
 import storage from '../../utils/storageUtil';
 
@@ -43,15 +44,30 @@ class Login extends Component {
         //   username: values.username,
         //   password: values.password
         // })
-        axios.get('/api/login').then( res=> {
+        axios.post('/api/login',Qs.stringify({
+          id: values.username,
+          password: values.password
+        }),{
+          headers: {
+            'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+        }
+        }).then( res=> {
           const data = res.data;
           if(data.status === 1 ) {
-            message.success('登陆成功',this.changeSubmitable);
+            message.success('登陆成功');
+            
             memeryUtil.user['id'] = data.data.id;
+            memeryUtil.user['username'] = data.data.username;
+            memeryUtil.user['roleId'] = data.data.roleId;
+            memeryUtil.user['role'] = data.data.role;
+            memeryUtil.user['deptId'] = data.data.deptId;
+            memeryUtil.user['password'] = data.data.password;
+           
             this.setState({
               logined: true
             });
-
+            this.changeSubmitable();
+            
             storage.saveUser(memeryUtil.user);  //将user存在storage中
 
           }else {

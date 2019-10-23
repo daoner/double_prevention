@@ -18,13 +18,21 @@ class DetailHiddenTrouble extends Component {
 
     }
     componentDidMount(){
-        axios.post('',Qs.stringify({id:this.props.match.params.id}),{
+        axios.post('/api/input/getDetailHiddenDanger',Qs.stringify({ id:this.props.match.params.id}),{
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
             }
         }).then(res=>{
             //  将值给hdDetail
+            if(res.data.status === 1) {
+                this.setState({
+                    hdDetail: res.data.data
+                })
+            }
+            /*
+                id
 
+            */
             //
         }).catch(error=>{
             message.error(error.message);
@@ -32,6 +40,7 @@ class DetailHiddenTrouble extends Component {
     }
 
     render() {
+        const hdDetail = this.state.hdDetail;
 
         // console.log(this.props.match.params.id) // 路由传过来的id
 
@@ -51,31 +60,42 @@ class DetailHiddenTrouble extends Component {
                                 <Input type="number" disabled  value={this.props.match.params.id}/>
                             </Form.Item>
                             <Form.Item label="隐患类型">
-                                <Input type="text" disabled  value="一般隐患"/>
+                                <Input type="text" disabled  value={hdDetail.type}/>
                             </Form.Item>
                             <Form.Item label="隐患图片">
-                                <img src="" alt="隐患图片" />
+                                <img src={hdDetail.hPhoto} styel={{maxWidth:"400px", maxHeight:"400px"}} alt="隐患图片" />
                                 {/* <Input type="text" disabled  value="图片显示"/> */}
                             </Form.Item>
                             <Form.Item label="整改状态">
-                                <Input type="text" disabled  value="未整改"/>
+                                <Input type="text" disabled  value={hdDetail.status}/>
                             </Form.Item>
                             <Form.Item label="下发时间">
-                                <Input type="text" disabled  value="2019-10-18"/>
+                                <Input type="text" disabled  value={hdDetail.startDate}/>
                             </Form.Item>
                             <Form.Item label="截止时间">
-                                <Input type="text" disabled  value="2019-10-18"/>
+                                <Input type="text" disabled  value={hdDetail.endDate}/>
                             </Form.Item>
                             <Form.Item label="整改说明">
-                                <Input type="text" disabled  value="说明..."/>
+                                <Input type="text" disabled  value={hdDetail.desc}/>
                             </Form.Item>
                             <Form.Item label="是否归档">
-                                <Input type="text" disabled  value="否"/>
+                                <Input type="text" disabled  value={hdDetail.isFile ? '是' : '否'}/>
                             </Form.Item>
                             <Form.Item label="完成时间">
-                                <Input type="text" disabled  value="2019-10-18"/>
+                                <Input type="text" disabled  value={hdDetail.finishDate}/>
                             </Form.Item>
-
+                            <Form.Item label="隐患内容">
+                                <Input type="text" disabled  value={hdDetail.content}/>
+                            </Form.Item>
+                            <Form.Item label="下发人">
+                                <Input type="text" disabled  value={hdDetail.dispatchUserName}/>
+                            </Form.Item>
+                            <Form.Item label="下发单位">
+                                <Input type="text" disabled  value={hdDetail.dispatchDeptName}/>
+                            </Form.Item>
+                            <Form.Item label="整改单位">
+                                <Input type="text" disabled  value={hdDetail.deptName}/>
+                            </Form.Item>
                             <Form.Item wrapperCol={{span: 4, offset:6}}>
                                 <Link to="/main/hiddentTrouble/manage">
                                     <Button>返回</Button>

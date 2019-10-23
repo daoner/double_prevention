@@ -18,123 +18,9 @@ import {
   const { TextArea } = Input;
 
   const { Option } = Select;
-  //经济输入框开始
-  class PriceInput extends React.Component {
-    static getDerivedStateFromProps(nextProps) {
-      // Should be a controlled component.
-      if ('value' in nextProps) {
-        return {
-          ...(nextProps.value || {}),
-        };
-      }
-      return null;
-    }
   
-    constructor(props) {
-      super(props);
   
-      const value = props.value || {};
-      this.state = {
-        number: value.number || 0,
-        currency: value.currency || 'rmb',
-      };
-    }
-  
-    handleNumberChange = e => {
-      const number = parseInt(e.target.value || 0, 10);
-      if (isNaN(number)) {
-        return;
-      }
-      if (!('value' in this.props)) {
-        this.setState({ number });
-      }
-      this.triggerChange({ number });
-    };
-  
-    handleCurrencyChange = currency => {
-      if (!('value' in this.props)) {
-        this.setState({ currency });
-      }
-      this.triggerChange({ currency });
-    };
-  
-    triggerChange = changedValue => {
-      // Should provide an event to pass value to Form.
-      const { onChange } = this.props;
-      if (onChange) {
-        onChange({
-          ...this.state,
-          ...changedValue,
-        });
-      }
-    };
-  
-    render() {
-      const { size } = this.props;
-      const { currency, number } = this.state;
-      return (
-        <span>
-          <Input
-            type="text"
-            size={size}
-            value={number}
-            onChange={this.handleNumberChange}
-            style={{ width: '65%', marginRight: '3%' }}
-          />
-          <Select
-            value={currency}
-            size={size}
-            style={{ width: '32%' }}
-            onChange={this.handleCurrencyChange}
-          >
-            <Option value="rmb">RMB</Option>
-            <Option value="dollar">Dollar</Option>
-          </Select>
-        </span>
-      );
-    }
-  }
-  
-  class Eco_Demo extends React.Component {
-    handleSubmit = e => {
-      e.preventDefault();
-      this.props.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-        }
-      });
-    };
-  
-    checkPrice = (rule, value, callback) => {
-      if (value.number > 0) {
-        callback();
-        return;
-      }
-      callback('Price must greater than zero!');
-    };
-  
-    render() {
-      const { getFieldDecorator } = this.props.form;
-      return (
-        // <Form layout="inline" onSubmit={this.handleSubmit}>
-          <Form.Item>
-            {getFieldDecorator('price', {
-              initialValue: { number: 0, currency: 'rmb' },
-              rules: [{ validator: this.checkPrice }],
-            })(<PriceInput />)}
-          </Form.Item>
-        //   <Form.Item>
-        //     <Button type="primary" htmlType="submit">
-        //       Submit
-        //     </Button>
-        //   </Form.Item>
-        // </Form>
-      );
-    }
-  }
-  
-  const Eco_Input = Form.create({ name: 'customized_form_controls' })(Eco_Demo);
-//经济输入框结束
+
 
 
 
@@ -143,24 +29,14 @@ function onChange_0(value) {
   console.log(`selected ${value}`);
 }
 
-function onBlur() {
-  console.log('blur');
-}
 
-function onFocus() {
-  console.log('focus');
-}
 
-function onSearch(val) {
-  console.log('search:', val);
-}
+
+
+
 //select结束
 
-  const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
-  
-  function onChange(date, dateString) {
-    console.log(date, dateString);
-  }
+
   
   class Demo extends React.Component {
     handleSubmit = e => {
@@ -188,25 +64,6 @@ function onSearch(val) {
       };
       return (
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-          <Form.Item label="危险源ID">
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Select a ID"
-            optionFilterProp="id"
-            onChange={onChange_0}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onSearch={onSearch}
-            filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            >
-            <Option value="jack">123456</Option>
-            <Option value="lucy">456123</Option>
-            <Option value="tom">486532</Option>
-            </Select>
-          </Form.Item>
 
           <Form.Item label="风险点ID">
           <Select
@@ -214,13 +71,6 @@ function onSearch(val) {
             style={{ width: 200 }}
             placeholder="Select a ID"
             optionFilterProp="id"
-            onChange={onChange_0}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onSearch={onSearch}
-            filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
             >
             <Option value="jack">123456</Option>
             <Option value="lucy">456123</Option>
@@ -235,17 +85,11 @@ function onSearch(val) {
           
           <Form.Item label="易发生的危险类型">
           <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Select a ID"
-            optionFilterProp="id"
-            onChange={onChange_0}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onSearch={onSearch}
-            filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Select a type"
+              optionFilterProp="id"
+              onChange={onChange_0}
             >
             <Option value="jack">jack</Option>
             <Option value="lucy">lucy</Option>
@@ -301,13 +145,7 @@ function onSearch(val) {
             style={{ width: 200 }}
             placeholder="Select a ID"
             optionFilterProp="id"
-            onChange={onChange_0}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onSearch={onSearch}
-            filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+           
             >
             <Option value="jack">123456</Option>
             <Option value="lucy">456123</Option>
@@ -321,13 +159,6 @@ function onSearch(val) {
             style={{ width: 200 }}
             placeholder="Select a ID"
             optionFilterProp="id"
-            onChange={onChange_0}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onSearch={onSearch}
-            filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
             >
             <Option value="jack">123456</Option>
             <Option value="lucy">456123</Option>
@@ -360,8 +191,8 @@ class AddDanger extends Component {
                     <Breadcrumb.Item>危险源添加</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* 内容区域 */}
-                <div className="contentWrap">
-                    <WrappedDemo />
+                <div className="contentWrap"  style={{paddingTop: "50px"}}>
+                    <WrappedDemo goBack={this.props.history.goBack} />
                 </div>
             </div>
         )

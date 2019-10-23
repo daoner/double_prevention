@@ -1,24 +1,67 @@
 import React from 'react';
-import { Form, Icon, Input, Button } from 'antd';
+import { Breadcrumb, Form, Icon, Input, Button, message } from 'antd';
+import axios from 'axios';
+import Qs from 'qs';
 
 class AddRisk extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+          if (!err) {
+            console.log('Received values of form: ', values);
+            //提交的数据
+            const formdata = {
+                name: values.name,
+                place: values.place,
+                level:  values.level,
+                telephone: values.telephone
+            }
+
+            axios.post('/api/risk/insert',Qs.stringify(formdata),{
+                headers: {
+                    'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+                }
+            }).then(res=>{
+                message.success( res.data.message || '添加成功');
+                this.props.history.goBack();        //回退
+            }).catch(error=>{
+                message.error(error.message);
+            })
+          }
+        });
+      };
+
   render() {
     const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+    const formItemLayout = {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 14 },
+      };
     return (
         <div className="page">
+            {/* 导航路径 */}
+            <Breadcrumb className="path">
+                    <Breadcrumb.Item>风险管理与评估</Breadcrumb.Item>
+                    <Breadcrumb.Item>风险管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>风险添加</Breadcrumb.Item>
+                </Breadcrumb>
             {/* 内容区域 */}
-            <h3 style={{fontSize: '32px'}}>添加风险信息</h3>
-            <hr/>
-            <div className="contentWrap" style={{ width:"800px",margin: '0 auto' }}>
+            <div className="contentWrap" style={{paddingTop: "50px"}}>
                
-            <Form onSubmit={this.handleSubmit}>
+
+            <Form {...formItemLayout } onSubmit={this.handleSubmit}>
                 <Form.Item  label="风险点：">
-                {getFieldDecorator('username', {
+                {getFieldDecorator('name', {
                     rules: [{ required: true, message: '请输入风险点!' }],
                 })(
                     <Input
-                    style={{ width: 400 }}
-                    placeholder="Username"
+                    placeholder="风险点"
                     />,
                 )}
                 </Form.Item>
@@ -28,10 +71,7 @@ class AddRisk extends React.Component {
                 {getFieldDecorator('place', {
                     rules: [{ required: true, message: '请输入风险点位置!' }],
                 })(
-                    <Input
-                    id="place"
-                    style={{ width: 400 }}
-                    />,
+                    <Input placeholder="风险点位置"    />,
                 )}
                 </Form.Item>
 
@@ -40,8 +80,7 @@ class AddRisk extends React.Component {
                     rules: [{ required: true, message: '请选择风险点等级!' }],
                 })(
                     <Input
-                    id="level"
-                    style={{ width: 400 }}
+                    placeholder="风险点等级"
                     />,
                 )}
                 </Form.Item>
@@ -50,17 +89,14 @@ class AddRisk extends React.Component {
                 {getFieldDecorator('telephone', {
                     rules: [{ required: true, message: '请输入应急电话!' }],
                 })(
-                    <Input
-                    id="telephone"
-                    style={{ width: 400 }}
-                    />,
+                    <Input placeholder="应急电话"  />,
                 )}
                 </Form.Item>
 
-                <Form.Item>
-                <Button type="primary" htmlType="submit">
-                    提交
-                </Button>
+                <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+                    <Button type="primary" htmlType="submit">
+                        提交
+                    </Button>
                 </Form.Item>
             </Form>
             </div>

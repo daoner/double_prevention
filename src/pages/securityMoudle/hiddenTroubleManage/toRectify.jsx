@@ -7,6 +7,7 @@ import { Form, Input,  DatePicker } from 'antd';
 import axios from 'axios';
 import Qs from 'qs';
 import { Redirect } from 'react-router-dom';
+import memery from '../../../utils/memeryUtil';
 
 import { formateDate } from '../../../utils/dateUtil';  //引入格式化时间的方法
 
@@ -28,13 +29,14 @@ class ToRectify extends Component {
         axios.get('/api/department/getAllDept').then(res=>{
             if(res.data.status === 1) {
                 deptlist = res.data.list;
+                this.setState({
+                    allDept: deptlist
+                })
             }
         }).catch(error=>{
             message.error(error.message,2);
         })
-        this.setState({
-            allDept: deptlist || []
-        })
+        
     }
 
     handleSubmit(e) {
@@ -47,12 +49,13 @@ class ToRectify extends Component {
                     id:this.props.match.params.id,
                     startDate: formateDate(new Date(values.startDate._d), 'yyyy-MM-dd'),
                     endDate: formateDate(new Date(values.endDate._d),'yyyy-MM-dd'),
+                    dispatchDeptId: memery.user.deptId,
                     deptId: values.deptId,
-                    username: values.username
+                    dispatchUserId: memery.user.id
                 };
                 // console.log(data);
                 //提交数据到后台
-                axios.post('/url',Qs.stringify(data),{
+                axios.post('/api/input/toRectify',Qs.stringify(data),{
                     headers: {
                         'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
                     }
@@ -61,7 +64,7 @@ class ToRectify extends Component {
                         message.success('下发成功',2);
                         this.setState({ isSuccess: true });
                     }else {
-                        message.success('下发失败',2);
+                        message.error('下发失败',2);
                     }
                 }).catch(error=>{
                     message.error(error.message,2);
@@ -105,13 +108,13 @@ class ToRectify extends Component {
                         </Form.Item>
 
                         {/* 检查人信息 */}
-                        <Form.Item label="整改负责人">
+                        {/* <Form.Item label="整改下发人">
                             {getFieldDecorator('username', {
                                 rules: [{ required: true, message: '请输入检查人!' }],
                             })(
-                                <Input maxLength="10" placeholder="杜甫" />,
+                                <Input maxLength="10" placeholder="杜甫" disabled  value={memery.user.id}/>,
                             )}
-                        </Form.Item>
+                        </Form.Item> */}
                         {/* 参检人 */}
                         <Form.Item label="整改负责部门" wrapperCol={{span:6}}>
                             {getFieldDecorator('deptId', {

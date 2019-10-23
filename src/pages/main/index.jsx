@@ -20,6 +20,7 @@ import RiskStatistic from '../riskMoudle/statistic';
 
 import AddRisk from '../riskMoudle/riskManage/addrisk';
 import AddDanger from '../riskMoudle/dangerManage/addDanger';
+import UpdateRisk from '../riskMoudle/riskManage/updateRisk';
 
 /* 事故管理统计模块 */
 import AccidentManage from '../accidentMoudle/accidentManage';
@@ -52,6 +53,7 @@ import DetailSecondIndicator from '../securityMoudle/secondIndicatorManage/detai
 import AddCheckTableResult from '../securityMoudle/checkTableInput/addCheckResult'; //引入添加检查结果的表单
 
 import ToRectify from '../securityMoudle/hiddenTroubleManage/toRectify';  //下发整改
+import Rectify from '../securityMoudle/hiddenTroubleManage/rectify'; //完成整改
 import DetailHiddenTrouble from '../securityMoudle/hiddenTroubleManage/detailHiddenTrouble';  //隐患详情
 import DetailCheckInput from '../securityMoudle/checkTableInput/detailCheckInput';  //检查表模板详情
 import DetailCheckResult from '../securityMoudle/checkResultManage/detailCheckResult'; //检查结果详情
@@ -110,6 +112,8 @@ class Main extends Component {
               <Route exact path="/main/risk/manage/add" component={AddRisk} />
               <Route exact path="/main/risk/danger/add" component={AddDanger}/>
 
+              <Route path="/main/risk/manage/update/:id" component={UpdateRisk} />
+
               {/* 安全检查与隐患管理  */}
               <Route exact path="/main/checktable/manage" component={ CheckTableManage } />
               <Route exact path="/main/firstIndicator/manage" component={ FirstIndicatorManage } />
@@ -133,6 +137,8 @@ class Main extends Component {
               <Route path="/main/checktable/Input/detail/:id" component={DetailCheckInput} /> {/* 检查表模板详情 */} 
 
               <Route path="/main/hiddentTrouble/manage/toRectify/:id" component={ToRectify} /> {/* 下发整改  */}
+              <Route path="/main/hiddentTrouble/manage/rectify/:id" component={Rectify} />  {/* 完成整改  */}
+
               <Route path="/main/hiddentTrouble/manage/detail/:id" component={DetailHiddenTrouble} /> {/* 隐患详情 */}
               <Route path="/main/checktable/result/detail/:id" component={DetailCheckResult} /> {/* 检查结果详情 */}
 
