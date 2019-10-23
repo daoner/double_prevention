@@ -3,6 +3,8 @@
  */
 import React, { Component } from 'react';
 import axios from 'axios';
+import Qs from 'qs';
+
 import { Breadcrumb,  Divider, Button, message} from 'antd';
 import { Form, Input, Radio, DatePicker, Switch, Select } from 'antd';
 
@@ -13,34 +15,34 @@ import memery from '../../../utils/memeryUtil';
 
 class AddCheckTableResult extends Component {
     constructor(props) {
-        super(props);
+        super(props); 
 
         this.state = {
             ishide: true,
-            mylist: [],
-            allDept:[]
-            // mylist: [
-            //     { 
-            //         id: 1, 
-            //         project: '日常饮食检查',
-            //         list: [
-            //             { secondLevelId: 11, content: '西红柿' },
-            //             { secondLevelId: 12, content: '吃西红柿' },
-            //             { secondLevelId: 13, content: '绝对不吃西红柿' },
-            //             { secondLevelId: 14, content: '打死不吃西红柿' }
-            //         ]
-            //     },
-            //     { 
-            //         id: 5, 
-            //         project: '环境卫生检查' ,
-            //         list: [
-            //             { secondLevelId: 21, content: '西红柿' },
-            //             { secondLevelId: 22, content: '吃西红柿' },
-            //             { secondLevelId: 23, content: '绝对不吃西红柿' },
-            //             { secondLevelId: 24, content: '打死不吃西红柿' }
-            //         ]
-            //     }
-            // ]
+            // mylist: [],
+            allDept:[],
+            mylist: [
+                { 
+                    id: 1, 
+                    project: '日常饮食检查',
+                    secondList: [
+                        { secondLevelId: 11, content: '西红柿' },
+                        { secondLevelId: 12, content: '吃西红柿' },
+                        { secondLevelId: 13, content: '绝对不吃西红柿' },
+                        { secondLevelId: 14, content: '打死不吃西红柿' }
+                    ]
+                },
+                { 
+                    id: 5, 
+                    project: '环境卫生检查' ,
+                    secondList: [
+                        { secondLevelId: 21, content: '西红柿' },
+                        { secondLevelId: 22, content: '吃西红柿' },
+                        { secondLevelId: 23, content: '绝对不吃西红柿' },
+                        { secondLevelId: 24, content: '打死不吃西红柿' }
+                    ]
+                }
+            ]
         };
 
         this.handleSwitch = this.handleSwitch.bind(this);
@@ -49,29 +51,21 @@ class AddCheckTableResult extends Component {
     }
 
     componentDidMount() {
-        /*
-        {
-            "checkTableName": "name",
-            "checkTableId": 1,
-            "firstList": [
-                    {
-                        "firstProject": "你好",
-                        "firstId": 1
-                        "secondList": [
-                        {
-                            "secondId": 2,
-                            "content": "哈哈哈"
-                        }
-                        ],
-                    },
-            ]
-        }
-        */
+       
         let firstlist;  //检查条目的list
         let deptlist;   //所有部门的list
         //获取所有一级和二级的检查条目
-        axios.post('/api/checkTable/getAllInfoById',{ checkTableId: this.props.match.params.id }).then(res=>{
+        //{ checkTableId: this.props.match.params.id }
+        axios.post('/api/checkTable/getAllInfoById',Qs.stringify({ checkTableId: this.props.match.params.id }),
+        {
+            headers: {
+                'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+            }
+        }).then(res=>{
             firstlist = res.data.firstList
+            this.setState({
+                mylist: firstlist
+            })
         }).catch(error=>{
             message.error(error.message,2);
         })
@@ -79,13 +73,12 @@ class AddCheckTableResult extends Component {
         axios.get('/api/department/getAllDept').then(res=>{
             if(res.data.status === 1) {
                 deptlist = res.data.list;
+                this.setState({
+                    allDept: deptlist
+                })
             }
         }).catch(error=>{
             message.error(error.message,2);
-        })
-        this.setState({
-            mylist: firstlist || [],
-            allDept: deptlist || []
         })
 
     }
@@ -212,18 +205,33 @@ var data = {
 
                 }
                 const mylist = this.state.mylist;
+                // console.log('mylist length', mylist.length);
                 for(let i=0, count=0;i<mylist.length;i++){
-                    for(let j=0; j<mylist[i].list.length; j++, count++){
-                        let iname = mylist[i].id + '-' + mylist[i].list[j].secondLevelId;
-                        datainfo.list[count] = {
-                            secondLevelId : mylist[i].list[j].secondLevelId,
+                    // console.log('i=',i);
+                    // console.log('mylist[i].secondList.length', mylist[i].secondList.length);
+                    for(let j=0; j<mylist[i].secondList.length; j++, count++){
+                        let iname = mylist[i].id + '-' + mylist[i].secondList[j].secondLevelId;
+                        // console.log('loop in ...',iname);
+                        datainfo.list.push({
+                            secondLevelId : mylist[i].secondList[j].secondLevelId,
                             isqualified: values[iname],
                             desc: ''
-                        }
+                        })
+                        // datainfo.secondList[count] = {
+                        //     secondLevelId : mylist[i].secondList[j].secondLevelId,
+                        //     isqualified: values[iname],
+                        //     desc: ''
+                        // };
                     }
                 }
+                // console.log('finish loop!!!');
                 // console.log('???',JSON.stringify(datainfo));
-                axios.post('url',{data: JSON.stringify(datainfo) }).then(res=>{
+                axios.post('/api/input/insert',Qs.stringify({data: JSON.stringify(datainfo) }),{
+                    headers: {
+                        'Content-Type':'application/x-www-form-urlencoded;'
+                    }
+                }).then(res=>{
+                    console.log(res);
                     if(res.data.status === 1) {
                         message.success('录入成功',2);
                         // 跳转。。。
@@ -261,9 +269,10 @@ var data = {
                         {
                             this.state.mylist.map((item1)=>(
                                 <div>
+                                    {console.log('mylist item')}
                                     <Form.Item labelCol={{span:6}} label={item1.project}></Form.Item>
                                     {
-                                        item1.list.map(item2 =>(
+                                        item1.secondList.map(item2 =>(
                                             <Form.Item labelCol={{span:10}} label={`${item2.content}`}>
                                                 {getFieldDecorator(`${item1.id}-${item2.secondLevelId}`, {
                                                     rules: [{ required: true, message: '确定是否合格!' }],

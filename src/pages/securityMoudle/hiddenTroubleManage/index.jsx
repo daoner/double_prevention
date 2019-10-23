@@ -48,8 +48,15 @@ class HiddenTroubleManage extends Component {
 
     constructor(props) {
         super(props);
+        //state
+        this.state={
+            type: '', //select的隐患类型
+        }
 
+
+        //绑定this
         this.withDraw = this.withDraw.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);   //换页
     }
 
      /**
@@ -69,7 +76,6 @@ class HiddenTroubleManage extends Component {
             axios.post('/url',{
               id: text.id
             }).then(res=>{
-              console.log(res);
               message.success('撤回成功！',2);
             }).catch(error=> {
               message.error(error.message,2);
@@ -79,6 +85,14 @@ class HiddenTroubleManage extends Component {
         });
     }
 
+    /**
+     * 
+     * @param {*} pageNum 
+     * @param {*} pageSize 
+     */
+    handleChangePage(pageNum,pageSize) {
+
+    }
 
 
     render() { 
@@ -116,18 +130,18 @@ class HiddenTroubleManage extends Component {
                 <Link to={`/main/hiddentTrouble/manage/detail/${text.id}`}><Tag color="blue">详情</Tag></Link>
                 { value.status === '未整改' ? (
                     <span><Divider type="vertical" />
-                        <Link to={`/main/hiddentTrouble/manage/toRectify/${text.id}`}><Tag colur="yellow">下发整改</Tag></Link>
+                        <Link to={`/main/hiddentTrouble/manage/toRectify/${text.id}`}><Tag>下发整改</Tag></Link>
                     </span>) : (null) 
                 }
                 {
                   value.status === '整改中' ? (
-                    <span><Divider type="vertical" /><Tag colur="yellow">整改完成</Tag></span>) : (null) 
+                    <span><Divider type="vertical" /><Tag >整改完成</Tag></span>) : (null) 
                 }
                 
                 {
                   value.status === '整改中' || value.status === '已逾期' ? (
                     <span><Divider type="vertical" />
-                        <Tag colur="yellow" 
+                        <Tag color="red" 
                           onClick={(value)=>{
                              this.withDraw(value);
                           }}>
@@ -153,7 +167,12 @@ class HiddenTroubleManage extends Component {
                             size="large"
                             style={{ width: 200, display:"inline-block",margin: "20px 0" }}
                             placeholder="Select a checktable"
-                            onChange={(value,e)=>{getTableList(value,JSpagenationProps.current,JSpagenationProps.pageSize)}}
+                            onChange={(value,e)=>{
+                                this.setState({
+                                    type: value //将选中的类型存储起来
+                                })
+                                getTableList(value,JSpagenationProps.pageSize,JSpagenationProps.current)
+                            }}
                         >
                             <Select.Option value="未整改">未整改</Select.Option>
                             <Select.Option value="整改中">整改中</Select.Option>
@@ -167,7 +186,7 @@ class HiddenTroubleManage extends Component {
                             onSearch={value => console.log(value)}
                         /> */}
                     </div>
-                    <Table className="tableClass" bordered={true} columns={columns} dataSource={data} pagenationProps={JSpagenationProps} />
+                    <Table className="tableClass" bordered={true} columns={columns} dataSource={data} pagination={JSpagenationProps} />
                 </div>
             </div>
         )
@@ -181,8 +200,7 @@ class HiddenTroubleManage extends Component {
 const mapState = (state)=> {
   return {
     tableList: state.getIn(['hiddenTrouble','tableList']),
-    pagenationProps: state.getIn(['hiddenTrouble','pagenationProps']),
-    test: state.getIn(['hiddenTrouble','test'])
+    pagenationProps: state.getIn(['hiddenTrouble','pagenationProps'])
   }
 };
 

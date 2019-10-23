@@ -1,102 +1,231 @@
 import React, { Component } from 'react';
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, message } from 'antd';
+import axios from 'axios';
+import Qs from 'qs';
+
+import { Link } from 'react-router-dom';
 import './style.css';
-
 //table引入
-import { Table, Divider, Tag, Button, Icon } from 'antd';
-
+import { Table, Divider, Tag, Button, Icon, Modal } from 'antd';
 //搜索框引入
 import { Input } from 'antd';
-const { Search } = Input;
+import memery from '../../../utils/memeryUtil';
 
-//tabel数据
-const columns = [
-  {
-    title: '危险作业ID',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: '危险作业项目名',
-    dataIndex: 'address',
-    key: 'address',
-  }, 
-  {
-    title: '申请时间',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: '作业地点',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: '状态',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: tags => (
-      <span>
-        {tags.map(tag => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </span>
-    ),
-  },
-  {
-    title: '操作',
-    key: 'action',
-    render: (text, record) => (
-      <span>
-        <a>删除</a>
-        <Divider type="vertical" />
-        <a>详情</a>
-        <Divider type="vertical" />
-        <a>修改</a>
-        <Divider type="vertical" />
-        <a>撤回</a>
-        <Divider type="vertical" />
-        <a>归档</a>
-      </span>
-    ),
-  },
-];
 
-//table数据
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
 
 class AppluRecord extends Component {
+
+    constructor(props) {
+        super(props);
+        //state
+        this.state = {
+            list:[], //用于table显示的list
+            pagenationProps: {  //分页器
+              pageSize: 5,  //每页条数
+              current: 1,  //当前页数
+              total: 0,    //总的记录数目
+              showSizeChanger: true,  //是否可以改变pageSize
+              showQuickJumper: true, //是否可以快速跳转到某页
+          },
+        }
+
+        //绑定this
+        this.deleteItem = this.deleteItem.bind(this);
+        this.getList = this.getList.bind(this);
+        this.handleKeepFile = this.handleKeepFile.bind(this);
+        this.handleDrawBack = this.handleDrawBack.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
+    }
+
+    /**
+     * 挂载的生命周期
+     */
+    componentDidMount() {
+        this.getList(); //初始化获取list信息
+    }
+
+    /**
+     * 获取table的list
+     * @param {每页条数}} pageSize 
+     * @param {当前页号} pageNum 
+     */
+    getList(pageSize, pageNum) {
+        pageSize = pageSize || this.state.pagenationProps.pageSize;   //默认 pageSize
+        pageNum = pageNum || 1;      //默认 pageNum
+        axios.get(`/api/dangerousoperation/getList&userId=${memery.user.id}&pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
+            const data = res.data;
+            if(data.status === 1) {
+                let pagenationProps = JSON.parse(JSON.stringify(this.state.pagenationProps)); //分页属性
+                pagenationProps.pageSize = data.data.pageSize;
+                pagenationProps.current = data.data.pageNum;
+                pagenationProps.total = data.data.total;
+                //更新state数据
+                this.setState({
+                    list: data.data.list, //列表值
+                    pagenationProps
+                })
+            }
+        }).catch(error=>{
+            message.error(error.message,2)
+        })
+    }
+
+    /**
+     * 删除列表某项记录
+     * @param {删除项} text 
+     */
+    deleteItem(text) {
+      Modal.confirm({
+          title: '确定删除该项吗?',
+          okText: 'Yes',
+          okType: 'danger',
+          okButtonProps: {
+            disabled: false,
+          },
+          cancelText: 'No',
+          onOk() {
+              axios.post('/api/dangerousoperation/delete', Qs.stringify({id: text.id}),{
+                  headers: { 'Content-Type':'application/x-www-form-urlencoded' }
+              }).then(res=>{
+                  message.success('删除成功！',2);
+                  //更新list
+                  this.getList();
+              }).catch(error=> {
+                  message.error(error.message);
+              });
+          }
+        });
+    }
+
+    /**
+     * 归档
+     * @param {事件id}} id 
+     */
+    handleKeepFile(id) {
+        Modal.confirm({
+          title: '确定归档吗?',
+          okText: 'Yes',
+          cancelText: 'No',
+          onOk() {
+              axios.post('/api/dangerousoperation/file',Qs.stringify({dangerousoperationId: id}),{
+                  headers: { 'Content-Type':'application/x-www-form-urlencoded' }
+              }).then(res=>{
+                  message.success(res.data.message || '归档成功');
+              }).catch(error=>{
+                  message.error(error.message);
+              })
+          }
+        });
+        
+    }
+
+    /**
+     *  撤回
+     * @param {事件id} id 
+     */
+    handleDrawBack(id) {
+        Modal.confirm({
+          title: '确定撤回吗?',
+          okText: 'Yes',
+          okType: 'danger',
+          cancelText: 'No',
+          onOk() {
+              axios.post('/api/dangerousoperation/withdraw',Qs.stringify({dangerousOperationId: id}),{
+                headers: { 'Content-Type':'application/x-www-form-urlencoded' }
+              }).then(res=>{
+                  message.success(res.data.message || '撤回成功');
+              }).catch(error=>{
+                  message.error(error.message);
+              })
+          }
+        });
+       
+    }
+
+    /**
+     * 根据分页的进行换页的事件响应
+     * @param {要显示的页} pageNum 
+     * @param {每页的条数} pageSize 
+     */
+    handleChangePage(pageNum,pageSize) {
+        this.getList(pageSize,pageNum);
+    }
+
+
     render() {
+        const data = this.state.list;   //table 数据列表
+        const pagenationProps = this.state.pagenationProps; //分页设置
+        pagenationProps.onChange = this.handleChangePage;
+        pagenationProps.onShowSizeChange = this.handleChangePage;
+
+      const { Search } = Input;
+
+      //tabel数据
+      const columns = [
+          {
+            title: '危险作业ID',
+            dataIndex: 'dangerousoperationId',
+            key: 'dangerousoperationId',
+          },
+          {
+            title: '提交部门',
+            dataIndex: 'dangerousoperationDpId',
+            key: 'dangerousoperationDpId',
+          }, 
+          {
+            title: '申请时间',
+            dataIndex: 'dangerousoperationApplyDate',
+            key: 'dangerousoperationApplyDate',
+          },
+          {
+            title: '作业地点',
+            dataIndex: 'dangerousoperationPlace',
+            key: 'dangerousoperationPlace',
+          },
+          {
+            title: '申请人',
+            dataIndex: 'dangerousoperationApplyPerson',
+            key: 'dangerousoperationApplyPerson',
+          },
+          // {
+          //   title: '状态',
+          //   key: 'tags',
+          //   dataIndex: 'tags',
+          //   render: tags => (
+          //     <span>
+          //       {tags.map(tag => {
+          //         let color = tag.length > 5 ? 'geekblue' : 'green';
+          //         if (tag === 'loser') {
+          //           color = 'volcano';
+          //         }
+          //         return (
+          //           <Tag color={color} key={tag}>
+          //             {tag.toUpperCase()}
+          //           </Tag>
+          //         );
+          //       })}
+          //     </span>
+          //   ),
+          // },
+          {
+            title: '操作',
+            key: 'action',
+            render: (text, record) => (
+              <span>
+                <a onClick={()=>{this.deleteItem(text)}}>删除</a>
+                <Divider type="vertical" />
+                <Link to={`/main/assign/detail/${text.dangerousoperationId}`}><a>详情</a></Link>
+                <Divider type="vertical" />
+                <a>修改</a>
+                <Divider type="vertical" />
+                <a onClick={()=>{this.handleDrawBack(text.dangerousoperationId)}}>撤回</a>
+                <Divider type="vertical" />
+                <a onClick={()=>{this.handleKeepFile(text.dangerousoperationId)}}>归档</a>
+              </span>
+            ),
+          },
+        ];
+      
         return (
             <div className="page">
                 {/* 导航路径 */}
@@ -117,9 +246,11 @@ class AppluRecord extends Component {
                     {/* <Button style={{float:'right',width:'79px',height:'40px',margin:'20px 0px'}}><Icon type="plus" />添加</Button> */}
                     </div>
                     <Table
-                    className="tableClass"
-                    bordered="true"
-                    columns={columns} dataSource={data} />
+                      className="tableClass"
+                      bordered
+                      pagination={pagenationProps}
+                      columns={columns} 
+                      dataSource={data} />
                 </div>
             </div>
         )

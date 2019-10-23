@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Qs from 'qs';
 
 import './style.css';
 
@@ -55,9 +56,11 @@ class FormLayoutDemo extends React.Component {
 
           }
           console.log(data);
-          
-          axios.post('', {
-
+          /**
+           * 提交危险作业
+           */
+          axios.post('/api/dangerousoperation/insert', Qs.stringify(data)  ,{
+              headers: { 'Content-Type':'application/x-www-form-urlencoded' }
           }).then(res=>{
             message.success('添加成功');
           }).catch(error=>{

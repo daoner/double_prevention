@@ -3,12 +3,24 @@
  */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { Breadcrumb, Form, Input, Button, Radio } from 'antd';
 
 class DetailCheckTable extends Component {
 
     render() {
+        const { checkTableList } = this.props;  //获取到list, immutable 对象
+        const JScheckTableList = checkTableList.toJS();
+        const id = this.props.match.params.id;
+        let checkTableInfo = {};
+        for(let i=0;  i<JScheckTableList.length;i++  ) {
+            if(JScheckTableList[i].id == id) {
+                checkTableInfo = JSON.parse(JSON.stringify(JScheckTableList[i]));
+                break;
+            }
+        }
+        // console.log(checkTableInfo)
         return (
             <div className="page">
                 {/* 导航路径 */}
@@ -22,31 +34,31 @@ class DetailCheckTable extends Component {
                     <div style={{width:"80%", margin:"50px auto"}}>
                         <Form  labelCol={ {span: 6 }} wrapperCol={{ span: 14 }} disabled>
                             <Form.Item label="检查表id">
-                                <Input type="number" disabled  value="0001"/>
+                                <Input type="text" disabled  value={checkTableInfo.id || ''}/>
                             </Form.Item>
                             <Form.Item label="检查表名">
-                                <Input type="text" disabled  value="一个简单的检查表"/>
+                                <Input type="text" disabled  value={checkTableInfo.name || ''}/>
                             </Form.Item>
                             <Form.Item label="检查表编号">
-                                <Input type="text" disabled  value="007"/>
+                                <Input type="text" disabled  value={checkTableInfo.identifier || ''}/>
                             </Form.Item>
                             <Form.Item label="检查表类别">
-                                <Input type="text" disabled  value="定期检查表"/>
+                                <Input type="text" disabled  value={checkTableInfo.type || ''} />
                             </Form.Item>
                             <Form.Item label="所属部门">
-                                <Input type="text" disabled  value="编辑部"/>
+                                <Input type="text" disabled  value={checkTableInfo.dept || ''} />
                             </Form.Item>
                             <Form.Item label="添加时间">
-                                <Input type="text" disabled  value="2019-10-18"/>
+                                <Input type="text" disabled  value={checkTableInfo.addDate || ''}/>
                             </Form.Item>
                             <Form.Item label="是否删除">
                                 <Radio.Group disabled>
-                                    <Radio value="是" checked>是</Radio>
-                                    <Radio value="否">否</Radio>
+                                    <Radio value="是" checked={checkTableInfo.isDelete}>是</Radio>
+                                    <Radio value="否" checked={!checkTableInfo.isDelete}>否</Radio>
                                 </Radio.Group>
                             </Form.Item>
                             <Form.Item label="删除时间">
-                                <Input type="text" disabled  value="2019-10-18"/>
+                                <Input type="text" disabled  value={checkTableInfo.isDelete? checkTableInfo.deleteDate : ''}/>
                             </Form.Item>
                             <Form.Item wrapperCol={{span: 4, offset:6}}>
                                 <Link to="/main/checktable/manage">
@@ -60,5 +72,8 @@ class DetailCheckTable extends Component {
         )
     }
 }
+const mapState = (state)=>({
+    checkTableList: state.getIn(['checkTable','checkTableList'])
+})
 
-export default DetailCheckTable;
+export default connect(mapState,null)(DetailCheckTable);

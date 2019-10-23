@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Qs from 'qs';    
 
 import { Breadcrumb, Form, Input, Button, Radio, message } from 'antd';
 import './style.css';
@@ -20,7 +21,13 @@ class DetailCheckInput extends Component {
 
     componentDidMount() {
         //获取所有一级和二级的检查条目
-        axios.post('/api/checkTable/getAllInfoById',{ checkTableId: this.props.match.params.id }).then(res=>{
+        const data = { checkTableId: this.props.match.params.id }
+        console.log('get detail of input',data)
+        axios.post('/api/checkTable/getAllInfoById',Qs.stringify(data),{
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(res=>{
             this.setState({
                 detailDate: res.data
             })

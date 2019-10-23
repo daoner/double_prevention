@@ -21,7 +21,8 @@ import {
     Input,
     DatePicker
   } from 'antd';
-import Axios from 'axios';
+import axios from 'axios';
+import Qs from 'qs';
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -46,41 +47,63 @@ class Demo extends React.Component {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
         if (!err) {
-          const id = 'id';  //事故id
-          const accidentType = values.accidentType; //事故类型
-          const name = values.name; //事故名
-          const place = values.place; //事故地点
-          const date = formateDate(new Date(values.date._d),'yyyy-MM-dd hh:mm:ss'); //事故时间
-          const status = values.status;   //事故状态
-          const nature = values.nature;   //事故性质
-          const level = getLevel(values.level); //严重级别
-          const reason = values.reason || '';
-          const directLoss = values.directLoss || 0;
-          const indirectLoss = values.indirectLoss || 0;
-          const lossWorkDay = values.lossWorkDay || 0;
-          const outageTime = values.outageTime || 0;
-          const survey = values.survey || '';
-          const causeAnalysis = values.causeAnalysis || '';
-          const injure = values.injure || '';
-          const lossDegree = getLevel(values.lossDegree) || '';
-          const resolution = values.resolution || '';
-          const lesson = values.lesson || '';
-          const measure = values.measure || '';
-          const remark = values.remark || '';
+          // const id = 'id';  //事故id
+          // const accidentType = values.accidentType; //事故类型
+          // const name = values.name; //事故名
+          // const place = values.place; //事故地点
+          // const date = formateDate(new Date(values.date._d),'yyyy-MM-dd'); //事故时间
+          // const status = values.status;   //事故状态
+          // const nature = values.nature;   //事故性质
+          // const level = getLevel(values.level); //严重级别
+          // const reason = values.reason || '';
+          // const directLoss = values.directLoss || 0;
+          // const indirectLoss = values.indirectLoss || 0;
+          // const lossWorkDay = values.lossWorkDay || 0;
+          // const outageTime = values.outageTime || 0;
+          // const survey = values.survey || '';
+          // const causeAnalysis = values.causeAnalysis || '';
+          // const injure = values.injure || '';
+          // const lossDegree = getLevel(values.lossDegree) || '';
+          // const resolution = values.resolution || '';
+          // const lesson = values.lesson || '';
+          // const measure = values.measure || '';
+          // const remark = values.remark || '';
 
-          Axios.post('/api/accident/insert', {
+          let formdata = {
+              accidentType :  values.accidentType ,//事故类型
+              name : values.name ,//事故名
+              place : values.place, //事故地点
+              date : formateDate(new Date(values.date._d),'yyyy-MM-dd'), //事故时间
+              status : values.status , //事故状态
+              nature : values.nature ,  //事故性质
+              level : getLevel(values.level) ,//严重级别
+              reason:  values.reason || '',
+              directLoss : values.directLoss || 0,
+              indirectLoss:  values.indirectLoss || 0,
+              lossWorkDay : values.lossWorkDay || 0,
+              outageTime  :values.outageTime || 0,
+              survey:  values.survey || '',
+              causeAnalysis:  values.causeAnalysis || '',
+              injure : values.injure || '',
+              lossDegree:  getLevel(values.lossDegree) || '',
+              resolution:  values.resolution || '',
+              lesson : values.lesson || '',
+              measure : values.measure || '',
+              remark : values.remark || ''
+          }
+            console.log('add accident :',formdata); //打印信息
+            axios.post('/api/accident/insert', Qs.stringify(formdata) ,{
+                headers: { 'Content-Type':'application/x-www-form-urlencoded' }
+            }).then(res=>{
+              message.success('添加成功');
+              this.props.changeSubmitSuccess(true);   //成功了就修改 submitSuccess为true ，这样就返回列表页
+            }).catch(error=>{
+              message.error(error.message || '添加失败');
+            })
 
-          }).then(res=>{
-            message.success('添加成功');
-            this.props.changeSubmitSuccess(true);   //成功了就修改 submitSuccess为true ，这样就返回列表页
-          }).catch(error=>{
-            message.error(error.message || '添加失败');
-          })
-
-          console.log('Received values of form: ', values);
+            console.log('Received values of form: ', values);
         }else {
-          // console.log(err,values)
-          message.info('请正确填写必要信息!')
+            message.info('请正确填写必要信息!')
         }
       });
     };

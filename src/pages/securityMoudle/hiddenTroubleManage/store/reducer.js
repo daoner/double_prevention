@@ -11,8 +11,7 @@ const defaultState = fromJS({
         total: 0,    //总的记录数目
         showSizeChanger: true,  //是否可以改变pageSize
         showQuickJumper: true, //是否可以快速跳转到某页
-    },
-    test: 'xxxx0'
+    }
 });
 
 const reducer = (state=defaultState,action) => {

@@ -27,6 +27,13 @@ const reducer = (state=defaultState, action) => {
             return state.set('modal_visible',action.modal_visible); 
         case actionTypes.CHANGE_SELECT_LIST:
             return state.set('selectList',fromJS(action.list)); //根据id 更新select的list
+        case actionTypes.CHANGE_CHECKTABLE_ID:
+            return state.set('checkTableId',action.id); //跟新所选id
+        case actionTypes.CHANGE_FIRST_LIST:
+            return state.set('firstIndicatorList', fromJS(action.list))
+                        .setIn(['pagenationProps','pageSize'],action.pageSize)
+                        .setIn(['pagenationProps','current'],action.pageNum)
+                        .setIn(['pagenationProps','total'],action.total);
         default:
             return state;
     }

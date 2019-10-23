@@ -1,66 +1,16 @@
 import React, { Component } from 'react';
 import { Breadcrumb } from 'antd';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 import './style.css';
 
 //table引入
-import { Table, Divider, Tag, Button, Icon } from 'antd';
-
+import { Table,  Tag, message } from 'antd';
 //搜索框引入
 import { Input } from 'antd';
 const { Search } = Input;
 
-//tabel数据
-const columns = [
-  {
-    title: '危险作业ID',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: '危险作业项目名',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: '申请时间',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: '作业地点',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: '状态',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: tags => (
-      <span>
-        {tags.map(tag => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </span>
-    ),
-  },
-  {
-    title: '操作',
-    key: 'action',
-    render: (text, record) => (
-      <span>
-        <a>详情</a>
-      </span>
-    ),
-  },
-];
 
 //table数据
 const data = [
@@ -88,7 +38,108 @@ const data = [
 ];
 
 class HadApprove extends Component {
+    constructor(props) {
+        super(props);
+        //state 数据
+        this.state = {
+            list:[], //用于table显示的list
+            pagenationProps: {  //分页器
+                pageSize: 5,  //每页条数
+                current: 1,  //当前页数
+                total: 0,    //总的记录数目
+                showSizeChanger: true,  //是否可以改变pageSize
+                showQuickJumper: true, //是否可以快速跳转到某页
+            },
+        }
+
+        //绑定this
+        this.getList = this.getList.bind(this);
+      
+    }
+
+    /**
+     * 获取显示列表
+     * @param {每页条数} pageSize 
+     * @param {当前页号} pageNum 
+     */
+    getList(pageSize,pageNum) {
+        pageSize = pageSize || this.state.pagenationProps.pageSize;   //默认 pageSize
+        pageNum = pageNum || 1;      //默认 pageNum
+        // axios.get(`/api/preApprove/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
+        //     const data = res.data;
+        //     if(data.status === 1) {
+        //         // let pagenationProps = JSON.parse(JSON.stringify(this.state.pagenationProps)); //分页属性
+        //         // pagenationProps.pageSize = data.data.pageSize;
+        //         // pagenationProps.current = data.data.pageNum;
+        //         // pagenationProps.total = data.data.total;
+        //         // //更新state数据
+        //         // this.setState({
+        //         //     list: data.data.list, //列表值
+        //         //     pagenationProps
+        //         // })
+        //     }
+        // }).catch(error=>{
+        //     message.error(error.message,2)
+        // })
+    }
+
+
+
     render() {
+
+      const columns = [
+          {
+              title: '危险作业ID',
+              dataIndex: 'age',
+              key: 'age',
+          },
+          {
+              title: '危险作业项目名',
+              dataIndex: 'address',
+              key: 'address',
+          },
+          {
+              title: '申请时间',
+              dataIndex: 'address',
+              key: 'address',
+          },
+          {
+              title: '作业地点',
+              dataIndex: 'address',
+              key: 'address',
+          },
+          // {
+          //     title: '状态',
+          //     key: 'tags',
+          //     dataIndex: 'tags',
+          //     render: tags => (
+          //       <span>
+          //         {tags.map(tag => {
+          //           let color = tag.length > 5 ? 'geekblue' : 'green';
+          //           if (tag === 'loser') {
+          //             color = 'volcano';
+          //           }
+          //           return (
+          //             <Tag color={color} key={tag}>
+          //               {tag.toUpperCase()}
+          //             </Tag>
+          //           );
+          //         })}
+          //       </span>
+          //     ),
+          // },
+          {
+            title: '操作',
+            key: 'action',
+            render: (text, record) => (
+              <span>
+                <Link to={`/main/assign/detail/${text.dangerousoperationId}`}><a>详情</a></Link>
+                <a>详情</a>
+              </span>
+            ),
+          },
+        ];
+
         return (
             <div className="page">
                 {/* 导航路径 */}

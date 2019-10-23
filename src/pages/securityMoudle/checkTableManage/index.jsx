@@ -1,22 +1,65 @@
 import React ,{ Component } from 'react';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
+import axios from 'axios';
+import Qs from 'qs';
 import { actionCreator } from './store';
 
 //引入antd
-import { Table, Button, Input, Divider, Tag, Icon, Breadcrumb } from 'antd';
+import { Table, Button, Input, Divider, Tag, Icon, Breadcrumb, Modal, message } from 'antd';
 const Search = Input.Search;
 
 
 
 
 class CheckTableManage extends Component {
+    constructor(props) {
+        super(props);
+
+        this.deleteItem = this.deleteItem.bind(this);
+    }
+
+
+     /**
+     * 删除列表某项记录
+     * @param {删除项} text 
+     */
+    deleteItem(text) {
+        Modal.confirm({
+            title: '确定删除该项吗?',
+            okText: 'Yes',
+            okType: 'danger',
+            okButtonProps: {
+              disabled: false,
+            },
+            cancelText: 'No',
+            onOk() {
+              axios.post('/api/checkTable/delete',Qs.stringify({checkTableId: text.id}),{
+                headers: {
+                    'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+                }
+              }
+              ).then(res=>{
+                message.success('删除成功！',2);
+                //重新请求list
+                const { pagenationProps , getCheckTableList }  = this.props;
+                const pageSize = pagenationProps.get('pageSize');
+                const current = pagenationProps.get('current');
+                getCheckTableList(pageSize, current);
+              }).catch(error=> {
+                message.error(error.message);
+              });
+              console.log('OK,发送异步请求');
+               //这里删除item
+            }
+          });
+      }
 
     componentDidMount() {
         const { pagenationProps , getCheckTableList }  = this.props;
         const pageSize = pagenationProps.get('pageSize');
         const current = pagenationProps.get('current');
-        getCheckTableList();
+        getCheckTableList(pageSize, current);
     }
 
     render() {
@@ -40,9 +83,11 @@ class CheckTableManage extends Component {
                 title: '操作', 
                 key: 'action', 
                 render:(text,value)=>(<span>
-                    <Link to="/main/checktable/manage/detail"><Tag color="blue">详情</Tag></Link>
+                    <Link to={`/main/checktable/manage/detail/${text.id}`}><Tag color="blue">详情</Tag></Link>
                     <Divider type="vertical" />
                     <Tag colur="yellow">修改</Tag>
+                    <Divider type="vertical"/>
+                    <Tag color="red" onClick={()=>{this.deleteItem(text)}} >删除</Tag>
                 </span>)
             }
         ]
@@ -73,7 +118,7 @@ class CheckTableManage extends Component {
                     <Table
                         className="tableClass"
                         bordered
-                        pagenation={JSpagenationProps}
+                        pagination={JSpagenationProps}
                         columns={columns} dataSource={data} />
                 </div>
             </div>

@@ -11,6 +11,8 @@ import ApplyRecord from '../assignMoudle/applyRecord';
 import PreApprove from '../assignMoudle/preApprove';
 import HadApprove from '../assignMoudle/hadApprove';
 
+import DetailAssign from '../assignMoudle/applyRecord/detailAssign';  //作业详情
+
 /* 风险管理与评估 */
 import RiskManage from '../riskMoudle/riskManage';
 import DangerManage from '../riskMoudle/dangerManage';
@@ -88,6 +90,8 @@ class Main extends Component {
               <Route path="/main/assign/preApprove" component={PreApprove} />
               <Route path="/main/assign/hadApprove" component={HadApprove} />
 
+              <Route path="/main/assign/detail/:id" component={DetailAssign} /> 
+
             
               {/*   事故管理与统计  */}
               <Route exact path="/main/accident/manage" component={AccidentManage}/>
@@ -121,9 +125,9 @@ class Main extends Component {
               <Route exact path="/main/checktable/manage/add" component={AddCheckTable} /> {/* 添加检查表  */}
               
               
-              <Route exact path="/main/checktable/manage/detail" component={DetailCheckTable} /> {/* 检查表细节  */}
-              <Route exact path="/main/firstIndicator/manage/detail" component={DetailFirstIndicator} />   {/* 一级指标细节 */}
-              <Route exact path="/main/secondIndicator/manage/detail" component={DetailSecondIndicator} /> {/* 二级指标细节 */} 
+              <Route path="/main/checktable/manage/detail/:id" component={DetailCheckTable} /> {/* 检查表细节  */}
+              <Route path="/main/firstIndicator/manage/detail/:id" component={DetailFirstIndicator} />   {/* 一级指标细节 */}
+              <Route path="/main/secondIndicator/manage/detail/:id" component={DetailSecondIndicator} /> {/* 二级指标细节 */} 
 
               <Route path="/main/checktable/Input/add/:id" component={AddCheckTableResult} /> 
               <Route path="/main/checktable/Input/detail/:id" component={DetailCheckInput} /> {/* 检查表模板详情 */} 

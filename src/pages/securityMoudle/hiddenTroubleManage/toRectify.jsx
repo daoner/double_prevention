@@ -2,9 +2,10 @@
  * 下发整改
  */
 import React, { Component } from 'react';
-import { Breadcrumb,  Divider, Button, message} from 'antd';
+import { Breadcrumb,  Select, Button, message} from 'antd';
 import { Form, Input,  DatePicker } from 'antd';
 import axios from 'axios';
+import Qs from 'qs';
 import { Redirect } from 'react-router-dom';
 
 import { formateDate } from '../../../utils/dateUtil';  //引入格式化时间的方法
@@ -12,12 +13,29 @@ import { formateDate } from '../../../utils/dateUtil';  //引入格式化时间�
 class ToRectify extends Component {
     constructor(props) {
         super(props);
+        //state
         this.state = {
-            isSuccess: false
+            isSuccess: false,
+            allDept:[]      //所有部门的id和name
         }
+        //绑定this
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount() {
+        let deptlist;   //所有部门的list
+        // 获取所有部门的 id 和 name
+        axios.get('/api/department/getAllDept').then(res=>{
+            if(res.data.status === 1) {
+                deptlist = res.data.list;
+            }
+        }).catch(error=>{
+            message.error(error.message,2);
+        })
+        this.setState({
+            allDept: deptlist || []
+        })
+    }
 
     handleSubmit(e) {
         e.preventDefault();
@@ -34,7 +52,11 @@ class ToRectify extends Component {
                 };
                 // console.log(data);
                 //提交数据到后台
-                axios.post('/url',data).then(res=>{
+                axios.post('/url',Qs.stringify(data),{
+                    headers: {
+                        'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+                    }
+                }).then(res=>{
                     if(res.data.status === 1) { //提交成功处理
                         message.success('下发成功',2);
                         this.setState({ isSuccess: true });
@@ -91,9 +113,20 @@ class ToRectify extends Component {
                             )}
                         </Form.Item>
                         {/* 参检人 */}
-                        <Form.Item label="整改负责部门">
-                            {getFieldDecorator('deptId')(
-                                <Input maxLength="20" placeholder="李白" />,
+                        <Form.Item label="整改负责部门" wrapperCol={{span:6}}>
+                            {getFieldDecorator('deptId', {
+                                rules: [{ required: true, message: '请选择被检单位!' }],
+                            })(
+                                <Select
+                                    placeholder="select a deportment"
+                                    // onChange={(e,v)=>{console.log(e,v,'selet change ')}}
+                                >
+                                    {
+                                        this.state.allDept.map(item=>(
+                                            <Select.Option value={item.id}>{item.name}</Select.Option>
+                                        ))
+                                    }
+                                </Select>  
                             )}
                         </Form.Item>
 

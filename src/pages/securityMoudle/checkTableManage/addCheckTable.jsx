@@ -3,10 +3,35 @@ import { connect } from 'react-redux';
 import { actionCreator } from './store';
 
 import { Redirect } from 'react-router-dom';
-import { Form, Icon, Input, Button, Radio, Breadcrumb, message } from 'antd';
+import { Form,  Input, Button, Radio, Breadcrumb, message, Select } from 'antd';
 import axios from 'axios';
+import Qs from 'qs';
 
 class NormalLoginForm extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            allDept:[]
+        }
+    }
+
+    componentDidMount() {
+        // 获取所有部门的 id 和 name
+        axios.get('/api/department/getAllDept').then(res=>{
+            if(res.data.status == 1) {
+                this.setState({
+                    allDept: res.data.list
+                })
+            }
+        }).catch(error=>{
+            message.error(error.message,2);
+        })
+        
+    }
+
+
     /**
      * 表单提交
      */
@@ -26,9 +51,13 @@ class NormalLoginForm extends Component {
                     name: values.name,
                     identifier: values.identifier,
                     type: values.type,
-                    depId: values.depId
+                    deptId: values.deptId
                 }
-                axios.post('/api/checkTable/insert',formData).then(res=> {
+                axios.post('/api/checkTable/insert',Qs.stringify(formData),{
+                    headers: {
+                        'Content-Type':'application/x-www-form-urlencoded;'
+                    }
+                }).then(res=> {
                     const data = res.data;
                     if(data.status === 1) {
                         message.success('添加成功');
@@ -108,11 +137,20 @@ class NormalLoginForm extends Component {
                         </Form.Item>
 
                         <Form.Item label="所属部门">
-                        {getFieldDecorator('depId', {
-                            rules: [{ required: true,  message: '请选择部门!' }],
-                        })(
-                            <Input placeholder="所属部门"  disabled={formDisabled} />,
-                        )}
+                            {getFieldDecorator('deptId', {
+                                rules: [{ required: true, message: '请选择部门!' }],
+                            })(
+                                <Select
+                                    placeholder="select a deportment"
+                                    // onChange={(e,v)=>{console.log(e,v,'selet change ')}}
+                                >
+                                    {
+                                        this.state.allDept.map(item=>(
+                                            <Select.Option value={item.id}>{item.name}</Select.Option>
+                                        ))
+                                    }
+                                </Select>  
+                            )}
                         </Form.Item>
 
                         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
@@ -145,6 +183,6 @@ const mapState = (state)=> {
     }
   };
 
-const WrappedNormalLoginForm = Form.create({ name: 'organization_add' })(NormalLoginForm);
+const WrappedNormalLoginForm = Form.create({ name: 'checktable_add' })(NormalLoginForm);
 
 export default connect(mapState,mapDispatch)(WrappedNormalLoginForm);
