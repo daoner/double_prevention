@@ -52,30 +52,35 @@ class FormLayoutDemo extends React.Component {
     }
 
     getDetailInfo() {
-        axios.get(`/api/dangerousoperation/detail/${this.props.assignId}`).then(res=>{
+        axios.post('/api/dangerousoperation/detail',Qs.stringify({dangerousoperationId: this.props.assignId}),{
+          headers: {
+            'Content-Type':'application/x-www-form-urlencoded;'
+          }
+        }).then(res=>{
             const data = res.data;
             if(data.status == 1) {
                 this.setState({
-                  deptId: data.data.dangerousoperationDpId,  //当前用户的部门id
-                  applyDate: data.data.dangerousoperationApplyDate ,//申请时间
-                  status: data.data.dangerousoperationStatus ,    //状态
-                  keepFile: data.data.dangerousoperationKeepFile ,    //是否归档
-                  name: data.data.dangerousoperationName ,    //申请的项目名
-                  startDate: data.data.dangerousoperationStartDate ,  //开始时间
-                  endDate: data.data.dangerousoperationEndDate , //结束时间
-                  place: data.data.dangerousoperationPlace , //作业地点
-                  applyPerson: data.data.dangerousoperationApplyPerson , //申请人姓名
-                  curator: data.data.dangerousoperationCurator ,  //单位负责人姓名
-                  content: data.data.dangerousoperationContent ,  //内容
-                  number: data.data.dangerousoperationNumber , //作业人数
-                  majorFactor: data.data.dangerousoperationMajorFactor , //主要危险因素
-                  safeMeasure: data.data.dangerousoperationSafeMeasure ,  //安全措施
-                  keepYear: data.data.dangerousoperationKeepYear //保存年限
+                  deptId: data.data.deptId,  //当前用户的部门id
+                  applyDate: data.data.applyDate ,//申请时间
+                  status: data.data.status ,    //状态
+                  keepFile: data.data.keepFile ,    //是否归档
+                  name: data.data.name ,    //申请的项目名
+                  startDate: data.data.startDate ,  //开始时间
+                  endDate: data.data.endDate , //结束时间
+                  place: data.data.place , //作业地点
+                  applyPerson: data.data.applyPerson , //申请人姓名
+                  curator: data.data.curator ,  //单位负责人姓名
+                  content: data.data.content ,  //内容
+                  number: data.data.number , //作业人数
+                  majorFactor: data.data.majorFactor , //主要危险因素
+                  safeMeasure: data.data.safeMeasure ,  //安全措施
+                  keepYear: data.data.keepYear //保存年限
                 })
             }else {
                 message.error(data.message || '获取作业信息失败');
             }
         }).catch(error=>{
+          console.log(error)
             message.error(error.message);
         })
     }

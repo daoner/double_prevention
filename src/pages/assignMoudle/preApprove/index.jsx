@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Breadcrumb, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Qs from 'qs';
 import './style.css';
 
 //table引入
@@ -57,8 +58,12 @@ class PreApprove extends Component {
       this.getList = this.getList.bind(this);
       this.handlePass = this.handlePass.bind(this);
       this.handleDrawBack = this.handleDrawBack.bind(this);
+      this.handleChangePage = this.handleChangePage.bind(this);
     }
 
+    componentDidMount() {
+      this.getList();
+    }
     /**
      * 获取显示列表
      * @param {每页条数} pageSize 
@@ -67,22 +72,24 @@ class PreApprove extends Component {
       getList(pageSize,pageNum) {
           pageSize = pageSize || this.state.pagenationProps.pageSize;   //默认 pageSize
           pageNum = pageNum || 1;      //默认 pageNum
-          // axios.get(`/api/preApprove/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
-          //     const data = res.data;
-          //     if(data.status === 1) {
-          //         // let pagenationProps = JSON.parse(JSON.stringify(this.state.pagenationProps)); //分页属性
-          //         // pagenationProps.pageSize = data.data.pageSize;
-          //         // pagenationProps.current = data.data.pageNum;
-          //         // pagenationProps.total = data.data.total;
-          //         // //更新state数据
-          //         // this.setState({
-          //         //     list: data.data.list, //列表值
-          //         //     pagenationProps
-          //         // })
-          //     }
-          // }).catch(error=>{
-          //     message.error(error.message,2)
-          // })
+          axios.get(`/api/dangerousoperation/getListWait?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
+              const data = res.data;
+              if(data.status === 1) {
+                  let pagenationProps = JSON.parse(JSON.stringify(this.state.pagenationProps)); //分页属性
+                  pagenationProps.pageSize = data.data.pageSize;
+                  pagenationProps.current = data.data.pageNum;
+                  pagenationProps.total = data.data.total;
+                  //更新state数据
+                  this.setState({
+                      list: data.data.list, //列表值
+                      pagenationProps
+                  })
+              }else {
+                message.error(data.message || '获取信息失败');
+              }
+          }).catch(error=>{
+              message.error(error.message,2)
+          })
       }
       
     /**
@@ -90,7 +97,11 @@ class PreApprove extends Component {
      * @param {*} id 
      */
     handlePass(id) {
-        axios.get(`/api/preApprove/pass?dangerousOperationId=${id}`).then(res=>{
+        axios.post('/api/dangerousoperation/pass',Qs.stringify({id:id}),{
+            headers: {
+            'Content-Type':'application/x-www-form-urlencoded;'
+           }
+        }).then(res=>{
             message.success(res.data.message || '审核成功');
             this.getList();
         }).catch(error=>{
@@ -109,7 +120,13 @@ class PreApprove extends Component {
             okType: 'danger',
             cancelText: 'No',
             onOk() {
-              axios.get(`/api/preApprove/reset${id}`).then(res=>{
+              axios.post('/api/dangerousoperation/reset',Qs.stringify({
+                id: id
+              }),{
+                headers: {
+                  'Content-Type':'application/x-www-form-urlencoded;'
+                }
+              }).then(res=>{
                   message.success(res.data.message || '退回成功');
                   this.getList();
               }).catch(error=>{
@@ -120,59 +137,74 @@ class PreApprove extends Component {
        
     }
 
+    /**
+     * 换页
+     * @param {}} pageNum 
+     * @param {*} pageSize 
+     */
+    handleChangePage(pageNum, pageSize) {
+        this.getList(pageSize, pageNum);
+    }
+
+
     render() {
+        const tableList = this.state.list;  //数据列表
+        const pagenationProps = this.state.pagenationProps;
+        pagenationProps.onChange = this.handleChangePage;
+        pagenationProps.onShowSizeChange = this.handleChangePage;
 
       const columns = [
-          {
-            title: '危险作业ID',
-            dataIndex: 'age',
-            key: 'age',
-          },
-          {
-            title: '危险作业项目名',
-            dataIndex: 'address',
-            key: 'address',
-          },
-          {
-            title: '申请时间',
-            dataIndex: 'address',
-            key: 'address',
-          },
-          {
-            title: '作业地点',
-            dataIndex: 'address',
-            key: 'address',
-          },
-          {
-            title: '状态',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: tags => (
-              <span>
-                {tags.map(tag => {
-                  let color = tag.length > 5 ? 'geekblue' : 'green';
-                  if (tag === 'loser') {
-                    color = 'volcano';
-                  }
-                  return (
-                    <Tag color={color} key={tag}>
-                      {tag.toUpperCase()}
-                    </Tag>
-                  );
-                })}
-              </span>
-            ),
-          },
+        {
+          title: '危险作业ID',
+          dataIndex: 'id',
+          key: 'id',
+        },
+        {
+          title: '作业名',
+          dataIndex: 'name',
+          key: 'name',
+        }, 
+       
+        {
+          title: '作业地点',
+          dataIndex: 'place',
+          key: 'place',
+        },
+        {
+          title: '申请人',
+          dataIndex: 'curator',
+          key: 'curator',
+        },
+          // {
+          //   title: '状态',
+          //   key: 'tags',
+          //   dataIndex: 'tags',
+          //   render: tags => (
+          //     <span>
+          //       {tags.map(tag => {
+          //         let color = tag.length > 5 ? 'geekblue' : 'green';
+          //         if (tag === 'loser') {
+          //           color = 'volcano';
+          //         }
+          //         return (
+          //           <Tag color={color} key={tag}>
+          //             {tag.toUpperCase()}
+          //           </Tag>
+          //         );
+          //       })}
+          //     </span>
+          //   ),
+          // },
           {
             title: '操作',
             key: 'action',
             render: (text, record) => (
               <span>
-                <a onClick={()=>{this.handlePass(text.dangerousoperationId)}}>审批通过</a>
+                <a onClick={()=>{this.handlePass(text.id)}}>审批通过</a>
                 <Divider type="vertical" />
-                <a onClick={()=>{this.handleDrawBack(text.dangerousoperationId)}}>退回</a>
+                <a onClick={()=>{this.handleDrawBack(text.id)}}>退回</a>
                 <Divider type="vertical" />
-                <Link to={`/main/assign/detail/${text.dangerousoperationId}`}><a>详情</a></Link>
+                <Link to={`/main/assign/detail/${text.id}`}><a>详情</a></Link>
               </span>
             ),
           },
@@ -199,8 +231,9 @@ class PreApprove extends Component {
                     </div>
                     <Table
                     className="tableClass"
-                    bordered="true"
-                    columns={columns} dataSource={data} />
+                    bordered
+                    pagination={pagenationProps}
+                    columns={columns} dataSource={tableList} />
                 </div>
             </div>
         )

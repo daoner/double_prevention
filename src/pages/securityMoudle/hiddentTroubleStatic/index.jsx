@@ -250,14 +250,11 @@ class HiddenTroubleStatic extends Component {
                 {/* 导航路径 */}
                 <Breadcrumb className="path">
                     <Breadcrumb.Item>安全检查与隐患管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>一级指标管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>指标详情</Breadcrumb.Item>
+                    <Breadcrumb.Item>隐患分类统计</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="contentWrap">
-                    隐患分类统计
                     <div id="chart" style={{width:"90%",height:"600px",margin:"20px auto"}}>
-
-                    </div>
+                </div>
                 </div>
             </div>
            

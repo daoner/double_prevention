@@ -64,7 +64,7 @@ class RiskManage extends Component {
     getTableList(pageSize, pageNum) {
         axios.get(`/api/risk/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
             const data =res.data;
-            if(res.status === 1) {
+            if(data.status === 1) {
                 this.setState({
                     tableList: data.data.list,
                     pagenationProps: {
@@ -107,11 +107,11 @@ class RiskManage extends Component {
             cancelText: 'No',
             onOk() {
               console.log('OK,发送异步请求');
-              axios.post('/api/deportment/delete',Qs.stringify({id: id})).then(res=>{
+              axios.post('/api/risk/delete',Qs.stringify({id: id})).then(res=>{
                   if(res.data.status === 1) {
                     message.success(res.data.message || '删除成功',2);
                     //刷新页面
-                    this.getTableList(this.state.pagenationProps.pageSize, this.state.pagenationProps.current);
+                    this.getTableList(5,1);
                   }
               }).catch(error=>{
                   message.error(error.message,2);

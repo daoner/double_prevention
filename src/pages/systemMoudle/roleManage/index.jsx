@@ -4,6 +4,7 @@ import {  actionCreator } from './store';
 import { Breadcrumb, Table, Tag,  Modal, message,Button, Icon, Form, Input } from 'antd';
 
 import axios from 'axios';
+import Qs from 'qs';
 import './style.css';
 
   
@@ -20,11 +21,12 @@ class RoleManage extends Component {
 
 
       this.deleteItem = this.deleteItem.bind(this);
+      this.handleChangePage = this.handleChangePage.bind(this);
     }
 
     componentDidMount() {
       //组件挂在的时候 发送请求显示数据
-      this.props.changeRoleList();
+      this.props.changeRoleList(5,1);
         
     }
     /**
@@ -41,20 +43,30 @@ class RoleManage extends Component {
           },
           cancelText: 'No',
           onOk() {
-            axios.post('/api/role/delete',{
+            axios.post('/api/role/delete',Qs.stringify({
               id: text.id
+            }),{
+              headers: {
+                'Content-Type':'application/x-www-form-urlencoded;'
+              }
             }).then(res=>{
-              console.log(res);
-              message.success('删除成功！',2);
+              if(res.data.status === 1) {
+                message.success('删除成功！',2);
+                this.props.changeRoleList(5,1);
+              }else {
+                message.error('删除失败！',2);
+              }
+             
             }).catch(error=> {
               message.error(error.message);
             });
-            console.log('OK,发送异步请求');
-             //这里删除item
           }
         });
     }
 
+    handleChangePage( pageNum, pageSize) {
+      this.props.changeRoleList(pageSize,pageNum);
+    }
 
     render() {
         //表格的列属性
@@ -83,7 +95,7 @@ class RoleManage extends Component {
                        roleName: text.name
                      })
                   }}>修改</Tag>
-                  <Tag color="magenta" onClick={(text)=>{this.deleteItem(text)}}>删除</Tag>
+                  <Tag color="magenta" onClick={()=>{this.deleteItem(text)}}>删除</Tag>
                 </span>
               )
             }
@@ -95,6 +107,8 @@ class RoleManage extends Component {
         const {roleList, pagenationProps } = this.props; 
         const data = roleList.toJS();                 // immutable 转成js对象
         const JSpagenationProps = pagenationProps.toJS();   //immutable 转成 js对象
+        JSpagenationProps.onChange = this.handleChangePage;   //设置回调
+        JSpagenationProps.onShowSizeChange =  this.handleChangePage;
 
         const { getFieldDecorator } = this.props.form;
         return (
@@ -126,12 +140,17 @@ class RoleManage extends Component {
                                           id: this.state.roleId,
                                           name: values.name
                                         }
-                                        axios.post('api/role/update',data).then(res=>{
+                                        axios.post('api/role/update',Qs.stringify(data),{
+                                          headers: {
+                                            'Content-Type':'application/x-www-form-urlencoded;'
+                                          }
+                                        }).then(res=>{
                                             if(res.data.status === 1) {
                                               message.success('修改成功',2);
                                               this.setState({
                                                 modal_visible: false
                                               })
+                                              this.props.form.resetFields();
                                             }else {
                                                 message.error(res.data.message,2);
                                             }
@@ -142,12 +161,17 @@ class RoleManage extends Component {
                                         const data = {
                                             name: values.name
                                         }
-                                        axios.post('api/role/insert',data).then(res=>{
+                                        axios.post('api/role/insert',Qs.stringify(data),{
+                                          headers: {
+                                            'Content-Type':'application/x-www-form-urlencoded;'
+                                        }
+                                        }).then(res=>{
                                             if(res.data.status === 1) {
                                                 message.success('添加成功',2);
                                                 this.setState({
                                                   modal_visible: false
                                                })
+                                               this.props.form.resetFields();
                                             }else {
                                                 message.error(res.data.message,2);
                                             }
@@ -202,8 +226,8 @@ const mapState = (state)=> {
 
 const mapDispatch = (dispatch)=> {
   return {
-    changeRoleList() {
-      dispatch(actionCreator.getRoleList());
+    changeRoleList(pageSize, pageNum) {
+      dispatch(actionCreator.getRoleList(pageSize,pageNum));
     }
   }
 };

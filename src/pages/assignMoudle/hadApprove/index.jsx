@@ -54,7 +54,11 @@ class HadApprove extends Component {
 
         //绑定this
         this.getList = this.getList.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
       
+    }
+    componentDidMount() {
+        this.getList(); //初始化获取list信息
     }
 
     /**
@@ -65,80 +69,93 @@ class HadApprove extends Component {
     getList(pageSize,pageNum) {
         pageSize = pageSize || this.state.pagenationProps.pageSize;   //默认 pageSize
         pageNum = pageNum || 1;      //默认 pageNum
-        // axios.get(`/api/preApprove/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
-        //     const data = res.data;
-        //     if(data.status === 1) {
-        //         // let pagenationProps = JSON.parse(JSON.stringify(this.state.pagenationProps)); //分页属性
-        //         // pagenationProps.pageSize = data.data.pageSize;
-        //         // pagenationProps.current = data.data.pageNum;
-        //         // pagenationProps.total = data.data.total;
-        //         // //更新state数据
-        //         // this.setState({
-        //         //     list: data.data.list, //列表值
-        //         //     pagenationProps
-        //         // })
-        //     }
-        // }).catch(error=>{
-        //     message.error(error.message,2)
-        // })
+        axios.get(`/api/dangerousoperation/getListNoWait?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
+            const data = res.data;
+            if(data.status === 1) {
+                let pagenationProps = JSON.parse(JSON.stringify(this.state.pagenationProps)); //分页属性
+                pagenationProps.pageSize = data.data.pageSize;
+                pagenationProps.current = data.data.pageNum;
+                pagenationProps.total = data.data.total;
+                //更新state数据
+                this.setState({
+                    list: data.data.list, //列表值
+                    pagenationProps
+                })
+            }
+        }).catch(error=>{
+            message.error(error.message,2)
+        })
     }
 
-
+    /**
+     * 换页
+     * @param {*} pageNum 
+     * @param {*} pageSize 
+     */
+    handleChangePage(pageNum, pageSize) {
+        this.getList(pageSize, pageNum);
+    }
 
     render() {
+        const tableList = this.state.list;
+        let pagenationProps = this.state.pagenationProps;
+        pagenationProps.onChange = this.handleChangePage;
+        pagenationProps.onShowSizeChange = this.handleChangePage;
 
       const columns = [
-          {
-              title: '危险作业ID',
-              dataIndex: 'age',
-              key: 'age',
-          },
-          {
-              title: '危险作业项目名',
-              dataIndex: 'address',
-              key: 'address',
-          },
-          {
-              title: '申请时间',
-              dataIndex: 'address',
-              key: 'address',
-          },
-          {
-              title: '作业地点',
-              dataIndex: 'address',
-              key: 'address',
-          },
-          // {
-          //     title: '状态',
-          //     key: 'tags',
-          //     dataIndex: 'tags',
-          //     render: tags => (
-          //       <span>
-          //         {tags.map(tag => {
-          //           let color = tag.length > 5 ? 'geekblue' : 'green';
-          //           if (tag === 'loser') {
-          //             color = 'volcano';
-          //           }
-          //           return (
-          //             <Tag color={color} key={tag}>
-          //               {tag.toUpperCase()}
-          //             </Tag>
-          //           );
-          //         })}
-          //       </span>
-          //     ),
-          // },
-          {
-            title: '操作',
-            key: 'action',
-            render: (text, record) => (
-              <span>
-                <Link to={`/main/assign/detail/${text.dangerousoperationId}`}><a>详情</a></Link>
-                <a>详情</a>
+        {
+          title: '危险作业ID',
+          dataIndex: 'id',
+          key: 'id',
+        },
+        {
+          title: '作业名',
+          dataIndex: 'name',
+          key: 'name',
+        }, 
+       
+        {
+          title: '作业地点',
+          dataIndex: 'place',
+          key: 'place',
+        },
+        {
+          title: '申请人',
+          dataIndex: 'curator',
+          key: 'curator',
+        },
+        // {
+        //   title: '状态',
+        //   key: 'tags',
+        //   dataIndex: 'tags',
+        //   render: tags => (
+        //     <span>
+        //       {tags.map(tag => {
+        //         let color = tag.length > 5 ? 'geekblue' : 'green';
+        //         if (tag === 'loser') {
+        //           color = 'volcano';
+        //         }
+        //         return (
+        //           <Tag color={color} key={tag}>
+        //             {tag.toUpperCase()}
+        //           </Tag>
+        //         );
+        //       })}
+        //     </span>
+        //   ),
+        // },
+        {
+          title: '操作',
+          key: 'action',
+          render: (text, record) => (
+            <span>
+               <span>
+                <Link to={`/main/assign/detail/${text.id}`}><a>详情</a></Link>
               </span>
-            ),
-          },
-        ];
+            </span>
+          ),
+        },
+      ];
 
         return (
             <div className="page">
@@ -161,8 +178,9 @@ class HadApprove extends Component {
                     </div>
                     <Table
                     className="tableClass"
-                    bordered="true"
-                    columns={columns} dataSource={data} />
+                    bordered
+                    pagination={pagenationProps}
+                    columns={columns} dataSource={tableList} />
                 </div>
             </div>
         )

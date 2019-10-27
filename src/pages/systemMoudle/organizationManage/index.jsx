@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Qs from 'qs';
 
 import { connect } from 'react-redux';
 import {  Table,  Breadcrumb ,Button, Icon,Tag, Modal,
@@ -12,34 +13,7 @@ import { showModal } from './store/actionCreator';
 
 
 
-//删除这里相应
-function deleteItem(text){
-    Modal.confirm({
-        title: '确定删除该部门吗?',
-        okText: 'Yes',
-        okType: 'danger',
-        okButtonProps: {
-          disabled: false,
-        },
-        cancelText: 'No',
-        onOk() {
-          console.log('OK,发送异步请求');
-          axios.post('/api/deportment/delete',{deptId: text.deptId}).then(res=>{
-              if(res.data.status === 1) {
-                message.success('删除成功',2);
 
-              }
-          }).catch(error=>{
-              message.error(error.message,2);
-          })
-        },
-        onCancel() {
-          console.log('Cancel');
-        },
-      });
-    console.log(text);
-    //这里删除item
-}
 
 function updateItem(text) {
 
@@ -69,9 +43,49 @@ class OrganizationManage extends Component {
             deptDesc:''
         }
 
+        this.deleteItem = this.deleteItem.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
     }
+
+    //删除这里相应
+    deleteItem(text){
+        Modal.confirm({
+            title: '确定删除该部门吗?',
+            okText: 'Yes',
+            okType: 'danger',
+            okButtonProps: {
+            disabled: false,
+            },
+            cancelText: 'No',
+            onOk() {
+            console.log('OK,发送异步请求');
+            axios.post('/api/department/delete',Qs.stringify({id: text.id}),{
+                headers: {
+                    'Content-Type':'application/x-www-form-urlencoded;'
+                }
+            }).then(res=>{
+                if(res.data.status === 1) {
+                    message.success('删除成功',2);
+                    this.props.getList(5,1);
+                }
+            }).catch(error=>{
+                message.error(error.message,2);
+            })
+            },
+            onCancel() {
+            console.log('Cancel');
+            },
+        });
+        console.log(text);
+        //这里删除item
+    }
+
+    handleChangePage( pageNum, pageSize ) {
+        this.props.getList(pageSize,pageNum);
+    }
+
     componentDidMount() {
-        this.props.getList();
+        this.props.getList(5,1);
     }
    
     render() {
@@ -81,8 +95,8 @@ class OrganizationManage extends Component {
 
         const jsList = list.toJS(); //将immutable对象转js对象
         const JSpagenationProps = { ...pagenationProps.toJS() };
-        JSpagenationProps.onChange = this.props.handleChangePage;   //设置回调
-        JSpagenationProps.onShowSizeChange =  this.props.handleChangePage;
+        JSpagenationProps.onChange = this.handleChangePage;   //设置回调
+        JSpagenationProps.onShowSizeChange =  this.handleChangePage;
 
 
 
@@ -90,29 +104,29 @@ class OrganizationManage extends Component {
         const columns = [
             { 
                 title: '部门Id',
-                dataIndex: 'deptId',
-                key: 'deptId',
+                dataIndex: 'id',
+                key: 'id',
                 // render: text => <Tag color="magenta">{text}</Tag>,
             },
             {
                 title: '部门名称',
-                dataIndex: 'deptName',
-                key: 'deptName',
+                dataIndex: 'name',
+                key: 'name',
             },
             {
                 title: '部门地址',
-                dataIndex: 'deptAddress',
-                key: 'deptAddress',
+                dataIndex: 'address',
+                key: 'address',
             },
             {
                 title: '部门电话',
-                dataIndex: 'deptPhone',
-                key: 'deptPhone',
+                dataIndex: 'phone',
+                key: 'phone',
             },
             {
                 title: '部门简介',
-                dataIndex : 'deptDesc',
-                key: 'deptDesc'
+                dataIndex : 'desc',
+                key: 'desc'
             },
             {
                 title: '操作',
@@ -124,15 +138,15 @@ class OrganizationManage extends Component {
                         console.log(text)
                         this.setState({
                             isUpdate:true,
-                            deptId:text.deptId,
-                            deptName: text.deptName,
-                            deptPhone: text.deptPhone,
-                            deptAddress: text.deptAddress,
-                            deptDesc: text.deptDesc
+                            deptId:text.id,
+                            deptName: text.name,
+                            deptPhone: text.phone,
+                            deptAddress: text.address,
+                            deptDesc: text.desc
                         });
                         handleShowModal()
                     }}>修改</Tag>
-                    <Tag color="magenta" onClick={()=>{deleteItem(text)}}>删除</Tag>
+                    <Tag color="magenta" onClick={()=>{this.deleteItem(text)}}>删除</Tag>
                 </span>
                 )},
             },
@@ -158,7 +172,7 @@ class OrganizationManage extends Component {
                         }>
                              <Icon type="plus"/>添加</Button>
                     </div>
-                    <Table className="tableClass" bordered rowSelection={rowSelection} pagination={JSpagenationProps} dataSource={jsList} columns={columns} loading={false}/>
+                    <Table className="tableClass" bordered  pagination={JSpagenationProps} dataSource={jsList} columns={columns} loading={false}/>
                 </div>
                 <Modal 
                     title={this.state.isUpdate?'修改部门':'添加部门'}
@@ -170,17 +184,22 @@ class OrganizationManage extends Component {
                             if (!err) {
                                 // console.log('Received values of form: ', values);
                                 if(this.state.isUpdate) {   //更新
-                                    const data = {
-                                        deptId:this.state.deptId,
-                                        deptName: values.deptName,
-                                        deptAddress: values.deptAddress,
-                                        deptPhone: values.deptPhone,
-                                        deptDesc: values.deptDesc
+                                    const formdata = {
+                                        id:this.state.deptId,
+                                        name: values.deptName,
+                                        address: values.deptAddress,
+                                        phone: values.deptPhone,
+                                        desc: values.deptDesc
                                     }
-                                    axios.post('api/deportment/update',data).then(res=>{
+                                    axios.post('api/department/update',Qs.stringify(formdata),{
+                                        headers: {
+                                            'Content-Type':'application/x-www-form-urlencoded;'
+                                        }
+                                    }).then(res=>{
                                         if(res.data.status === 1) {
                                             message.success('修改成功',2);
                                             handleHideModal(); //成功之后隐藏
+                                            this.props.form.resetFields();  //清空表单
                                         }else {
                                             message.error(res.data.message,2);
                                         }
@@ -188,16 +207,21 @@ class OrganizationManage extends Component {
                                         message.error(error.message,2);
                                     })
                                 }else { //添加
-                                    const data = {
-                                        deptName: values.deptName,
-                                        deptAddress: values.deptAddress,
-                                        deptPhone: values.deptPhone,
-                                        deptDesc: values.deptDesc
+                                    const formdata = {
+                                        name: values.deptName,
+                                        address: values.deptAddress,
+                                        phone: values.deptPhone,
+                                        desc: values.deptDesc
                                     }
-                                    axios.post('api/deportment/insert',data).then(res=>{
+                                    axios.post('api/department/insert',Qs.stringify(formdata),{
+                                        headers: {
+                                            'Content-Type':'application/x-www-form-urlencoded;'
+                                        }
+                                    }).then(res=>{
                                         if(res.data.status === 1) {
                                             message.success('添加成功',2);
                                             handleHideModal(); //成功之后隐藏
+                                            this.props.form.resetFields();//清空表单
                                         }else {
                                             message.error(res.data.message,2);
                                         }
@@ -281,8 +305,8 @@ const mapState = (state)=> {
 
 const mapDispatch = (dispatch)=> {
     return {
-        getList() {
-            dispatch(ActionCreator.getOrganizationList());
+        getList(pageSize, pageNum) {
+            dispatch(ActionCreator.getOrganizationList(pageSize,pageNum));
         },
         /** 改变页号 */
         handleChangePage(current,pageSize) {

@@ -64,6 +64,9 @@ class DangerManage extends Component {
         this.handleChangePage = this.handleChangePage.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
+    componentDidMount() {
+      this.getTableList(5, 1);
+    }
 
     /**
      * 获取table 的数据
@@ -73,7 +76,7 @@ class DangerManage extends Component {
     getTableList(pageSize, pageNum) {
         axios.get(`/api/hazard/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
             const data =res.data;
-            if(res.status === 1) {
+            if(data.status === 1) {
                 this.setState({
                     tableList: data.data.list,
                     pagenationProps: {
@@ -119,7 +122,7 @@ class DangerManage extends Component {
                   if(res.data.status === 1) {
                     message.success(res.data.message || '删除成功',2);
                     //刷新页面
-                    this.getTableList(this.state.pagenationProps.pageSize, this.state.pagenationProps.current);
+                    this.getTableList(this.state.pagenationProps.pageSize,1);
                   }
               }).catch(error=>{
                   message.error(error.message,2);
@@ -196,7 +199,7 @@ class DangerManage extends Component {
               <span>
                 <a onClick={()=>{this.handleDelete(text.id)}}>删除</a>
                 <Divider type="vertical" />
-                <a>修改</a>
+                <Link to={`/main/risk/danger/update/${text.id}`}><a>修改</a></Link>
               </span>
             ),
           },
@@ -227,7 +230,7 @@ class DangerManage extends Component {
                     className="tableClass"
                     bordered
                     pagination={pagination}
-                    columns={columns} dataSource={data} />
+                    columns={columns} dataSource={tableList} />
                 </div>
             </div>
         )

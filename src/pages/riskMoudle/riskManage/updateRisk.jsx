@@ -21,7 +21,11 @@ class UpdateRisk extends React.Component {
      * 挂在时获取风险的信息
      */
     componentDidMount() {
-        axios.get(`/api/risk/detail?id=${this.props.match.params.id}`).then(res=>{
+        axios.post('/api/risk/getDetail',Qs.stringify({id:this.props.match.params.id}),{
+            headers: {
+                'Content-Type':'application/x-www-form-urlencoded;'
+            }
+        }).then(res=>{
             const data = res.data;
             if(data.status === 1) {
                 this.setState({
@@ -31,8 +35,6 @@ class UpdateRisk extends React.Component {
                     level: data.data.level,
                     telephone: data.data.telephone
                 });
-                message.success('修改成功');
-                this.props.history.goBack();
             }else {
                 message.error(data.message || '获取信息失败');
             }
@@ -95,36 +97,40 @@ class UpdateRisk extends React.Component {
             <Form {...formItemLayout } onSubmit={this.handleSubmit}>
                 <Form.Item  label="风险点：">
                 {getFieldDecorator('name', {
+                    initialValue: this.state.name,
                     rules: [{ required: true, message: '请输入风险点!' }],
                 })(
-                    <Input placeholder="风险点" value={this.state.name}    />,
+                    <Input placeholder="风险点" value={this.state.name}  maxLength="10"  />,
                 )}
                 </Form.Item>
                
 
                 <Form.Item label="风险点位置：">
                 {getFieldDecorator('place', {
+                    initialValue: this.state.place,
                     rules: [{ required: true, message: '请输入风险点位置!' }],
                 })(
-                    <Input placeholder="风险点位置"  value={this.state.place}  />,
+                    <Input placeholder="风险点位置"  value={this.state.place} maxLength="10"  />,
                 )}
                 </Form.Item>
 
                 <Form.Item label="风险点等级：">
                 {getFieldDecorator('level', {
+                    initialValue: this.state.level,
                     rules: [{ required: true, message: '请选择风险点等级!' }],
                 })(
                     <Input
-                     placeholder="风险点等级" value={this.state.level}
+                     placeholder="风险点等级" value={this.state.level } maxLength="6" 
                     />,
                 )}
                 </Form.Item>
 
                 <Form.Item label="应急电话：">
                 {getFieldDecorator('telephone', {
+                    initialValue: this.state.telephone,
                     rules: [{ required: true, message: '请输入应急电话!' }],
                 })(
-                    <Input placeholder="应急电话" value={this.state.telephone} />,
+                    <Input placeholder="应急电话" value={this.state.telephone} maxLength="15"  />,
                 )}
                 </Form.Item>
 

@@ -52,7 +52,7 @@ class AppluRecord extends Component {
     getList(pageSize, pageNum) {
         pageSize = pageSize || this.state.pagenationProps.pageSize;   //默认 pageSize
         pageNum = pageNum || 1;      //默认 pageNum
-        axios.get(`/api/dangerousoperation/getList&userId=${memery.user.id}&pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
+        axios.get(`/api/dangerousoperation/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
             const data = res.data;
             if(data.status === 1) {
                 let pagenationProps = JSON.parse(JSON.stringify(this.state.pagenationProps)); //分页属性
@@ -64,6 +64,8 @@ class AppluRecord extends Component {
                     list: data.data.list, //列表值
                     pagenationProps
                 })
+            }else {
+              message.error('获取信息失败',2)
             }
         }).catch(error=>{
             message.error(error.message,2)
@@ -84,10 +86,10 @@ class AppluRecord extends Component {
           },
           cancelText: 'No',
           onOk() {
-              axios.post('/api/dangerousoperation/delete', Qs.stringify({id: text.id}),{
+              axios.post('/api/dangerousoperation/delete', Qs.stringify({dangerousoperationId: text.id}),{
                   headers: { 'Content-Type':'application/x-www-form-urlencoded' }
               }).then(res=>{
-                  message.success('删除成功！',2);
+                  message.success(res.data.message );
                   //更新list
                   this.getList();
               }).catch(error=> {
@@ -164,28 +166,24 @@ class AppluRecord extends Component {
       const columns = [
           {
             title: '危险作业ID',
-            dataIndex: 'dangerousoperationId',
-            key: 'dangerousoperationId',
+            dataIndex: 'id',
+            key: 'id',
           },
           {
-            title: '提交部门',
-            dataIndex: 'dangerousoperationDpId',
-            key: 'dangerousoperationDpId',
+            title: '作业名',
+            dataIndex: 'name',
+            key: 'name',
           }, 
-          {
-            title: '申请时间',
-            dataIndex: 'dangerousoperationApplyDate',
-            key: 'dangerousoperationApplyDate',
-          },
+         
           {
             title: '作业地点',
-            dataIndex: 'dangerousoperationPlace',
-            key: 'dangerousoperationPlace',
+            dataIndex: 'place',
+            key: 'place',
           },
           {
             title: '申请人',
-            dataIndex: 'dangerousoperationApplyPerson',
-            key: 'dangerousoperationApplyPerson',
+            dataIndex: 'curator',
+            key: 'curator',
           },
           // {
           //   title: '状态',
@@ -214,13 +212,11 @@ class AppluRecord extends Component {
               <span>
                 <a onClick={()=>{this.deleteItem(text)}}>删除</a>
                 <Divider type="vertical" />
-                <Link to={`/main/assign/detail/${text.dangerousoperationId}`}><a>详情</a></Link>
+                <Link to={`/main/assign/detail/${text.id}`}><a>详情</a></Link>
+                {/* <Divider type="vertical" />
+                <a onClick={()=>{this.handleDrawBack(text.id)}}>撤回</a> */}
                 <Divider type="vertical" />
-                <a>修改</a>
-                <Divider type="vertical" />
-                <a onClick={()=>{this.handleDrawBack(text.dangerousoperationId)}}>撤回</a>
-                <Divider type="vertical" />
-                <a onClick={()=>{this.handleKeepFile(text.dangerousoperationId)}}>归档</a>
+                <a onClick={()=>{this.handleKeepFile(text.id)}}>归档</a>
               </span>
             ),
           },

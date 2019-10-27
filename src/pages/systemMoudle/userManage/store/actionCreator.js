@@ -35,6 +35,7 @@ export const getUserList = (pageSize, current)=>{
  */
 const changeUserList = ( list,pageSize,pageNum,total )=>({
     type: actionTypes.CHANGE_USER_LIST,
+    list,
     pageSize,
     pageNum,
     total

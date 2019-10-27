@@ -25,7 +25,10 @@ const defaultState = fromJS({
 const reducer =  (state = defaultState,action)=>{
     switch(action.type) {
         case ActionTypes.CHANGE_ORGANIZATION_LIST:
-            return state.set('list',fromJS(action.list)).setIn(['pagenationProps','total'],action.list.length);
+            return state.set('list',fromJS(action.list))
+                .setIn(['pagenationProps','pageSize'],action.pageSize)
+                .setIn(['pagenationProps','current'],action.pageNum)
+                .setIn(['pagenationProps','total'],action.total);
         case ActionTypes.CHANGE_PAGE:
             return state.setIn(['pagenationProps','current'],action.current).setIn(['pagenationProps','pageSize'],action.pageSize);
         case ActionTypes.SHOW_MODAL:

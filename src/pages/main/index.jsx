@@ -21,6 +21,7 @@ import RiskStatistic from '../riskMoudle/statistic';
 import AddRisk from '../riskMoudle/riskManage/addrisk';
 import AddDanger from '../riskMoudle/dangerManage/addDanger';
 import UpdateRisk from '../riskMoudle/riskManage/updateRisk';
+import UpdateDanger from '../riskMoudle/dangerManage/updateDanger';
 
 /* 事故管理统计模块 */
 import AccidentManage from '../accidentMoudle/accidentManage';
@@ -113,6 +114,7 @@ class Main extends Component {
               <Route exact path="/main/risk/danger/add" component={AddDanger}/>
 
               <Route path="/main/risk/manage/update/:id" component={UpdateRisk} />
+              <Route path="/main/risk/danger/update/:id" component={UpdateDanger} />
 
               {/* 安全检查与隐患管理  */}
               <Route exact path="/main/checktable/manage" component={ CheckTableManage } />

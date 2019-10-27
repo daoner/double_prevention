@@ -2,9 +2,9 @@ import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
 //获取列表的
-export const getRoleList = ()=> {
+export const getRoleList = (pageSize, pageNum)=> {
     return (dispatch)=> {
-        axios.get('/api/role/getList').then(res=>{
+        axios.get(`/api/role/getList?pageSize=${pageSize}&pageNum=${pageNum}`).then(res=>{
             const data = res.data;
             if(data.status === 1) {
                 dispatch(changeRoleList(

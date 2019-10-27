@@ -38,10 +38,10 @@ class FormLayoutDemo extends React.Component {
           //要提交的数据
           const data = {
             //id
-            deptId: memery.deptId,  //当前用户的部门id
+            deptId: memery.user.deptId,  //当前用户的部门id
             applyDate: formateDate(new Date(), 'yyyy-MM-dd'),//申请时间
             status: 11111,    //状态
-            keepFile: values.keepFile,    //是否归档
+            keepFile: false,    //是否归档
             name: values.name,    //申请的项目名
             startDate: formateDate(new Date(values.startDate[0]._d),'yyyy-MM-dd'),  //开始时间
             endDate: formateDate(new Date(values.startDate[1]._d),'yyyy-MM-dd'), //结束时间
@@ -62,14 +62,16 @@ class FormLayoutDemo extends React.Component {
           axios.post('/api/dangerousoperation/insert', Qs.stringify(data)  ,{
               headers: { 'Content-Type':'application/x-www-form-urlencoded' }
           }).then(res=>{
-            message.success('添加成功');
+            if(res.data.status === 1) {
+              message.success(res.data.message ||'添加成功');
+            }else {
+              message.error(res.data.message ||'添加失败');
+            }
           }).catch(error=>{
             message.error(error.message || '添加失败');
           })
 
-          console.log('Received values of form: ', values);
         }else {
-          console.log(memery.user)
           // console.log(err,values)
           message.info('请正确填写必要信息!')
         }
@@ -99,7 +101,7 @@ class FormLayoutDemo extends React.Component {
           }
         : null;
     return (
-      <div>
+      <div id="formContent">
         <Form layout={formLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="项目名称" {...formItemLayout}>
               {getFieldDecorator('name', {
@@ -113,12 +115,6 @@ class FormLayoutDemo extends React.Component {
                   initialValue: '',
                   rules: [{ required: true, message: '请输入项目内容!' }],
               })(<TextArea style={{maxHeight:"100px"}} maxLength="20" rows={4} placeholder="双重预防机制管理系统的内容" />)}
-          </Form.Item>
-
-          <Form.Item label="是否归档" {...formItemLayout}>
-            {getFieldDecorator('keepFile', { 
-              rules: [{ required: true, message: '请选择是否归档!' }], 
-              })(<Switch />)}
           </Form.Item>
 
           <Form.Item label="作业人数" {...formItemLayout}>
@@ -187,7 +183,12 @@ class FormLayoutDemo extends React.Component {
           </Form.Item>
 
           <Form.Item {...buttonItemLayout}>
-            <Button type="primary">打印</Button>
+            <Button type="primary" onClick={()=>{
+              let bdhtml=window.document.body.innerHTML;
+              window.document.body.innerHTML = document.getElementById('formContent').innerHTML;
+              window.print(); //调用浏览器的打印功能打印指定区域
+              window.document.body.innerHTML=bdhtml; // 最后还原页面
+            }}>打印</Button>
             <Button type="primary" style={{float:"right"}} htmlType="submit">提交</Button>
             <Button style={{float:"right",margin:"0px 20px 0px 0px"}} htmlType="reset">取消</Button>
           </Form.Item>

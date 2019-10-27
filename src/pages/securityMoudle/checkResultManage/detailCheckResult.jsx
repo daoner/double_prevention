@@ -25,7 +25,20 @@ class DetailCheckResult extends Component {
             desc: '',
             userName: '',
         }
+
+        this.handlePrint = this.handlePrint.bind(this);
     }
+
+    handlePrint() {
+        let bdhtml=window.document.body.innerHTML;
+
+        window.document.body.innerHTML=document.getElementById('resultDetail').innerHTML; //把需要打印的指定内容赋给body.innerHTML
+        window.print(); //调用浏览器的打印功能打印指定区域
+
+        window.document.body.innerHTML=bdhtml; // 最后还原页面
+    }
+
+
     componentDidMount() {
         const ss = {inputId: this.props.match.params.id };
         console.log(ss);
@@ -57,7 +70,6 @@ class DetailCheckResult extends Component {
     }
 
     render() {
-      
         return (
             <div className="page">
                 {/* 导航路径 */}
@@ -68,7 +80,7 @@ class DetailCheckResult extends Component {
                 </Breadcrumb>
                 {/* 内容区域 */}
                 <div className="contentWrap">
-                    <div style={{width:"80%", margin:"50px auto"}}>
+                    <div style={{width:"80%", margin:"50px auto"}} id='resultDetail'>
                         <table className="result-table">
                             <caption align="top">{this.state.checkTableName}</caption>
                             <tbody>
@@ -79,10 +91,10 @@ class DetailCheckResult extends Component {
                                 </tr>
                                 {
                                     this.state.firstList.map((item1,index)=>{
-                                          let list =   item1.secondList.map((item2,index2)=>{
-                                                if(index === 0) {
+                                          let list =   item1.secondList.map((item2,index2,arr)=>{
+                                                if(index2 === 0) {
                                                     return (<tr>
-                                                        <td rowspan="3" colspan="3">{item1.project}</td>
+                                                        <td rowspan={arr.length} colspan="3">{item1.project}</td>
                                                         <td colspan="7">{item2.content}</td>
                                                         <td colspan="2">{item2.isQualified? '合格': '不合格'}</td>
                                                     </tr>)
@@ -136,7 +148,14 @@ class DetailCheckResult extends Component {
                             </tbody>
                         </table>
                         <Form.Item wrapperCol={{span: 4, offset:3}}>
-                            <Button style={{marginRight: "30px"}}>打印</Button>
+                            <Button style={{marginRight: "30px"}} onClick={()=>{
+                                let bdhtml=window.document.body.innerHTML;
+
+                                window.document.body.innerHTML=document.getElementById('resultDetail').innerHTML; //把需要打印的指定内容赋给body.innerHTML
+                                window.print(); //调用浏览器的打印功能打印指定区域
+                        
+                                window.document.body.innerHTML=bdhtml; // 最后还原页面
+                            }} >打印</Button>
                             <Link to="/main/checktable/result">
                                 <Button>返回</Button>
                             </Link>
